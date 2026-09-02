@@ -429,6 +429,123 @@
         }
         .answer-toast.wrong-toast { background: #d32f2f; }
 
+        /* ===== 简洁配色与导航优化 ===== */
+        body {
+            background: linear-gradient(135deg, #eef5ff 0%, #f7f9fc 48%, #eef8f5 100%);
+            color: #243447;
+        }
+        .container {
+            border: 1px solid #dfe7f1;
+            box-shadow: 0 14px 44px rgba(40, 68, 96, 0.12);
+        }
+        .header {
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5ebf3;
+        }
+        .header h1 { color: #1f3a5f; }
+        .stats {
+            background: #f2f7fc;
+            border-color: #d8e5f2;
+        }
+        .question-area {
+            background: #f8fbff;
+            border-color: #dce8f5;
+        }
+        .q-number { color: #315b85; }
+        .word-display { color: #183b5d; }
+        .option-item {
+            border-color: #d7e1ec;
+            box-shadow: 0 2px 6px rgba(35, 61, 86, 0.035);
+        }
+        .option-item:hover:not(.disabled) {
+            border-color: #6d9dcc;
+            background: #f4f9ff;
+            transform: translateY(-1px);
+        }
+        .nav-footer {
+            justify-content: center;
+            flex-direction: column;
+            margin-top: 14px;
+        }
+        .nav-buttons {
+            justify-content: center;
+            gap: 16px;
+        }
+        .nav-btn {
+            min-width: 150px;
+            min-height: 50px;
+            padding: 12px 30px;
+            font-size: 16px;
+            border: 1px solid #b9cee2;
+            background: #edf5fc;
+            color: #24547e;
+            box-shadow: 0 3px 8px rgba(42, 78, 110, 0.08);
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: #e2f0fb;
+            border-color: #7fa8ca;
+        }
+        .nav-btn.primary {
+            background: #3978a9;
+            border-color: #3978a9;
+            color: #fff;
+        }
+        .nav-btn.primary:hover:not(:disabled) {
+            background: #2e668f;
+            border-color: #2e668f;
+        }
+        .progress-text { display: none; }
+        .grid-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin: 2px 0 8px;
+        }
+        .grid-toggle {
+            color: #47759a;
+            background: #f2f7fb;
+            border: 1px solid #d8e5ef;
+            border-radius: 20px;
+            padding: 6px 12px;
+            text-decoration: none;
+        }
+        .grid-toggle:hover {
+            background: #eaf3fa;
+            color: #285d84;
+        }
+        .grid-container {
+            margin-top: 0;
+            margin-bottom: 12px;
+            padding: 10px 0 12px;
+            border-top: 0;
+            border-bottom: 1px solid #e7edf4;
+        }
+        .grid-item.current {
+            border-color: #3978a9;
+            box-shadow: 0 0 0 2px rgba(57, 120, 169, 0.13);
+        }
+        .error-book-bar {
+            justify-content: flex-start;
+            margin-bottom: 18px;
+        }
+        .error-book-btn {
+            background: #fff7f6;
+            border-color: #f0c9c4;
+            color: #b45147;
+            padding: 7px 16px;
+        }
+        .error-book-btn:hover { background: #fff0ee; }
+        .error-book-btn .count { background: #c8665c; }
+        .progress-tabs .tab.active {
+            background: #3978a9;
+            color: #fff;
+            border-color: #3978a9;
+        }
+        .answer-toast {
+            background: #2f855a;
+            box-shadow: 0 8px 22px rgba(34, 93, 63, 0.22);
+        }
+        .answer-toast.wrong-toast { background: #c75b52; }
+
         @media (min-width: 641px) and (max-width: 1180px) {
             .container { max-width: 900px; width: calc(100% - 32px); }
             .options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -521,6 +638,12 @@
                 justify-content: center;
             }
         }
+
+        @media (max-width: 640px) {
+            .nav-buttons { width: 100%; gap: 10px; }
+            .nav-btn { min-width: 0; flex: 1; min-height: 48px; padding: 11px 12px; font-size: 15px; }
+            .grid-bar { justify-content: center; }
+        }
     </style>
 </head>
 <body>
@@ -546,12 +669,19 @@
         <!-- 进度标签 -->
         <div class="progress-tabs" id="progressTabs"></div>
 
+        <!-- 进度网格 -->
+        <div class="grid-bar">
+            <button class="grid-toggle" id="gridToggle">📊 展开网格</button>
+        </div>
+        <div class="grid-container" id="gridContainer">
+            <div class="grid-items" id="gridItems"></div>
+        </div>
+
         <!-- 错题本 -->
         <div class="error-book-bar">
             <button class="error-book-btn" id="errorBookBtn">
                 📕 错题本 <span class="count" id="errorCount">0</span>
             </button>
-            <button class="grid-toggle" id="gridToggle">📊 展开网格</button>
         </div>
 
         <!-- 题目 -->
@@ -570,13 +700,10 @@
                 <button class="nav-btn" id="prevBtn">‹ 上一题</button>
                 <button class="nav-btn primary" id="nextBtn">下一题 ›</button>
             </div>
-            <span class="progress-text" id="progressText">0 / 0</span>
+            <span class="progress-text" id="progressText"></span>
         </div>
 
-        <!-- 进度网格 -->
-        <div class="grid-container" id="gridContainer">
-            <div class="grid-items" id="gridItems"></div>
-        </div>
+
     </div>
 
     <script>
@@ -1402,12 +1529,9 @@
             };
             const value = JSON.stringify(payload);
             cookieSet(STORAGE_KEY, value);
-            // file:// 页面上的部分浏览器不会持久化 cookie，localStorage 仅作为本地文件打开时的兼容兜底。
-            try { localStorage.setItem(STORAGE_KEY, value); } catch (_) {}
         }
         function loadLocalState() {
-            let raw = cookieGet(STORAGE_KEY);
-            if (!raw) { try { raw = localStorage.getItem(STORAGE_KEY); } catch (_) {} }
+            const raw = cookieGet(STORAGE_KEY);
             if (!raw) return null;
             try {
                 const p = JSON.parse(raw);
@@ -1485,13 +1609,13 @@
             document.getElementById('wordDisplay').textContent = '📂 请先导入单词数据';
             document.getElementById('wordDisplay').className = 'word-display empty';
             document.getElementById('optionsContainer').innerHTML = '';
-            document.getElementById('qNumber').innerHTML = '第 0 题 <span class="total">/ <span id="totalQ">0</span></span>';
+            document.getElementById('qNumber').textContent = '第 0 题';
             document.getElementById('qStatus').textContent = '—';
             document.getElementById('qStatus').className = 'q-status';
             document.getElementById('wordCountLabel').innerHTML = '共 <span id="wordCountNum">0</span> 词';
             document.getElementById('progressTabs').innerHTML = '';
             document.getElementById('gridItems').innerHTML = '';
-            document.getElementById('progressText').textContent = '0 / 0';
+            document.getElementById('progressText').textContent = '';
             document.getElementById('prevBtn').disabled = true;
             document.getElementById('nextBtn').disabled = true;
             document.getElementById('doneCount').textContent = '0';
@@ -1569,7 +1693,7 @@
                 const end = Math.min((i + 1) * 100, total);
                 const active = state.currentIndex >= i * 100 && state.currentIndex < (i + 1) * 100 ? 'active' : '';
                 const doneInRange = state.questions.slice(i * 100, (i + 1) * 100).filter(q => q.result !== null).length;
-                html += `<span class="tab ${active}" data-page="${i}">${start}-${end} <span class="badge">${doneInRange}/${end - start + 1}</span></span>`;
+                html += `<span class="tab ${active}" data-page="${i}">${start}-${end}</span>`;
             }
             container.innerHTML = html;
 
@@ -1599,8 +1723,7 @@
             wordEl.textContent = q.en;
             wordEl.className = 'word-display';
 
-            document.getElementById('qNumber').innerHTML =
-                `第 ${idx + 1} 题 <span class="total">/ <span id="totalQ">${total}</span></span>`;
+            document.getElementById('qNumber').textContent = `第 ${idx + 1} 题`;
 
             const statusEl = document.getElementById('qStatus');
             if (state.isReviewMode && state.questions.every(item => item.result !== null)) {
@@ -1678,7 +1801,7 @@
         function renderProgressText() {
             const total = state.questions ? state.questions.length : 0;
             document.getElementById('progressText').textContent =
-                total > 0 ? `${state.currentIndex + 1} / ${total}` : '0 / 0';
+                total > 0 ? `${state.currentIndex + 1}` : '';
         }
 
         function updateErrorBookUI() {
@@ -1765,7 +1888,6 @@
                 state.errorWords = [];
                 state.isReviewMode = false;
                 state.questions = [];
-                try { localStorage.removeItem(STORAGE_KEY); } catch (_) {}
                 cookieSet(STORAGE_KEY, '', -1);
                 initPractice();
                 saveLocalState();
