@@ -60,6 +60,33 @@
             flex-wrap: wrap;
         }
 
+.quick-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+
+.quick-actions button {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 700px) {
+    .header-actions {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 3px;
+        scrollbar-width: thin;
+    }
+    .quick-actions {
+        flex-wrap: nowrap;
+    }
+}
+
+
         .stats {
             display: flex;
             gap: 18px;
@@ -378,6 +405,7 @@
             gap: 6px;
             max-height: 200px;
             overflow-y: auto;
+            overflow-x: auto;
             padding: 4px 0;
         }
         .grid-item {
@@ -463,6 +491,7 @@
         .question-area {
             background: #f8fbff;
             border-color: #dce8f5;
+            margin-top: 0;
         }
         .q-number { color: #315b85; }
         .word-display { color: #183b5d; }
@@ -511,7 +540,7 @@
         .grid-bar {
             display: flex;
             justify-content: flex-end;
-            margin: 2px 0 8px;
+            margin: 0 0 4px;
         }
         .grid-toggle {
             color: #47759a;
@@ -527,8 +556,8 @@
         }
         .grid-container {
             margin-top: 0;
-            margin-bottom: 12px;
-            padding: 10px 0 12px;
+            margin-bottom: 6px;
+            padding: 6px 0 8px;
             border-top: 0;
             border-bottom: 1px solid #e7edf4;
         }
@@ -538,7 +567,7 @@
         }
         .error-book-bar {
             justify-content: flex-start;
-            margin-bottom: 18px;
+            margin-bottom: 8px;
         }
         .error-book-btn {
             background: #fff7f6;
@@ -548,6 +577,21 @@
         }
         .error-book-btn:hover { background: #fff0ee; }
         .error-book-btn .count { background: #c8665c; }
+        .progress-tabs {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            gap: 8px;
+            padding: 2px 2px 8px;
+            margin-bottom: 4px;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+        .progress-tabs .tab {
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
         .progress-tabs .tab.active {
             background: #3978a9;
             color: #fff;
@@ -682,7 +726,13 @@
 					<span class="correct">✅ <span id="correctCount">0</span></span>
 					<span class="wrong">❌ <span id="wrongCount">0</span></span>
 				</div>
-				<button class="btn-reset" id="resetBtn">↻ 重置</button>
+				<div class="quick-actions">
+                    <button class="grid-toggle" id="gridToggle">📊 展开网格</button>
+                    <button class="error-book-btn" id="errorBookBtn">
+                        📕 错题本 <span class="count" id="errorCount">0</span>
+                    </button>
+                    <button class="btn-reset" id="resetBtn">↻ 重置</button>
+                </div>
 			</div>
 		</div>
 
@@ -690,18 +740,8 @@
         <div class="progress-tabs" id="progressTabs"></div>
 
         <!-- 进度网格 -->
-        <div class="grid-bar">
-            <button class="grid-toggle" id="gridToggle">📊 展开网格</button>
-        </div>
         <div class="grid-container" id="gridContainer">
             <div class="grid-items" id="gridItems"></div>
-        </div>
-
-        <!-- 错题本 -->
-        <div class="error-book-bar">
-            <button class="error-book-btn" id="errorBookBtn">
-                📕 错题本 <span class="count" id="errorCount">0</span>
-            </button>
         </div>
 
         <!-- 题目 -->
@@ -3664,20 +3704,26 @@
         function saveLocalState() {
             if (!state.words.length) return;
             const indexMap = new Map(state.words.map((w, i) => [w.en, i]));
-            const correct = state.words.map(w => false);
-            const wrong = state.words.map(w => false);
+
+            // 重要：错题本是普通练习的“视图”，不能用错题本当前题目覆盖/清空
+            // 普通练习已经完成的记录。先读取已有记录，再只覆盖当前正在保存的题目。
+            const saved = loadLocalState();
+            const correct = saved ? decodeBits(saved.c, state.words.length) : state.words.map(() => false);
+            const wrong = saved ? decodeBits(saved.w, state.words.length) : state.words.map(() => false);
+
             state.questions.forEach(q => {
                 const i = indexMap.get(q.en);
-                if (i !== undefined) {
-                    correct[i] = q.result === 'correct';
-                    wrong[i] = q.result === 'wrong';
-                }
+                if (i === undefined || q.result === null) return;
+                correct[i] = q.result === 'correct';
+                wrong[i] = q.result === 'wrong';
             });
+
             const errorBits = state.words.map(w => state.errorWords.some(e => e.en === w.en));
             const payload = {
                 v: 2, n: state.words.length,
                 first: state.words[0].en, last: state.words[state.words.length - 1].en,
                 c: encodeBits(correct), w: encodeBits(wrong), e: encodeBits(errorBits),
+                // 不让“错题本模式”成为刷新后的永久模式；记录模式仅用于当前会话。
                 mode: state.isReviewMode, idx: state.currentIndex
             };
             const value = JSON.stringify(payload);
@@ -3763,7 +3809,29 @@
             }
 
             state.questions = buildQuestions(pool, state.words);
-            state.currentIndex = 0;
+
+            if (state.isReviewMode) {
+                // 错题本从第一道错题开始复习。
+                state.currentIndex = 0;
+            } else {
+                // 返回全部题目时，不清零进度：直接回到第一个未完成单词。
+                const saved = loadLocalState();
+                if (saved) {
+                    const correct = decodeBits(saved.c, state.words.length);
+                    const wrong = decodeBits(saved.w, state.words.length);
+                    const completedCount = correct.reduce((sum, v, i) => sum + (v || wrong[i] ? 1 : 0), 0);
+                    state.currentIndex = Math.min(completedCount, Math.max(0, state.questions.length - 1));
+                    state.questions.forEach(q => {
+                        const i = state.words.findIndex(w => w.en === q.en);
+                        if (i >= 0) {
+                            if (correct[i]) q.result = 'correct';
+                            else if (wrong[i]) q.result = 'wrong';
+                        }
+                    });
+                } else {
+                    state.currentIndex = 0;
+                }
+            }
 
             renderAll();
         }
@@ -4024,6 +4092,7 @@
         //  导航
         // ================================================================
         function goToPrev() {
+            clearTimeout(autoNextTimer);
             if (state.currentIndex > 0 && state.questions.length > 0) {
                 state.currentIndex--;
                 renderAll();
@@ -4032,6 +4101,7 @@
         }
 
         function goToNext() {
+            clearTimeout(autoNextTimer);
             if (state.currentIndex < state.questions.length - 1 && state.questions.length > 0) {
                 state.currentIndex++;
                 renderAll();
@@ -4061,6 +4131,7 @@
         //  错题本切换
         // ================================================================
         function toggleErrorBook() {
+            clearTimeout(autoNextTimer);
             if (!state.dataLoaded || state.words.length === 0) {
                 alert('请先导入单词数据！');
                 return;
