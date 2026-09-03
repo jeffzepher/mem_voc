@@ -3714,7 +3714,7 @@
             const errors = decodeBits(saved.e, state.words.length);
             state.errorWords = state.words.filter((_, i) => errors[i]);
             state.isReviewMode = !!saved.mode && state.errorWords.length > 0;
-            let pool = state.isReviewMode ? shuffle([...state.errorWords]) : shuffle([...state.words]);
+            let pool = state.isReviewMode ? [...state.errorWords] : [...state.words];
             state.questions = buildQuestions(pool, state.words);
             // 错题本进入“重新复习”状态时必须允许再次作答，而不是沿用上次的锁定状态。
             if (!state.isReviewMode) {
@@ -3727,7 +3727,14 @@
                     }
                 });
             }
-            state.currentIndex = Math.min(Number(saved.idx) || 0, Math.max(0, state.questions.length - 1));
+            // 普通练习严格按照 Word 去重后的原始顺序恢复：
+            // 已做 N 题 -> 刷新后从第 N+1 题开始。
+            if (!state.isReviewMode) {
+                const completedCount = correct.reduce((sum, v, i) => sum + (v || wrong[i] ? 1 : 0), 0);
+                state.currentIndex = Math.min(completedCount, Math.max(0, state.questions.length - 1));
+            } else {
+                state.currentIndex = Math.min(Number(saved.idx) || 0, Math.max(0, state.questions.length - 1));
+            }
             return true;
         }
 
@@ -3737,19 +3744,22 @@
                 return;
             }
 
-            let pool = shuffle([...state.words]);
+            // 普通练习不随机：始终按照 Word 文件去重后的原始顺序。
+            let pool = [...state.words];
 
             if (state.isReviewMode && state.errorWords.length > 0) {
-                pool = shuffle([...state.errorWords]);
+                // 错题本也保持原始单词顺序，方便复习。
+                const errorSet = new Set(state.errorWords.map(w => w.en));
+                pool = state.words.filter(w => errorSet.has(w.en));
                 if (pool.length === 0) {
                     alert('错题本为空！');
                     state.isReviewMode = false;
-                    pool = shuffle([...state.words]);
+                    pool = [...state.words];
                 }
             }
 
             if (pool.length === 0) {
-                pool = shuffle([...state.words]);
+                pool = [...state.words];
             }
 
             state.questions = buildQuestions(pool, state.words);
