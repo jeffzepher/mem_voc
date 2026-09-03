@@ -213,15 +213,21 @@
         }
 
         .word-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
             font-size: 32px;
             font-weight: 700;
             color: #0b1a2a;
             letter-spacing: 0.5px;
-            padding: 12px 0 6px;
+            padding: 8px 16px 12px;
             text-align: center;
             border-bottom: 2px dashed #e9edf2;
-            margin-bottom: 20px;
-            min-height: 70px;
+            margin: 2px auto 16px;
+            min-height: 52px;
+            line-height: 1.2;
         }
         .word-display.empty {
             color: #6b7a8a;
@@ -409,23 +415,30 @@
         .answer-toast {
             position: fixed;
             left: 50%;
-            top: 22px;
-            transform: translate(-50%, -12px);
-            padding: 10px 18px;
-            border-radius: 999px;
-            background: #1e8e3e;
+            top: 50%;
+            transform: translate(-50%, -42% ) scale(.92);
+            padding: 13px 24px;
+            border-radius: 16px;
+            background: #2f855a;
             color: #fff;
-            font-size: 15px;
-            font-weight: 600;
-            box-shadow: 0 8px 24px rgba(0,0,0,.16);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: .3px;
+            box-shadow: 0 12px 32px rgba(34, 93, 63, .24);
             opacity: 0;
             pointer-events: none;
-            transition: opacity .18s ease, transform .18s ease;
+            transition: opacity .2s ease, transform .2s cubic-bezier(.2,.8,.2,1);
             z-index: 9999;
         }
         .answer-toast.show {
             opacity: 1;
-            transform: translate(-50%, 0);
+            transform: translate(-50%, -42%) scale(1);
+            animation: correctPop .45s ease-out;
+        }
+        @keyframes correctPop {
+            0% { transform: translate(-50%, -42%) scale(.78) rotate(-2deg); opacity: 0; }
+            65% { transform: translate(-50%, -42%) scale(1.05) rotate(1deg); opacity: 1; }
+            100% { transform: translate(-50%, -42%) scale(1) rotate(0); opacity: 1; }
         }
         .answer-toast.wrong-toast { background: #d32f2f; }
 
@@ -545,7 +558,14 @@
             box-shadow: 0 8px 22px rgba(34, 93, 63, 0.22);
         }
         .answer-toast.wrong-toast { background: #c75b52; }
+        .answer-toast:not(.wrong-toast)::before { content: '🎉 '; }
+        .answer-toast:not(.wrong-toast)::after { content: ' 🎉'; }
 
+
+        @media (max-width: 640px) {
+            .word-display { font-size: 27px; min-height: 46px; padding: 7px 10px 10px; margin-bottom: 13px; }
+            .answer-toast { font-size: 17px; padding: 12px 20px; }
+        }
         @media (min-width: 641px) and (max-width: 1180px) {
             .container { max-width: 900px; width: calc(100% - 32px); }
             .options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -711,710 +731,2843 @@
         //  数据：631 个去重后的单词
         // ================================================================
         const WORDS_DATA = [
-            { "en": "accept", "cn": "接受" },
-            { "en": "achieve", "cn": "实现；达到" },
-            { "en": "act", "cn": "行动；表现" },
-            { "en": "add", "cn": "添加" },
-            { "en": "admit", "cn": "承认；允许进入" },
-            { "en": "adopt", "cn": "采用；收养" },
-            { "en": "advise", "cn": "建议" },
-            { "en": "afford", "cn": "负担得起" },
-            { "en": "agree", "cn": "同意" },
-            { "en": "allow", "cn": "允许" },
-            { "en": "answer", "cn": "回答" },
-            { "en": "appear", "cn": "出现；似乎" },
-            { "en": "apply", "cn": "申请；应用" },
-            { "en": "argue", "cn": "争论；主张" },
-            { "en": "arise", "cn": "出现；产生" },
-            { "en": "arrange", "cn": "安排" },
-            { "en": "arrive", "cn": "到达" },
-            { "en": "ask", "cn": "问；请求" },
-            { "en": "assume", "cn": "假设；认为" },
-            { "en": "assure", "cn": "向......保证" },
-            { "en": "attach", "cn": "附上；连接" },
-            { "en": "attack", "cn": "攻击" },
-            { "en": "attempt", "cn": "尝试" },
-            { "en": "attend", "cn": "参加；出席" },
-            { "en": "attract", "cn": "吸引" },
-            { "en": "avoid", "cn": "避免" },
-            { "en": "awake", "cn": "醒来；唤醒" },
-            { "en": "balance", "cn": "平衡" },
-            { "en": "ban", "cn": "禁止" },
-            { "en": "base", "cn": "以......为基础" },
-            { "en": "bear", "cn": "忍受；承担" },
-            { "en": "beat", "cn": "击败；打" },
-            { "en": "become", "cn": "成为；变得" },
-            { "en": "begin", "cn": "开始" },
-            { "en": "behave", "cn": "表现；举止" },
-            { "en": "believe", "cn": "相信" },
-            { "en": "belong", "cn": "属于" },
-            { "en": "bend", "cn": "弯曲" },
-            { "en": "benefit", "cn": "受益；使受益" },
-            { "en": "bet", "cn": "打赌" },
-            { "en": "bind", "cn": "捆绑；约束" },
-            { "en": "bite", "cn": "咬" },
-            { "en": "blame", "cn": "责备" },
-            { "en": "blow", "cn": "吹；爆炸" },
-            { "en": "boil", "cn": "煮沸" },
-            { "en": "borrow", "cn": "借入" },
-            { "en": "bother", "cn": "打扰；费心" },
-            { "en": "break", "cn": "打破；弄坏" },
-            { "en": "breathe", "cn": "呼吸" },
-            { "en": "bring", "cn": "带来" },
-            { "en": "broadcast", "cn": "广播；播送" },
-            { "en": "build", "cn": "建造" },
-            { "en": "burn", "cn": "燃烧；烧伤" },
-            { "en": "burst", "cn": "爆裂；突然发生" },
-            { "en": "buy", "cn": "买" },
-            { "en": "calculate", "cn": "计算" },
-            { "en": "call", "cn": "打电话；称呼" },
-            { "en": "care", "cn": "关心；照顾" },
-            { "en": "carry", "cn": "携带；运送" },
-            { "en": "catch", "cn": "抓住；赶上" },
-            { "en": "cause", "cn": "导致" },
-            { "en": "celebrate", "cn": "庆祝" },
-            { "en": "challenge", "cn": "挑战" },
-            { "en": "change", "cn": "改变" },
-            { "en": "charge", "cn": "收费；充电" },
-            { "en": "chase", "cn": "追赶" },
-            { "en": "check", "cn": "检查" },
-            { "en": "choose", "cn": "选择" },
-            { "en": "claim", "cn": "声称；索取" },
-            { "en": "clean", "cn": "清理；打扫" },
-            { "en": "clear", "cn": "清除；澄清" },
-            { "en": "climb", "cn": "攀登" },
-            { "en": "close", "cn": "关闭；结束" },
-            { "en": "collect", "cn": "收集" },
-            { "en": "combine", "cn": "结合" },
-            { "en": "come", "cn": "来" },
-            { "en": "command", "cn": "命令" },
-            { "en": "communicate", "cn": "沟通" },
-            { "en": "compare", "cn": "比较" },
-            { "en": "compete", "cn": "竞争" },
-            { "en": "complain", "cn": "抱怨" },
-            { "en": "complete", "cn": "完成" },
-            { "en": "concentrate", "cn": "集中" },
-            { "en": "concern", "cn": "涉及；担心" },
-            { "en": "confirm", "cn": "确认" },
-            { "en": "connect", "cn": "连接" },
-            { "en": "consider", "cn": "考虑" },
-            { "en": "consist", "cn": "由......组成" },
-            { "en": "contain", "cn": "包含" },
-            { "en": "continue", "cn": "继续" },
-            { "en": "contribute", "cn": "贡献；促成" },
-            { "en": "control", "cn": "控制" },
-            { "en": "convert", "cn": "转换" },
-            { "en": "convince", "cn": "说服" },
-            { "en": "cook", "cn": "烹饪" },
-            { "en": "copy", "cn": "复制" },
-            { "en": "correct", "cn": "改正" },
-            { "en": "cost", "cn": "花费" },
-            { "en": "count", "cn": "计算；计数" },
-            { "en": "cover", "cn": "覆盖" },
-            { "en": "crack", "cn": "破裂；破解" },
-            { "en": "create", "cn": "创造" },
-            { "en": "cross", "cn": "穿过" },
-            { "en": "cry", "cn": "哭；喊叫" },
-            { "en": "cure", "cn": "治愈" },
-            { "en": "cut", "cn": "切；削减" },
-            { "en": "damage", "cn": "损害" },
-            { "en": "dance", "cn": "跳舞" },
-            { "en": "deal", "cn": "处理；交易" },
-            { "en": "decide", "cn": "决定" },
-            { "en": "declare", "cn": "宣布" },
-            { "en": "decline", "cn": "下降；拒绝" },
-            { "en": "decorate", "cn": "装饰" },
-            { "en": "decrease", "cn": "减少" },
-            { "en": "define", "cn": "定义" },
-            { "en": "delay", "cn": "推迟" },
-            { "en": "deliver", "cn": "递送；发表" },
-            { "en": "demand", "cn": "要求" },
-            { "en": "deny", "cn": "否认" },
-            { "en": "depend", "cn": "依靠；取决于" },
-            { "en": "describe", "cn": "描述" },
-            { "en": "deserve", "cn": "值得" },
-            { "en": "design", "cn": "设计" },
-            { "en": "destroy", "cn": "摧毁" },
-            { "en": "determine", "cn": "确定；决定" },
-            { "en": "develop", "cn": "发展；开发" },
-            { "en": "die", "cn": "死亡" },
-            { "en": "differ", "cn": "不同" },
-            { "en": "disappear", "cn": "消失" },
-            { "en": "discover", "cn": "发现" },
-            { "en": "discuss", "cn": "讨论" },
-            { "en": "dislike", "cn": "不喜欢" },
-            { "en": "divide", "cn": "分开；除" },
-            { "en": "do", "cn": "做" },
-            { "en": "doubt", "cn": "怀疑" },
-            { "en": "drag", "cn": "拖；拽" },
-            { "en": "draw", "cn": "画；吸引" },
-            { "en": "dream", "cn": "梦想" },
-            { "en": "dress", "cn": "穿衣；给......穿衣" },
-            { "en": "drink", "cn": "喝" },
-            { "en": "drive", "cn": "驾驶；驱动" },
-            { "en": "drop", "cn": "掉落；降低" },
-            { "en": "earn", "cn": "赚取" },
-            { "en": "eat", "cn": "吃" },
-            { "en": "educate", "cn": "教育" },
-            { "en": "elect", "cn": "选举；选择" },
-            { "en": "employ", "cn": "雇用；使用" },
-            { "en": "encourage", "cn": "鼓励" },
-            { "en": "end", "cn": "结束" },
-            { "en": "enjoy", "cn": "享受；喜欢" },
-            { "en": "ensure", "cn": "确保" },
-            { "en": "enter", "cn": "进入" },
-            { "en": "escape", "cn": "逃离" },
-            { "en": "establish", "cn": "建立；确立" },
-            { "en": "estimate", "cn": "估计" },
-            { "en": "evaluate", "cn": "评估" },
-            { "en": "examine", "cn": "检查；研究" },
-            { "en": "exist", "cn": "存在" },
-            { "en": "expand", "cn": "扩大" },
-            { "en": "expect", "cn": "期待；预计" },
-            { "en": "experience", "cn": "经历；体验" },
-            { "en": "explain", "cn": "解释" },
-            { "en": "explore", "cn": "探索" },
-            { "en": "express", "cn": "表达" },
-            { "en": "extend", "cn": "延伸；扩大" },
-            { "en": "face", "cn": "面对" },
-            { "en": "fail", "cn": "失败" },
-            { "en": "fall", "cn": "落下" },
-            { "en": "feed", "cn": "喂养；供应" },
-            { "en": "feel", "cn": "感觉" },
-            { "en": "fight", "cn": "战斗；争论" },
-            { "en": "fill", "cn": "填满" },
-            { "en": "find", "cn": "找到；发现" },
-            { "en": "finish", "cn": "完成" },
-            { "en": "fit", "cn": "适合" },
-            { "en": "fix", "cn": "修理；解决" },
-            { "en": "fly", "cn": "飞行" },
-            { "en": "focus", "cn": "集中" },
-            { "en": "follow", "cn": "跟随；遵循" },
-            { "en": "force", "cn": "强迫" },
-            { "en": "forget", "cn": "忘记" },
-            { "en": "forgive", "cn": "原谅" },
-            { "en": "form", "cn": "形成" },
-            { "en": "gain", "cn": "获得；增加" },
-            { "en": "gather", "cn": "聚集；收集" },
-            { "en": "get", "cn": "得到；变得" },
-            { "en": "give", "cn": "给" },
-            { "en": "go", "cn": "去" },
-            { "en": "grab", "cn": "抓住" },
-            { "en": "graduate", "cn": "毕业" },
-            { "en": "grow", "cn": "生长；增长" },
-            { "en": "guess", "cn": "猜测" },
-            { "en": "guide", "cn": "指导" },
-            { "en": "handle", "cn": "处理" },
-            { "en": "happen", "cn": "发生" },
-            { "en": "hate", "cn": "讨厌" },
-            { "en": "have", "cn": "有；拥有" },
-            { "en": "hear", "cn": "听见" },
-            { "en": "heat", "cn": "加热" },
-            { "en": "help", "cn": "帮助" },
-            { "en": "hide", "cn": "隐藏" },
-            { "en": "hit", "cn": "击中；撞击" },
-            { "en": "hold", "cn": "拿着；保持" },
-            { "en": "hope", "cn": "希望" },
-            { "en": "hurt", "cn": "伤害；疼痛" },
-            { "en": "identify", "cn": "识别；确定" },
-            { "en": "ignore", "cn": "忽视" },
-            { "en": "imagine", "cn": "想象" },
-            { "en": "improve", "cn": "改善；提高" },
-            { "en": "include", "cn": "包括" },
-            { "en": "increase", "cn": "增加" },
-            { "en": "indicate", "cn": "表明；显示" },
-            { "en": "influence", "cn": "影响" },
-            { "en": "inform", "cn": "通知" },
-            { "en": "introduce", "cn": "介绍；引入" },
-            { "en": "invent", "cn": "发明" },
-            { "en": "invest", "cn": "投资" },
-            { "en": "invite", "cn": "邀请" },
-            { "en": "involve", "cn": "涉及；参与" },
-            { "en": "join", "cn": "加入" },
-            { "en": "judge", "cn": "判断；审判" },
-            { "en": "jump", "cn": "跳" },
-            { "en": "keep", "cn": "保持；保存" },
-            { "en": "kick", "cn": "踢" },
-            { "en": "kill", "cn": "杀死" },
-            { "en": "kiss", "cn": "亲吻" },
-            { "en": "knock", "cn": "敲" },
-            { "en": "know", "cn": "知道；了解" },
-            { "en": "lack", "cn": "缺乏" },
-            { "en": "land", "cn": "着陆；获得" },
-            { "en": "last", "cn": "持续" },
-            { "en": "laugh", "cn": "笑" },
-            { "en": "lay", "cn": "放置" },
-            { "en": "lead", "cn": "引导；导致" },
-            { "en": "learn", "cn": "学习" },
-            { "en": "leave", "cn": "离开；留下" },
-            { "en": "lend", "cn": "借出" },
-            { "en": "let", "cn": "让；允许" },
-            { "en": "lie", "cn": "躺；说谎" },
-            { "en": "lift", "cn": "举起" },
-            { "en": "like", "cn": "喜欢" },
-            { "en": "limit", "cn": "限制" },
-            { "en": "link", "cn": "连接" },
-            { "en": "listen", "cn": "听" },
-            { "en": "live", "cn": "生活；居住" },
-            { "en": "load", "cn": "装载" },
-            { "en": "locate", "cn": "定位；找到" },
-            { "en": "lock", "cn": "锁住" },
-            { "en": "look", "cn": "看" },
-            { "en": "lose", "cn": "失去" },
-            { "en": "love", "cn": "爱；喜欢" },
-            { "en": "maintain", "cn": "保持；维护" },
-            { "en": "make", "cn": "制作；使" },
-            { "en": "manage", "cn": "管理；设法完成" },
-            { "en": "mark", "cn": "标记" },
-            { "en": "matter", "cn": "要紧；有关系" },
-            { "en": "mean", "cn": "意味着；表示" },
-            { "en": "measure", "cn": "测量；衡量" },
-            { "en": "meet", "cn": "遇见；满足" },
-            { "en": "mention", "cn": "提到" },
-            { "en": "mind", "cn": "介意；留意" },
-            { "en": "miss", "cn": "错过；想念" },
-            { "en": "mix", "cn": "混合" },
-            { "en": "move", "cn": "移动；搬家" },
-            { "en": "need", "cn": "需要" },
-            { "en": "notice", "cn": "注意到" },
-            { "en": "obtain", "cn": "获得" },
-            { "en": "occur", "cn": "发生" },
-            { "en": "offer", "cn": "提供；提出" },
-            { "en": "open", "cn": "打开" },
-            { "en": "operate", "cn": "操作；运行" },
-            { "en": "order", "cn": "命令；订购" },
-            { "en": "organize", "cn": "组织" },
-            { "en": "overcome", "cn": "克服" },
-            { "en": "own", "cn": "拥有" },
-            { "en": "pack", "cn": "打包" },
-            { "en": "participate", "cn": "参加" },
-            { "en": "pass", "cn": "通过；经过" },
-            { "en": "pay", "cn": "支付" },
-            { "en": "perform", "cn": "执行；表演" },
-            { "en": "permit", "cn": "允许" },
-            { "en": "pick", "cn": "挑选；拾起" },
-            { "en": "place", "cn": "放置" },
-            { "en": "plan", "cn": "计划" },
-            { "en": "play", "cn": "玩；扮演" },
-            { "en": "point", "cn": "指向" },
-            { "en": "prefer", "cn": "更喜欢" },
-            { "en": "prepare", "cn": "准备" },
-            { "en": "present", "cn": "展示；提出" },
-            { "en": "prevent", "cn": "防止" },
-            { "en": "print", "cn": "打印" },
-            { "en": "produce", "cn": "生产；产生" },
-            { "en": "promise", "cn": "承诺" },
-            { "en": "protect", "cn": "保护" },
-            { "en": "prove", "cn": "证明" },
-            { "en": "provide", "cn": "提供" },
-            { "en": "publish", "cn": "出版；发布" },
-            { "en": "pull", "cn": "拉" },
-            { "en": "punish", "cn": "惩罚" },
-            { "en": "purchase", "cn": "购买" },
-            { "en": "push", "cn": "推" },
-            { "en": "put", "cn": "放置" },
-            { "en": "qualify", "cn": "使具备资格" },
-            { "en": "question", "cn": "质疑；询问" },
-            { "en": "quit", "cn": "放弃；退出" },
-            { "en": "raise", "cn": "提高；举起" },
-            { "en": "reach", "cn": "到达；达到" },
-            { "en": "react", "cn": "反应" },
-            { "en": "read", "cn": "阅读" },
-            { "en": "realize", "cn": "意识到；实现" },
-            { "en": "receive", "cn": "收到" },
-            { "en": "recognize", "cn": "认出；认可" },
-            { "en": "recommend", "cn": "推荐；建议" },
-            { "en": "record", "cn": "记录" },
-            { "en": "recover", "cn": "恢复" },
-            { "en": "reduce", "cn": "减少" },
-            { "en": "refer", "cn": "提到；参考" },
-            { "en": "reflect", "cn": "反映；反思" },
-            { "en": "refuse", "cn": "拒绝" },
-            { "en": "regard", "cn": "认为；看待" },
-            { "en": "relate", "cn": "联系；涉及" },
-            { "en": "relax", "cn": "放松" },
-            { "en": "release", "cn": "释放；发布" },
-            { "en": "remain", "cn": "保持；剩余" },
-            { "en": "remember", "cn": "记得" },
-            { "en": "remind", "cn": "提醒" },
-            { "en": "remove", "cn": "移除" },
-            { "en": "repeat", "cn": "重复" },
-            { "en": "replace", "cn": "替代" },
-            { "en": "reply", "cn": "回复" },
-            { "en": "report", "cn": "报告" },
-            { "en": "represent", "cn": "代表" },
-            { "en": "require", "cn": "需要；要求" },
-            { "en": "research", "cn": "研究" },
-            { "en": "rest", "cn": "休息" },
-            { "en": "result", "cn": "导致" },
-            { "en": "return", "cn": "返回；归还" },
-            { "en": "reveal", "cn": "揭示" },
-            { "en": "review", "cn": "复习；审查" },
-            { "en": "ride", "cn": "骑" },
-            { "en": "rise", "cn": "上升" },
-            { "en": "risk", "cn": "冒险；冒......风险" },
-            { "en": "roll", "cn": "滚动" },
-            { "en": "run", "cn": "跑；运行" },
-            { "en": "save", "cn": "保存；拯救" },
-            { "en": "say", "cn": "说" },
-            { "en": "see", "cn": "看见" },
-            { "en": "seek", "cn": "寻找" },
-            { "en": "seem", "cn": "似乎" },
-            { "en": "sell", "cn": "卖" },
-            { "en": "send", "cn": "发送" },
-            { "en": "serve", "cn": "服务；提供" },
-            { "en": "set", "cn": "设置；放置" },
-            { "en": "settle", "cn": "解决；定居" },
-            { "en": "shake", "cn": "摇动" },
-            { "en": "share", "cn": "分享" },
-            { "en": "shoot", "cn": "射击；拍摄" },
-            { "en": "show", "cn": "展示" },
-            { "en": "shut", "cn": "关闭" },
-            { "en": "sing", "cn": "唱" },
-            { "en": "sit", "cn": "坐" },
-            { "en": "sleep", "cn": "睡觉" },
-            { "en": "smile", "cn": "微笑" },
-            { "en": "solve", "cn": "解决" },
-            { "en": "sort", "cn": "分类" },
-            { "en": "sound", "cn": "听起来" },
-            { "en": "speak", "cn": "说" },
-            { "en": "spend", "cn": "花费；度过" },
-            { "en": "spread", "cn": "传播；扩散" },
-            { "en": "stand", "cn": "站立" },
-            { "en": "start", "cn": "开始" },
-            { "en": "state", "cn": "陈述" },
-            { "en": "stay", "cn": "停留；保持" },
-            { "en": "steal", "cn": "偷" },
-            { "en": "stick", "cn": "粘贴；坚持" },
-            { "en": "stop", "cn": "停止" },
-            { "en": "store", "cn": "储存" },
-            { "en": "study", "cn": "学习；研究" },
-            { "en": "succeed", "cn": "成功" },
-            { "en": "suffer", "cn": "遭受" },
-            { "en": "suggest", "cn": "建议" },
-            { "en": "supply", "cn": "提供；供应" },
-            { "en": "support", "cn": "支持" },
-            { "en": "suppose", "cn": "认为；假设" },
-            { "en": "survive", "cn": "生存" },
-            { "en": "switch", "cn": "转换；切换" },
-            { "en": "take", "cn": "拿；花费" },
-            { "en": "talk", "cn": "谈话" },
-            { "en": "target", "cn": "针对；以......为目标" },
-            { "en": "teach", "cn": "教" },
-            { "en": "tell", "cn": "告诉" },
-            { "en": "tend", "cn": "倾向于" },
-            { "en": "test", "cn": "测试" },
-            { "en": "thank", "cn": "感谢" },
-            { "en": "think", "cn": "思考；认为" },
-            { "en": "throw", "cn": "扔" },
-            { "en": "touch", "cn": "触碰" },
-            { "en": "train", "cn": "训练" },
-            { "en": "transfer", "cn": "转移" },
-            { "en": "travel", "cn": "旅行" },
-            { "en": "treat", "cn": "对待；治疗" },
-            { "en": "trust", "cn": "信任" },
-            { "en": "try", "cn": "尝试" },
-            { "en": "turn", "cn": "转动；变成" },
-            { "en": "understand", "cn": "理解" },
-            { "en": "update", "cn": "更新" },
-            { "en": "use", "cn": "使用" },
-            { "en": "value", "cn": "重视；估价" },
-            { "en": "vary", "cn": "改变；变化" },
-            { "en": "visit", "cn": "访问" },
-            { "en": "vote", "cn": "投票" },
-            { "en": "wait", "cn": "等待" },
-            { "en": "wake", "cn": "醒来；唤醒" },
-            { "en": "walk", "cn": "走路" },
-            { "en": "want", "cn": "想要" },
-            { "en": "warn", "cn": "警告" },
-            { "en": "wash", "cn": "洗" },
-            { "en": "watch", "cn": "观看" },
-            { "en": "wear", "cn": "穿戴" },
-            { "en": "weigh", "cn": "称重；权衡" },
-            { "en": "win", "cn": "赢" },
-            { "en": "wish", "cn": "希望" },
-            { "en": "withdraw", "cn": "撤回；取出" },
-            { "en": "wonder", "cn": "想知道" },
-            { "en": "work", "cn": "工作；起作用" },
-            { "en": "worry", "cn": "担心" },
-            { "en": "write", "cn": "写" },
-            { "en": "yell", "cn": "喊叫" },
-            { "en": "abandon", "cn": "放弃" },
-            { "en": "absorb", "cn": "吸收" },
-            { "en": "abuse", "cn": "滥用；虐待" },
-            { "en": "accelerate", "cn": "加速" },
-            { "en": "accommodate", "cn": "容纳；适应" },
-            { "en": "accompany", "cn": "陪伴" },
-            { "en": "accomplish", "cn": "完成" },
-            { "en": "accumulate", "cn": "积累" },
-            { "en": "adapt", "cn": "适应；调整" },
-            { "en": "adjust", "cn": "调整" },
-            { "en": "administer", "cn": "管理；执行" },
-            { "en": "advocate", "cn": "提倡；主张" },
-            { "en": "allocate", "cn": "分配" },
-            { "en": "alter", "cn": "改变" },
-            { "en": "analyze", "cn": "分析" },
-            { "en": "anticipate", "cn": "预期" },
-            { "en": "appreciate", "cn": "欣赏；感激" },
-            { "en": "approve", "cn": "批准；赞成" },
-            { "en": "assign", "cn": "分配；指派" },
-            { "en": "associate", "cn": "联系；联想" },
-            { "en": "attain", "cn": "达到" },
-            { "en": "authorize", "cn": "授权" },
-            { "en": "automate", "cn": "自动化" },
-            { "en": "broaden", "cn": "扩大；拓宽" },
-            { "en": "capture", "cn": "捕获；记录" },
-            { "en": "cease", "cn": "停止" },
-            { "en": "clarify", "cn": "澄清" },
-            { "en": "classify", "cn": "分类" },
-            { "en": "collaborate", "cn": "合作" },
-            { "en": "collapse", "cn": "崩溃；倒塌" },
-            { "en": "commence", "cn": "开始" },
-            { "en": "compensate", "cn": "补偿" },
-            { "en": "compile", "cn": "编制；汇编" },
-            { "en": "complement", "cn": "补充" },
-            { "en": "comprise", "cn": "包含；组成" },
-            { "en": "conceive", "cn": "构想；认为" },
-            { "en": "conclude", "cn": "得出结论；结束" },
-            { "en": "confront", "cn": "面对" },
-            { "en": "conserve", "cn": "保存；节约" },
-            { "en": "constitute", "cn": "构成" },
-            { "en": "constrain", "cn": "限制" },
-            { "en": "consult", "cn": "咨询" },
-            { "en": "consume", "cn": "消耗" },
-            { "en": "contemplate", "cn": "考虑；注视" },
-            { "en": "contradict", "cn": "反驳；矛盾" },
-            { "en": "cooperate", "cn": "合作" },
-            { "en": "coordinate", "cn": "协调" },
-            { "en": "correspond", "cn": "相符；通信" },
-            { "en": "cultivate", "cn": "培养" },
-            { "en": "dedicate", "cn": "致力于" },
-            { "en": "demonstrate", "cn": "证明；展示" },
-            { "en": "derive", "cn": "获得；源于" },
-            { "en": "detect", "cn": "发现；检测" },
-            { "en": "diminish", "cn": "减少" },
-            { "en": "discriminate", "cn": "歧视；区分" },
-            { "en": "dominate", "cn": "支配；占主导" },
-            { "en": "eliminate", "cn": "消除" },
-            { "en": "emphasize", "cn": "强调" },
-            { "en": "encounter", "cn": "遇到" },
-            { "en": "enhance", "cn": "提高；增强" },
-            { "en": "evolve", "cn": "发展；演变" },
-            { "en": "exceed", "cn": "超过" },
-            { "en": "exclude", "cn": "排除" },
-            { "en": "exhibit", "cn": "展示；表现" },
-            { "en": "exploit", "cn": "利用；开发" },
-            { "en": "facilitate", "cn": "促进；使便利" },
-            { "en": "formulate", "cn": "制定；构想" },
-            { "en": "foster", "cn": "促进；培养" },
-            { "en": "generate", "cn": "产生" },
-            { "en": "highlight", "cn": "强调；突出" },
-            { "en": "illustrate", "cn": "说明；举例" },
-            { "en": "imply", "cn": "暗示" },
-            { "en": "impose", "cn": "强加；征收" },
-            { "en": "incorporate", "cn": "纳入；包含" },
-            { "en": "induce", "cn": "导致；诱导" },
-            { "en": "initiate", "cn": "开始；发起" },
-            { "en": "inspect", "cn": "检查" },
-            { "en": "integrate", "cn": "整合" },
-            { "en": "interact", "cn": "互动" },
-            { "en": "interpret", "cn": "解释；理解" },
-            { "en": "intervene", "cn": "干预" },
-            { "en": "isolate", "cn": "隔离；孤立" },
-            { "en": "justify", "cn": "证明合理" },
-            { "en": "manipulate", "cn": "操纵" },
-            { "en": "minimize", "cn": "使最小化" },
-            { "en": "modify", "cn": "修改" },
-            { "en": "motivate", "cn": "激励" },
-            { "en": "negotiate", "cn": "谈判" },
-            { "en": "perceive", "cn": "察觉；认为" },
-            { "en": "persist", "cn": "坚持" },
-            { "en": "persuade", "cn": "说服" },
-            { "en": "predict", "cn": "预测" },
-            { "en": "preserve", "cn": "保存；保护" },
-            { "en": "promote", "cn": "促进；推广" },
-            { "en": "propose", "cn": "提议" },
-            { "en": "pursue", "cn": "追求；从事" },
-            { "en": "reinforce", "cn": "加强" },
-            { "en": "reject", "cn": "拒绝" },
-            { "en": "restore", "cn": "恢复" },
-            { "en": "retain", "cn": "保留" },
-            { "en": "reverse", "cn": "颠倒；逆转" },
-            { "en": "revise", "cn": "修改；复习" },
-            { "en": "simulate", "cn": "模拟" },
-            { "en": "specify", "cn": "明确说明" },
-            { "en": "strengthen", "cn": "加强" },
-            { "en": "substitute", "cn": "替代" },
-            { "en": "sustain", "cn": "维持" },
-            { "en": "transform", "cn": "转变" },
-            { "en": "transmit", "cn": "传输；传播" },
-            { "en": "undergo", "cn": "经历" },
-            { "en": "utilize", "cn": "利用" },
-            { "en": "violate", "cn": "违反" },
-            { "en": "yield", "cn": "产生；屈服" },
-            { "en": "activate", "cn": "激活" },
-            { "en": "address", "cn": "处理；解决" },
-            { "en": "appeal", "cn": "呼吁；上诉" },
-            { "en": "assemble", "cn": "组装；集合" },
-            { "en": "attribute", "cn": "把......归因于" },
-            { "en": "boost", "cn": "促进；提高" },
-            { "en": "cite", "cn": "引用" },
-            { "en": "confine", "cn": "限制" },
-            { "en": "consent", "cn": "同意" },
-            { "en": "consolidate", "cn": "巩固；合并" },
-            { "en": "construct", "cn": "建造；构建" },
-            { "en": "cope", "cn": "应对" },
-            { "en": "criticize", "cn": "批评" },
-            { "en": "deduce", "cn": "推断" },
-            { "en": "depict", "cn": "描绘" },
-            { "en": "deviate", "cn": "偏离" },
-            { "en": "dispose", "cn": "处理；处置" },
-            { "en": "distort", "cn": "扭曲" },
-            { "en": "draft", "cn": "起草" },
-            { "en": "embody", "cn": "体现" },
-            { "en": "enforce", "cn": "执行；强制" },
-            { "en": "engage", "cn": "参与；吸引" },
-            { "en": "enrich", "cn": "丰富" },
-            { "en": "expose", "cn": "暴露" },
-            { "en": "extract", "cn": "提取" },
-            { "en": "forecast", "cn": "预测" },
-            { "en": "fulfill", "cn": "履行；实现" },
-            { "en": "govern", "cn": "管理；统治" },
-            { "en": "grasp", "cn": "理解；抓住" },
-            { "en": "guarantee", "cn": "保证" },
-            { "en": "implement", "cn": "实施；执行" },
-            { "en": "import", "cn": "进口；引入" },
-            { "en": "inhibit", "cn": "抑制" },
-            { "en": "innovate", "cn": "创新" },
-            { "en": "instruct", "cn": "指导；命令" },
-            { "en": "intensify", "cn": "加强" },
-            { "en": "interrupt", "cn": "打断" },
-            { "en": "investigate", "cn": "调查" },
-            { "en": "launch", "cn": "推出；发起" },
-            { "en": "legislate", "cn": "立法" },
-            { "en": "mediate", "cn": "调解" },
-            { "en": "monitor", "cn": "监测" },
-            { "en": "neutralize", "cn": "使中立" },
-            { "en": "occupy", "cn": "占据" },
-            { "en": "pose", "cn": "提出；造成" },
-            { "en": "proceed", "cn": "继续进行" },
-            { "en": "prohibit", "cn": "禁止" },
-            { "en": "regulate", "cn": "管理；监管" },
-            { "en": "resolve", "cn": "解决" },
-            { "en": "restrict", "cn": "限制" },
-            { "en": "retrieve", "cn": "找回；检索" },
-            { "en": "resume", "cn": "重新开始" },
-            { "en": "stimulate", "cn": "刺激；促进" },
-            { "en": "submit", "cn": "提交；服从" },
-            { "en": "supplement", "cn": "补充" },
-            { "en": "tackle", "cn": "处理；解决" },
-            { "en": "trigger", "cn": "引发" },
-            { "en": "undermine", "cn": "削弱" },
-            { "en": "undertake", "cn": "承担；着手" },
-            { "en": "verify", "cn": "核实" },
-            { "en": "withstand", "cn": "经受住" },
-            { "en": "characterize", "cn": "描述......特征" },
-            { "en": "comprehend", "cn": "理解" },
-            { "en": "denote", "cn": "表示" },
-            { "en": "depress", "cn": "压低；使沮丧" },
-            { "en": "distinguish", "cn": "区分" },
-            { "en": "distribute", "cn": "分配；分发" },
-            { "en": "enable", "cn": "使能够" },
-            { "en": "entail", "cn": "需要；涉及" },
-            { "en": "equip", "cn": "配备" },
-            { "en": "infer", "cn": "推断" },
-            { "en": "insert", "cn": "插入" },
-            { "en": "neglect", "cn": "忽视" },
-            { "en": "offset", "cn": "抵消" },
-            { "en": "optimize", "cn": "优化" },
-            { "en": "orient", "cn": "使适应；确定方向" },
-            { "en": "overlap", "cn": "重叠" },
-            { "en": "precede", "cn": "在......之前" },
-            { "en": "prescribe", "cn": "规定；开处方" },
-            { "en": "presume", "cn": "推测；假定" },
-            { "en": "prompt", "cn": "促使" },
-            { "en": "quantify", "cn": "量化" },
-            { "en": "refine", "cn": "改进；提炼" },
-            { "en": "render", "cn": "使成为；提供" },
-            { "en": "replicate", "cn": "复制；重复" },
-            { "en": "rotate", "cn": "旋转" },
-            { "en": "secure", "cn": "获得；保护" },
-            { "en": "shift", "cn": "转移；改变" },
-            { "en": "specialize", "cn": "专门研究" },
-            { "en": "stabilize", "cn": "稳定" },
-            { "en": "suppress", "cn": "抑制" },
-            { "en": "suspend", "cn": "暂停" },
-            { "en": "terminate", "cn": "终止" },
-            { "en": "unify", "cn": "统一" },
-            { "en": "validate", "cn": "验证" },
-            { "en": "visualize", "cn": "使形象化" },
-            { "en": "abolish", "cn": "废除" },
-            { "en": "appoint", "cn": "任命" },
-            { "en": "conceal", "cn": "隐藏" },
-            { "en": "empower", "cn": "授权；使有能力" },
-            { "en": "maximize", "cn": "最大化" },
-            { "en": "mobilize", "cn": "动员" },
-            { "en": "moderate", "cn": "调节；缓和" },
-            { "en": "notify", "cn": "通知" },
-            { "en": "prevail", "cn": "占优势" },
-            { "en": "rehabilitate", "cn": "使恢复" },
-            { "en": "restrain", "cn": "抑制；约束" },
-            { "en": "alert", "cn": "使警觉" },
-            { "en": "align", "cn": "使一致" },
-            { "en": "amend", "cn": "修改" },
-            { "en": "audit", "cn": "审计；检查" },
-            { "en": "benchmark", "cn": "以......为基准" },
-            { "en": "categorize", "cn": "分类" },
-            { "en": "circulate", "cn": "流通；传播" },
-            { "en": "coincide", "cn": "同时发生" },
-            { "en": "compel", "cn": "迫使" },
-            { "en": "compromise", "cn": "妥协" },
-            { "en": "configure", "cn": "配置" },
-            { "en": "conform", "cn": "遵守；符合" },
-            { "en": "contaminate", "cn": "污染" },
-            { "en": "customize", "cn": "定制" },
-            { "en": "designate", "cn": "指定" },
-            { "en": "diagnose", "cn": "诊断；判断问题" },
-            { "en": "discard", "cn": "丢弃" },
-            { "en": "disclose", "cn": "披露" },
-            { "en": "disrupt", "cn": "扰乱" },
-            { "en": "diversify", "cn": "使多样化" },
-            { "en": "embrace", "cn": "接受；拥抱" },
-            { "en": "endure", "cn": "忍受" },
-            { "en": "enroll", "cn": "注册；入学" },
-            { "en": "fluctuate", "cn": "波动" },
-            { "en": "hinder", "cn": "阻碍" },
-            { "en": "legitimize", "cn": "使合法" },
-            { "en": "provoke", "cn": "激起" },
-            { "en": "sacrifice", "cn": "牺牲" },
-            { "en": "summarize", "cn": "总结" },
-            { "en": "upgrade", "cn": "升级" },
-            { "en": "urge", "cn": "敦促" },
-            { "en": "abstract", "cn": "提取；概括" },
-            { "en": "acknowledge", "cn": "承认" },
-            { "en": "aggregate", "cn": "汇总" },
-            { "en": "amplify", "cn": "放大；增强" },
-            { "en": "articulate", "cn": "清楚表达" },
-            { "en": "conceptualize", "cn": "构思" },
-            { "en": "converge", "cn": "汇聚" },
-            { "en": "correlate", "cn": "相关" },
-            { "en": "devise", "cn": "设计；想出" },
-            { "en": "disseminate", "cn": "传播" },
-            { "en": "document", "cn": "记录" },
-            { "en": "encompass", "cn": "包含" },
-            { "en": "envision", "cn": "设想" },
-            { "en": "hypothesize", "cn": "假设" },
-            { "en": "leverage", "cn": "利用" },
-            { "en": "navigate", "cn": "导航；应对" },
-            { "en": "outline", "cn": "概述" },
-            { "en": "prioritize", "cn": "优先处理" },
-            { "en": "streamline", "cn": "简化；使高效" },
-            { "en": "substantiate", "cn": "证实" },
-            { "en": "synthesize", "cn": "综合" },
-            { "en": "translate", "cn": "翻译；转化" },
-            { "en": "authenticate", "cn": "验证真实性" },
-            { "en": "concur", "cn": "同意" }
-        ];
+            {
+                        "en": "accept",
+                        "cn": "接受"
+            },
+            {
+                        "en": "achieve",
+                        "cn": "实现；达到"
+            },
+            {
+                        "en": "act",
+                        "cn": "行动；表现"
+            },
+            {
+                        "en": "add",
+                        "cn": "添加"
+            },
+            {
+                        "en": "admit",
+                        "cn": "承认；允许进入"
+            },
+            {
+                        "en": "adopt",
+                        "cn": "采用；收养"
+            },
+            {
+                        "en": "advise",
+                        "cn": "建议"
+            },
+            {
+                        "en": "afford",
+                        "cn": "负担得起"
+            },
+            {
+                        "en": "agree",
+                        "cn": "同意"
+            },
+            {
+                        "en": "allow",
+                        "cn": "允许"
+            },
+            {
+                        "en": "answer",
+                        "cn": "回答"
+            },
+            {
+                        "en": "appear",
+                        "cn": "出现；似乎"
+            },
+            {
+                        "en": "apply",
+                        "cn": "申请；应用"
+            },
+            {
+                        "en": "argue",
+                        "cn": "争论；主张"
+            },
+            {
+                        "en": "arise",
+                        "cn": "出现；产生"
+            },
+            {
+                        "en": "arrange",
+                        "cn": "安排"
+            },
+            {
+                        "en": "arrive",
+                        "cn": "到达"
+            },
+            {
+                        "en": "ask",
+                        "cn": "问；请求"
+            },
+            {
+                        "en": "assume",
+                        "cn": "假设；认为"
+            },
+            {
+                        "en": "assure",
+                        "cn": "向……保证"
+            },
+            {
+                        "en": "attach",
+                        "cn": "附上；连接"
+            },
+            {
+                        "en": "attack",
+                        "cn": "攻击"
+            },
+            {
+                        "en": "attempt",
+                        "cn": "尝试"
+            },
+            {
+                        "en": "attend",
+                        "cn": "参加；出席"
+            },
+            {
+                        "en": "attract",
+                        "cn": "吸引"
+            },
+            {
+                        "en": "avoid",
+                        "cn": "避免"
+            },
+            {
+                        "en": "awake",
+                        "cn": "醒来；唤醒"
+            },
+            {
+                        "en": "balance",
+                        "cn": "平衡"
+            },
+            {
+                        "en": "ban",
+                        "cn": "禁止"
+            },
+            {
+                        "en": "base",
+                        "cn": "以……为基础"
+            },
+            {
+                        "en": "bear",
+                        "cn": "忍受；承担"
+            },
+            {
+                        "en": "beat",
+                        "cn": "击败；打"
+            },
+            {
+                        "en": "become",
+                        "cn": "成为；变得"
+            },
+            {
+                        "en": "begin",
+                        "cn": "开始"
+            },
+            {
+                        "en": "behave",
+                        "cn": "表现；举止"
+            },
+            {
+                        "en": "believe",
+                        "cn": "相信"
+            },
+            {
+                        "en": "belong",
+                        "cn": "属于"
+            },
+            {
+                        "en": "bend",
+                        "cn": "弯曲"
+            },
+            {
+                        "en": "benefit",
+                        "cn": "受益；使受益"
+            },
+            {
+                        "en": "bet",
+                        "cn": "打赌"
+            },
+            {
+                        "en": "bind",
+                        "cn": "捆绑；约束"
+            },
+            {
+                        "en": "bite",
+                        "cn": "咬"
+            },
+            {
+                        "en": "blame",
+                        "cn": "责备"
+            },
+            {
+                        "en": "blow",
+                        "cn": "吹；爆炸"
+            },
+            {
+                        "en": "boil",
+                        "cn": "煮沸"
+            },
+            {
+                        "en": "borrow",
+                        "cn": "借入"
+            },
+            {
+                        "en": "bother",
+                        "cn": "打扰；费心"
+            },
+            {
+                        "en": "break",
+                        "cn": "打破；弄坏"
+            },
+            {
+                        "en": "breathe",
+                        "cn": "呼吸"
+            },
+            {
+                        "en": "bring",
+                        "cn": "带来"
+            },
+            {
+                        "en": "broadcast",
+                        "cn": "广播；播送"
+            },
+            {
+                        "en": "build",
+                        "cn": "建造"
+            },
+            {
+                        "en": "burn",
+                        "cn": "燃烧；烧伤"
+            },
+            {
+                        "en": "burst",
+                        "cn": "爆裂；突然发生"
+            },
+            {
+                        "en": "buy",
+                        "cn": "买"
+            },
+            {
+                        "en": "calculate",
+                        "cn": "计算"
+            },
+            {
+                        "en": "call",
+                        "cn": "打电话；称呼"
+            },
+            {
+                        "en": "care",
+                        "cn": "关心；照顾"
+            },
+            {
+                        "en": "carry",
+                        "cn": "携带；运送"
+            },
+            {
+                        "en": "catch",
+                        "cn": "抓住；赶上"
+            },
+            {
+                        "en": "cause",
+                        "cn": "导致"
+            },
+            {
+                        "en": "celebrate",
+                        "cn": "庆祝"
+            },
+            {
+                        "en": "challenge",
+                        "cn": "挑战"
+            },
+            {
+                        "en": "change",
+                        "cn": "改变"
+            },
+            {
+                        "en": "charge",
+                        "cn": "收费；充电"
+            },
+            {
+                        "en": "chase",
+                        "cn": "追赶"
+            },
+            {
+                        "en": "check",
+                        "cn": "检查"
+            },
+            {
+                        "en": "choose",
+                        "cn": "选择"
+            },
+            {
+                        "en": "claim",
+                        "cn": "声称；索取"
+            },
+            {
+                        "en": "clean",
+                        "cn": "清理；打扫"
+            },
+            {
+                        "en": "clear",
+                        "cn": "清除；澄清"
+            },
+            {
+                        "en": "climb",
+                        "cn": "攀登"
+            },
+            {
+                        "en": "close",
+                        "cn": "关闭；结束"
+            },
+            {
+                        "en": "collect",
+                        "cn": "收集"
+            },
+            {
+                        "en": "combine",
+                        "cn": "结合"
+            },
+            {
+                        "en": "come",
+                        "cn": "来"
+            },
+            {
+                        "en": "command",
+                        "cn": "命令"
+            },
+            {
+                        "en": "communicate",
+                        "cn": "沟通"
+            },
+            {
+                        "en": "compare",
+                        "cn": "比较"
+            },
+            {
+                        "en": "compete",
+                        "cn": "竞争"
+            },
+            {
+                        "en": "complain",
+                        "cn": "抱怨"
+            },
+            {
+                        "en": "complete",
+                        "cn": "完成"
+            },
+            {
+                        "en": "concentrate",
+                        "cn": "集中"
+            },
+            {
+                        "en": "concern",
+                        "cn": "涉及；担心"
+            },
+            {
+                        "en": "confirm",
+                        "cn": "确认"
+            },
+            {
+                        "en": "connect",
+                        "cn": "连接"
+            },
+            {
+                        "en": "consider",
+                        "cn": "考虑"
+            },
+            {
+                        "en": "consist",
+                        "cn": "由……组成"
+            },
+            {
+                        "en": "contain",
+                        "cn": "包含"
+            },
+            {
+                        "en": "continue",
+                        "cn": "继续"
+            },
+            {
+                        "en": "contribute",
+                        "cn": "贡献；促成"
+            },
+            {
+                        "en": "control",
+                        "cn": "控制"
+            },
+            {
+                        "en": "convert",
+                        "cn": "转换"
+            },
+            {
+                        "en": "convince",
+                        "cn": "说服"
+            },
+            {
+                        "en": "cook",
+                        "cn": "烹饪"
+            },
+            {
+                        "en": "copy",
+                        "cn": "复制"
+            },
+            {
+                        "en": "correct",
+                        "cn": "改正"
+            },
+            {
+                        "en": "cost",
+                        "cn": "花费"
+            },
+            {
+                        "en": "count",
+                        "cn": "计算；计数"
+            },
+            {
+                        "en": "cover",
+                        "cn": "覆盖"
+            },
+            {
+                        "en": "crack",
+                        "cn": "破裂；破解"
+            },
+            {
+                        "en": "create",
+                        "cn": "创造"
+            },
+            {
+                        "en": "cross",
+                        "cn": "穿过"
+            },
+            {
+                        "en": "cry",
+                        "cn": "哭；喊叫"
+            },
+            {
+                        "en": "cure",
+                        "cn": "治愈"
+            },
+            {
+                        "en": "cut",
+                        "cn": "切；削减"
+            },
+            {
+                        "en": "damage",
+                        "cn": "损害"
+            },
+            {
+                        "en": "dance",
+                        "cn": "跳舞"
+            },
+            {
+                        "en": "deal",
+                        "cn": "处理；交易"
+            },
+            {
+                        "en": "decide",
+                        "cn": "决定"
+            },
+            {
+                        "en": "declare",
+                        "cn": "宣布"
+            },
+            {
+                        "en": "decline",
+                        "cn": "下降；拒绝"
+            },
+            {
+                        "en": "decorate",
+                        "cn": "装饰"
+            },
+            {
+                        "en": "decrease",
+                        "cn": "减少"
+            },
+            {
+                        "en": "define",
+                        "cn": "定义"
+            },
+            {
+                        "en": "delay",
+                        "cn": "推迟"
+            },
+            {
+                        "en": "deliver",
+                        "cn": "递送；发表"
+            },
+            {
+                        "en": "demand",
+                        "cn": "要求"
+            },
+            {
+                        "en": "deny",
+                        "cn": "否认"
+            },
+            {
+                        "en": "depend",
+                        "cn": "依靠；取决于"
+            },
+            {
+                        "en": "describe",
+                        "cn": "描述"
+            },
+            {
+                        "en": "deserve",
+                        "cn": "值得"
+            },
+            {
+                        "en": "design",
+                        "cn": "设计"
+            },
+            {
+                        "en": "destroy",
+                        "cn": "摧毁"
+            },
+            {
+                        "en": "determine",
+                        "cn": "确定；决定"
+            },
+            {
+                        "en": "develop",
+                        "cn": "发展；开发"
+            },
+            {
+                        "en": "die",
+                        "cn": "死亡"
+            },
+            {
+                        "en": "differ",
+                        "cn": "不同"
+            },
+            {
+                        "en": "disappear",
+                        "cn": "消失"
+            },
+            {
+                        "en": "discover",
+                        "cn": "发现"
+            },
+            {
+                        "en": "discuss",
+                        "cn": "讨论"
+            },
+            {
+                        "en": "dislike",
+                        "cn": "不喜欢"
+            },
+            {
+                        "en": "divide",
+                        "cn": "分开；除"
+            },
+            {
+                        "en": "do",
+                        "cn": "做"
+            },
+            {
+                        "en": "doubt",
+                        "cn": "怀疑"
+            },
+            {
+                        "en": "drag",
+                        "cn": "拖；拽"
+            },
+            {
+                        "en": "draw",
+                        "cn": "画；吸引"
+            },
+            {
+                        "en": "dream",
+                        "cn": "梦想"
+            },
+            {
+                        "en": "dress",
+                        "cn": "穿衣；给……穿衣"
+            },
+            {
+                        "en": "drink",
+                        "cn": "喝"
+            },
+            {
+                        "en": "drive",
+                        "cn": "驾驶；驱动"
+            },
+            {
+                        "en": "drop",
+                        "cn": "掉落；降低"
+            },
+            {
+                        "en": "earn",
+                        "cn": "赚取"
+            },
+            {
+                        "en": "eat",
+                        "cn": "吃"
+            },
+            {
+                        "en": "educate",
+                        "cn": "教育"
+            },
+            {
+                        "en": "elect",
+                        "cn": "选举；选择"
+            },
+            {
+                        "en": "employ",
+                        "cn": "雇用；使用"
+            },
+            {
+                        "en": "encourage",
+                        "cn": "鼓励"
+            },
+            {
+                        "en": "end",
+                        "cn": "结束"
+            },
+            {
+                        "en": "enjoy",
+                        "cn": "享受；喜欢"
+            },
+            {
+                        "en": "ensure",
+                        "cn": "确保"
+            },
+            {
+                        "en": "enter",
+                        "cn": "进入"
+            },
+            {
+                        "en": "escape",
+                        "cn": "逃离"
+            },
+            {
+                        "en": "establish",
+                        "cn": "建立；确立"
+            },
+            {
+                        "en": "estimate",
+                        "cn": "估计"
+            },
+            {
+                        "en": "evaluate",
+                        "cn": "评估"
+            },
+            {
+                        "en": "examine",
+                        "cn": "检查；研究"
+            },
+            {
+                        "en": "exist",
+                        "cn": "存在"
+            },
+            {
+                        "en": "expand",
+                        "cn": "扩大"
+            },
+            {
+                        "en": "expect",
+                        "cn": "期待；预计"
+            },
+            {
+                        "en": "experience",
+                        "cn": "经历；体验"
+            },
+            {
+                        "en": "explain",
+                        "cn": "解释"
+            },
+            {
+                        "en": "explore",
+                        "cn": "探索"
+            },
+            {
+                        "en": "express",
+                        "cn": "表达"
+            },
+            {
+                        "en": "extend",
+                        "cn": "延伸；扩大"
+            },
+            {
+                        "en": "face",
+                        "cn": "面对"
+            },
+            {
+                        "en": "fail",
+                        "cn": "失败"
+            },
+            {
+                        "en": "fall",
+                        "cn": "落下"
+            },
+            {
+                        "en": "feed",
+                        "cn": "喂养；供应"
+            },
+            {
+                        "en": "feel",
+                        "cn": "感觉"
+            },
+            {
+                        "en": "fight",
+                        "cn": "战斗；争论"
+            },
+            {
+                        "en": "fill",
+                        "cn": "填满"
+            },
+            {
+                        "en": "find",
+                        "cn": "找到；发现"
+            },
+            {
+                        "en": "finish",
+                        "cn": "完成"
+            },
+            {
+                        "en": "fit",
+                        "cn": "适合"
+            },
+            {
+                        "en": "fix",
+                        "cn": "修理；解决"
+            },
+            {
+                        "en": "fly",
+                        "cn": "飞行"
+            },
+            {
+                        "en": "focus",
+                        "cn": "集中"
+            },
+            {
+                        "en": "follow",
+                        "cn": "跟随；遵循"
+            },
+            {
+                        "en": "force",
+                        "cn": "强迫"
+            },
+            {
+                        "en": "forget",
+                        "cn": "忘记"
+            },
+            {
+                        "en": "forgive",
+                        "cn": "原谅"
+            },
+            {
+                        "en": "form",
+                        "cn": "形成"
+            },
+            {
+                        "en": "gain",
+                        "cn": "获得；增加"
+            },
+            {
+                        "en": "gather",
+                        "cn": "聚集；收集"
+            },
+            {
+                        "en": "get",
+                        "cn": "得到；变得"
+            },
+            {
+                        "en": "give",
+                        "cn": "给"
+            },
+            {
+                        "en": "go",
+                        "cn": "去"
+            },
+            {
+                        "en": "grab",
+                        "cn": "抓住"
+            },
+            {
+                        "en": "graduate",
+                        "cn": "毕业"
+            },
+            {
+                        "en": "grow",
+                        "cn": "生长；增长"
+            },
+            {
+                        "en": "guess",
+                        "cn": "猜测"
+            },
+            {
+                        "en": "guide",
+                        "cn": "指导"
+            },
+            {
+                        "en": "handle",
+                        "cn": "处理"
+            },
+            {
+                        "en": "happen",
+                        "cn": "发生"
+            },
+            {
+                        "en": "hate",
+                        "cn": "讨厌"
+            },
+            {
+                        "en": "have",
+                        "cn": "有；拥有"
+            },
+            {
+                        "en": "hear",
+                        "cn": "听见"
+            },
+            {
+                        "en": "heat",
+                        "cn": "加热"
+            },
+            {
+                        "en": "help",
+                        "cn": "帮助"
+            },
+            {
+                        "en": "hide",
+                        "cn": "隐藏"
+            },
+            {
+                        "en": "hit",
+                        "cn": "击中；撞击"
+            },
+            {
+                        "en": "hold",
+                        "cn": "拿着；保持"
+            },
+            {
+                        "en": "hope",
+                        "cn": "希望"
+            },
+            {
+                        "en": "hurt",
+                        "cn": "伤害；疼痛"
+            },
+            {
+                        "en": "identify",
+                        "cn": "识别；确定"
+            },
+            {
+                        "en": "ignore",
+                        "cn": "忽视"
+            },
+            {
+                        "en": "imagine",
+                        "cn": "想象"
+            },
+            {
+                        "en": "improve",
+                        "cn": "改善；提高"
+            },
+            {
+                        "en": "include",
+                        "cn": "包括"
+            },
+            {
+                        "en": "increase",
+                        "cn": "增加"
+            },
+            {
+                        "en": "indicate",
+                        "cn": "表明；显示"
+            },
+            {
+                        "en": "influence",
+                        "cn": "影响"
+            },
+            {
+                        "en": "inform",
+                        "cn": "通知"
+            },
+            {
+                        "en": "introduce",
+                        "cn": "介绍；引入"
+            },
+            {
+                        "en": "invent",
+                        "cn": "发明"
+            },
+            {
+                        "en": "invest",
+                        "cn": "投资"
+            },
+            {
+                        "en": "invite",
+                        "cn": "邀请"
+            },
+            {
+                        "en": "involve",
+                        "cn": "涉及；参与"
+            },
+            {
+                        "en": "join",
+                        "cn": "加入"
+            },
+            {
+                        "en": "judge",
+                        "cn": "判断；审判"
+            },
+            {
+                        "en": "jump",
+                        "cn": "跳"
+            },
+            {
+                        "en": "keep",
+                        "cn": "保持；保存"
+            },
+            {
+                        "en": "kick",
+                        "cn": "踢"
+            },
+            {
+                        "en": "kill",
+                        "cn": "杀死"
+            },
+            {
+                        "en": "kiss",
+                        "cn": "亲吻"
+            },
+            {
+                        "en": "knock",
+                        "cn": "敲"
+            },
+            {
+                        "en": "know",
+                        "cn": "知道；了解"
+            },
+            {
+                        "en": "lack",
+                        "cn": "缺乏"
+            },
+            {
+                        "en": "land",
+                        "cn": "着陆；获得"
+            },
+            {
+                        "en": "last",
+                        "cn": "持续"
+            },
+            {
+                        "en": "laugh",
+                        "cn": "笑"
+            },
+            {
+                        "en": "lay",
+                        "cn": "放置"
+            },
+            {
+                        "en": "lead",
+                        "cn": "引导；导致"
+            },
+            {
+                        "en": "learn",
+                        "cn": "学习"
+            },
+            {
+                        "en": "leave",
+                        "cn": "离开；留下"
+            },
+            {
+                        "en": "lend",
+                        "cn": "借出"
+            },
+            {
+                        "en": "let",
+                        "cn": "让；允许"
+            },
+            {
+                        "en": "lie",
+                        "cn": "躺；说谎"
+            },
+            {
+                        "en": "lift",
+                        "cn": "举起"
+            },
+            {
+                        "en": "like",
+                        "cn": "喜欢"
+            },
+            {
+                        "en": "limit",
+                        "cn": "限制"
+            },
+            {
+                        "en": "link",
+                        "cn": "连接"
+            },
+            {
+                        "en": "listen",
+                        "cn": "听"
+            },
+            {
+                        "en": "live",
+                        "cn": "生活；居住"
+            },
+            {
+                        "en": "load",
+                        "cn": "装载"
+            },
+            {
+                        "en": "locate",
+                        "cn": "定位；找到"
+            },
+            {
+                        "en": "lock",
+                        "cn": "锁住"
+            },
+            {
+                        "en": "look",
+                        "cn": "看"
+            },
+            {
+                        "en": "lose",
+                        "cn": "失去"
+            },
+            {
+                        "en": "love",
+                        "cn": "爱；喜欢"
+            },
+            {
+                        "en": "maintain",
+                        "cn": "保持；维护"
+            },
+            {
+                        "en": "make",
+                        "cn": "制作；使"
+            },
+            {
+                        "en": "manage",
+                        "cn": "管理；设法完成"
+            },
+            {
+                        "en": "mark",
+                        "cn": "标记"
+            },
+            {
+                        "en": "matter",
+                        "cn": "要紧；有关系"
+            },
+            {
+                        "en": "mean",
+                        "cn": "意味着；表示"
+            },
+            {
+                        "en": "measure",
+                        "cn": "测量；衡量"
+            },
+            {
+                        "en": "meet",
+                        "cn": "遇见；满足"
+            },
+            {
+                        "en": "mention",
+                        "cn": "提到"
+            },
+            {
+                        "en": "mind",
+                        "cn": "介意；留意"
+            },
+            {
+                        "en": "miss",
+                        "cn": "错过；想念"
+            },
+            {
+                        "en": "mix",
+                        "cn": "混合"
+            },
+            {
+                        "en": "move",
+                        "cn": "移动；搬家"
+            },
+            {
+                        "en": "need",
+                        "cn": "需要"
+            },
+            {
+                        "en": "notice",
+                        "cn": "注意到"
+            },
+            {
+                        "en": "obtain",
+                        "cn": "获得"
+            },
+            {
+                        "en": "occur",
+                        "cn": "发生"
+            },
+            {
+                        "en": "offer",
+                        "cn": "提供；提出"
+            },
+            {
+                        "en": "open",
+                        "cn": "打开"
+            },
+            {
+                        "en": "operate",
+                        "cn": "操作；运行"
+            },
+            {
+                        "en": "order",
+                        "cn": "命令；订购"
+            },
+            {
+                        "en": "organize",
+                        "cn": "组织"
+            },
+            {
+                        "en": "overcome",
+                        "cn": "克服"
+            },
+            {
+                        "en": "own",
+                        "cn": "拥有"
+            },
+            {
+                        "en": "pack",
+                        "cn": "打包"
+            },
+            {
+                        "en": "participate",
+                        "cn": "参加"
+            },
+            {
+                        "en": "pass",
+                        "cn": "通过；经过"
+            },
+            {
+                        "en": "pay",
+                        "cn": "支付"
+            },
+            {
+                        "en": "perform",
+                        "cn": "执行；表演"
+            },
+            {
+                        "en": "permit",
+                        "cn": "允许"
+            },
+            {
+                        "en": "pick",
+                        "cn": "挑选；拾起"
+            },
+            {
+                        "en": "place",
+                        "cn": "放置"
+            },
+            {
+                        "en": "plan",
+                        "cn": "计划"
+            },
+            {
+                        "en": "play",
+                        "cn": "玩；扮演"
+            },
+            {
+                        "en": "point",
+                        "cn": "指向"
+            },
+            {
+                        "en": "prefer",
+                        "cn": "更喜欢"
+            },
+            {
+                        "en": "prepare",
+                        "cn": "准备"
+            },
+            {
+                        "en": "present",
+                        "cn": "展示；提出"
+            },
+            {
+                        "en": "prevent",
+                        "cn": "防止"
+            },
+            {
+                        "en": "print",
+                        "cn": "打印"
+            },
+            {
+                        "en": "produce",
+                        "cn": "生产；产生"
+            },
+            {
+                        "en": "promise",
+                        "cn": "承诺"
+            },
+            {
+                        "en": "protect",
+                        "cn": "保护"
+            },
+            {
+                        "en": "prove",
+                        "cn": "证明"
+            },
+            {
+                        "en": "provide",
+                        "cn": "提供"
+            },
+            {
+                        "en": "publish",
+                        "cn": "出版；发布"
+            },
+            {
+                        "en": "pull",
+                        "cn": "拉"
+            },
+            {
+                        "en": "punish",
+                        "cn": "惩罚"
+            },
+            {
+                        "en": "purchase",
+                        "cn": "购买"
+            },
+            {
+                        "en": "push",
+                        "cn": "推"
+            },
+            {
+                        "en": "put",
+                        "cn": "放置"
+            },
+            {
+                        "en": "qualify",
+                        "cn": "使具备资格"
+            },
+            {
+                        "en": "question",
+                        "cn": "质疑；询问"
+            },
+            {
+                        "en": "quit",
+                        "cn": "放弃；退出"
+            },
+            {
+                        "en": "raise",
+                        "cn": "提高；举起"
+            },
+            {
+                        "en": "reach",
+                        "cn": "到达；达到"
+            },
+            {
+                        "en": "react",
+                        "cn": "反应"
+            },
+            {
+                        "en": "read",
+                        "cn": "阅读"
+            },
+            {
+                        "en": "realize",
+                        "cn": "意识到；实现"
+            },
+            {
+                        "en": "receive",
+                        "cn": "收到"
+            },
+            {
+                        "en": "recognize",
+                        "cn": "认出；认可"
+            },
+            {
+                        "en": "recommend",
+                        "cn": "推荐；建议"
+            },
+            {
+                        "en": "record",
+                        "cn": "记录"
+            },
+            {
+                        "en": "recover",
+                        "cn": "恢复"
+            },
+            {
+                        "en": "reduce",
+                        "cn": "减少"
+            },
+            {
+                        "en": "refer",
+                        "cn": "提到；参考"
+            },
+            {
+                        "en": "reflect",
+                        "cn": "反映；反思"
+            },
+            {
+                        "en": "refuse",
+                        "cn": "拒绝"
+            },
+            {
+                        "en": "regard",
+                        "cn": "认为；看待"
+            },
+            {
+                        "en": "relate",
+                        "cn": "联系；涉及"
+            },
+            {
+                        "en": "relax",
+                        "cn": "放松"
+            },
+            {
+                        "en": "release",
+                        "cn": "释放；发布"
+            },
+            {
+                        "en": "remain",
+                        "cn": "保持；剩余"
+            },
+            {
+                        "en": "remember",
+                        "cn": "记得"
+            },
+            {
+                        "en": "remind",
+                        "cn": "提醒"
+            },
+            {
+                        "en": "remove",
+                        "cn": "移除"
+            },
+            {
+                        "en": "repeat",
+                        "cn": "重复"
+            },
+            {
+                        "en": "replace",
+                        "cn": "替代"
+            },
+            {
+                        "en": "reply",
+                        "cn": "回复"
+            },
+            {
+                        "en": "report",
+                        "cn": "报告"
+            },
+            {
+                        "en": "represent",
+                        "cn": "代表"
+            },
+            {
+                        "en": "require",
+                        "cn": "需要；要求"
+            },
+            {
+                        "en": "research",
+                        "cn": "研究"
+            },
+            {
+                        "en": "rest",
+                        "cn": "休息"
+            },
+            {
+                        "en": "result",
+                        "cn": "导致"
+            },
+            {
+                        "en": "return",
+                        "cn": "返回；归还"
+            },
+            {
+                        "en": "reveal",
+                        "cn": "揭示"
+            },
+            {
+                        "en": "review",
+                        "cn": "复习；审查"
+            },
+            {
+                        "en": "ride",
+                        "cn": "骑"
+            },
+            {
+                        "en": "rise",
+                        "cn": "上升"
+            },
+            {
+                        "en": "risk",
+                        "cn": "冒险；冒……风险"
+            },
+            {
+                        "en": "roll",
+                        "cn": "滚动"
+            },
+            {
+                        "en": "run",
+                        "cn": "跑；运行"
+            },
+            {
+                        "en": "save",
+                        "cn": "保存；拯救"
+            },
+            {
+                        "en": "say",
+                        "cn": "说"
+            },
+            {
+                        "en": "see",
+                        "cn": "看见"
+            },
+            {
+                        "en": "seek",
+                        "cn": "寻找"
+            },
+            {
+                        "en": "seem",
+                        "cn": "似乎"
+            },
+            {
+                        "en": "sell",
+                        "cn": "卖"
+            },
+            {
+                        "en": "send",
+                        "cn": "发送"
+            },
+            {
+                        "en": "serve",
+                        "cn": "服务；提供"
+            },
+            {
+                        "en": "set",
+                        "cn": "设置；放置"
+            },
+            {
+                        "en": "settle",
+                        "cn": "解决；定居"
+            },
+            {
+                        "en": "shake",
+                        "cn": "摇动"
+            },
+            {
+                        "en": "share",
+                        "cn": "分享"
+            },
+            {
+                        "en": "shoot",
+                        "cn": "射击；拍摄"
+            },
+            {
+                        "en": "show",
+                        "cn": "展示"
+            },
+            {
+                        "en": "shut",
+                        "cn": "关闭"
+            },
+            {
+                        "en": "sing",
+                        "cn": "唱"
+            },
+            {
+                        "en": "sit",
+                        "cn": "坐"
+            },
+            {
+                        "en": "sleep",
+                        "cn": "睡觉"
+            },
+            {
+                        "en": "smile",
+                        "cn": "微笑"
+            },
+            {
+                        "en": "solve",
+                        "cn": "解决"
+            },
+            {
+                        "en": "sort",
+                        "cn": "分类"
+            },
+            {
+                        "en": "sound",
+                        "cn": "听起来"
+            },
+            {
+                        "en": "speak",
+                        "cn": "说"
+            },
+            {
+                        "en": "spend",
+                        "cn": "花费；度过"
+            },
+            {
+                        "en": "spread",
+                        "cn": "传播；扩散"
+            },
+            {
+                        "en": "stand",
+                        "cn": "站立"
+            },
+            {
+                        "en": "start",
+                        "cn": "开始"
+            },
+            {
+                        "en": "state",
+                        "cn": "陈述"
+            },
+            {
+                        "en": "stay",
+                        "cn": "停留；保持"
+            },
+            {
+                        "en": "steal",
+                        "cn": "偷"
+            },
+            {
+                        "en": "stick",
+                        "cn": "粘贴；坚持"
+            },
+            {
+                        "en": "stop",
+                        "cn": "停止"
+            },
+            {
+                        "en": "store",
+                        "cn": "储存"
+            },
+            {
+                        "en": "study",
+                        "cn": "学习；研究"
+            },
+            {
+                        "en": "succeed",
+                        "cn": "成功"
+            },
+            {
+                        "en": "suffer",
+                        "cn": "遭受"
+            },
+            {
+                        "en": "suggest",
+                        "cn": "建议"
+            },
+            {
+                        "en": "supply",
+                        "cn": "提供；供应"
+            },
+            {
+                        "en": "support",
+                        "cn": "支持"
+            },
+            {
+                        "en": "suppose",
+                        "cn": "认为；假设"
+            },
+            {
+                        "en": "survive",
+                        "cn": "生存"
+            },
+            {
+                        "en": "switch",
+                        "cn": "转换；切换"
+            },
+            {
+                        "en": "take",
+                        "cn": "拿；花费"
+            },
+            {
+                        "en": "talk",
+                        "cn": "谈话"
+            },
+            {
+                        "en": "target",
+                        "cn": "针对；以……为目标"
+            },
+            {
+                        "en": "teach",
+                        "cn": "教"
+            },
+            {
+                        "en": "tell",
+                        "cn": "告诉"
+            },
+            {
+                        "en": "tend",
+                        "cn": "倾向于"
+            },
+            {
+                        "en": "test",
+                        "cn": "测试"
+            },
+            {
+                        "en": "thank",
+                        "cn": "感谢"
+            },
+            {
+                        "en": "think",
+                        "cn": "思考；认为"
+            },
+            {
+                        "en": "throw",
+                        "cn": "扔"
+            },
+            {
+                        "en": "touch",
+                        "cn": "触碰"
+            },
+            {
+                        "en": "train",
+                        "cn": "训练"
+            },
+            {
+                        "en": "transfer",
+                        "cn": "转移"
+            },
+            {
+                        "en": "travel",
+                        "cn": "旅行"
+            },
+            {
+                        "en": "treat",
+                        "cn": "对待；治疗"
+            },
+            {
+                        "en": "trust",
+                        "cn": "信任"
+            },
+            {
+                        "en": "try",
+                        "cn": "尝试"
+            },
+            {
+                        "en": "turn",
+                        "cn": "转动；变成"
+            },
+            {
+                        "en": "understand",
+                        "cn": "理解"
+            },
+            {
+                        "en": "update",
+                        "cn": "更新"
+            },
+            {
+                        "en": "use",
+                        "cn": "使用"
+            },
+            {
+                        "en": "value",
+                        "cn": "重视；估价"
+            },
+            {
+                        "en": "vary",
+                        "cn": "改变；变化"
+            },
+            {
+                        "en": "visit",
+                        "cn": "访问"
+            },
+            {
+                        "en": "vote",
+                        "cn": "投票"
+            },
+            {
+                        "en": "wait",
+                        "cn": "等待"
+            },
+            {
+                        "en": "wake",
+                        "cn": "醒来；唤醒"
+            },
+            {
+                        "en": "walk",
+                        "cn": "走路"
+            },
+            {
+                        "en": "want",
+                        "cn": "想要"
+            },
+            {
+                        "en": "warn",
+                        "cn": "警告"
+            },
+            {
+                        "en": "wash",
+                        "cn": "洗"
+            },
+            {
+                        "en": "watch",
+                        "cn": "观看"
+            },
+            {
+                        "en": "wear",
+                        "cn": "穿戴"
+            },
+            {
+                        "en": "weigh",
+                        "cn": "称重；权衡"
+            },
+            {
+                        "en": "win",
+                        "cn": "赢"
+            },
+            {
+                        "en": "wish",
+                        "cn": "希望"
+            },
+            {
+                        "en": "withdraw",
+                        "cn": "撤回；取出"
+            },
+            {
+                        "en": "wonder",
+                        "cn": "想知道"
+            },
+            {
+                        "en": "work",
+                        "cn": "工作；起作用"
+            },
+            {
+                        "en": "worry",
+                        "cn": "担心"
+            },
+            {
+                        "en": "write",
+                        "cn": "写"
+            },
+            {
+                        "en": "yell",
+                        "cn": "喊叫"
+            },
+            {
+                        "en": "abandon",
+                        "cn": "放弃"
+            },
+            {
+                        "en": "absorb",
+                        "cn": "吸收"
+            },
+            {
+                        "en": "abuse",
+                        "cn": "滥用；虐待"
+            },
+            {
+                        "en": "accelerate",
+                        "cn": "加速"
+            },
+            {
+                        "en": "accommodate",
+                        "cn": "容纳；适应"
+            },
+            {
+                        "en": "accompany",
+                        "cn": "陪伴"
+            },
+            {
+                        "en": "accomplish",
+                        "cn": "完成"
+            },
+            {
+                        "en": "accumulate",
+                        "cn": "积累"
+            },
+            {
+                        "en": "adapt",
+                        "cn": "适应；调整"
+            },
+            {
+                        "en": "adjust",
+                        "cn": "调整"
+            },
+            {
+                        "en": "administer",
+                        "cn": "管理；执行"
+            },
+            {
+                        "en": "advocate",
+                        "cn": "提倡；主张"
+            },
+            {
+                        "en": "allocate",
+                        "cn": "分配"
+            },
+            {
+                        "en": "alter",
+                        "cn": "改变"
+            },
+            {
+                        "en": "analyze",
+                        "cn": "分析"
+            },
+            {
+                        "en": "anticipate",
+                        "cn": "预期"
+            },
+            {
+                        "en": "appreciate",
+                        "cn": "欣赏；感激"
+            },
+            {
+                        "en": "approve",
+                        "cn": "批准；赞成"
+            },
+            {
+                        "en": "assign",
+                        "cn": "分配；指派"
+            },
+            {
+                        "en": "associate",
+                        "cn": "联系；联想"
+            },
+            {
+                        "en": "attain",
+                        "cn": "达到"
+            },
+            {
+                        "en": "authorize",
+                        "cn": "授权"
+            },
+            {
+                        "en": "automate",
+                        "cn": "自动化"
+            },
+            {
+                        "en": "broaden",
+                        "cn": "扩大；拓宽"
+            },
+            {
+                        "en": "capture",
+                        "cn": "捕获；记录"
+            },
+            {
+                        "en": "cease",
+                        "cn": "停止"
+            },
+            {
+                        "en": "clarify",
+                        "cn": "澄清"
+            },
+            {
+                        "en": "classify",
+                        "cn": "分类"
+            },
+            {
+                        "en": "collaborate",
+                        "cn": "合作"
+            },
+            {
+                        "en": "collapse",
+                        "cn": "崩溃；倒塌"
+            },
+            {
+                        "en": "commence",
+                        "cn": "开始"
+            },
+            {
+                        "en": "compensate",
+                        "cn": "补偿"
+            },
+            {
+                        "en": "compile",
+                        "cn": "编制；汇编"
+            },
+            {
+                        "en": "complement",
+                        "cn": "补充"
+            },
+            {
+                        "en": "comprise",
+                        "cn": "包含；组成"
+            },
+            {
+                        "en": "conceive",
+                        "cn": "构想；认为"
+            },
+            {
+                        "en": "conclude",
+                        "cn": "得出结论；结束"
+            },
+            {
+                        "en": "confront",
+                        "cn": "面对"
+            },
+            {
+                        "en": "conserve",
+                        "cn": "保存；节约"
+            },
+            {
+                        "en": "constitute",
+                        "cn": "构成"
+            },
+            {
+                        "en": "constrain",
+                        "cn": "限制"
+            },
+            {
+                        "en": "consult",
+                        "cn": "咨询"
+            },
+            {
+                        "en": "consume",
+                        "cn": "消耗"
+            },
+            {
+                        "en": "contemplate",
+                        "cn": "考虑；注视"
+            },
+            {
+                        "en": "contradict",
+                        "cn": "反驳；矛盾"
+            },
+            {
+                        "en": "cooperate",
+                        "cn": "合作"
+            },
+            {
+                        "en": "coordinate",
+                        "cn": "协调"
+            },
+            {
+                        "en": "correspond",
+                        "cn": "相符；通信"
+            },
+            {
+                        "en": "cultivate",
+                        "cn": "培养"
+            },
+            {
+                        "en": "dedicate",
+                        "cn": "致力于"
+            },
+            {
+                        "en": "demonstrate",
+                        "cn": "证明；展示"
+            },
+            {
+                        "en": "derive",
+                        "cn": "获得；源于"
+            },
+            {
+                        "en": "detect",
+                        "cn": "发现；检测"
+            },
+            {
+                        "en": "diminish",
+                        "cn": "减少"
+            },
+            {
+                        "en": "discriminate",
+                        "cn": "歧视；区分"
+            },
+            {
+                        "en": "dominate",
+                        "cn": "支配；占主导"
+            },
+            {
+                        "en": "eliminate",
+                        "cn": "消除"
+            },
+            {
+                        "en": "emphasize",
+                        "cn": "强调"
+            },
+            {
+                        "en": "encounter",
+                        "cn": "遇到"
+            },
+            {
+                        "en": "enhance",
+                        "cn": "提高；增强"
+            },
+            {
+                        "en": "equivalent",
+                        "cn": "等同于"
+            },
+            {
+                        "en": "evolve",
+                        "cn": "发展；演变"
+            },
+            {
+                        "en": "exceed",
+                        "cn": "超过"
+            },
+            {
+                        "en": "exclude",
+                        "cn": "排除"
+            },
+            {
+                        "en": "exhibit",
+                        "cn": "展示；表现"
+            },
+            {
+                        "en": "exploit",
+                        "cn": "利用；开发"
+            },
+            {
+                        "en": "facilitate",
+                        "cn": "促进；使便利"
+            },
+            {
+                        "en": "formulate",
+                        "cn": "制定；构想"
+            },
+            {
+                        "en": "foster",
+                        "cn": "促进；培养"
+            },
+            {
+                        "en": "generate",
+                        "cn": "产生"
+            },
+            {
+                        "en": "highlight",
+                        "cn": "强调；突出"
+            },
+            {
+                        "en": "illustrate",
+                        "cn": "说明；举例"
+            },
+            {
+                        "en": "imply",
+                        "cn": "暗示"
+            },
+            {
+                        "en": "impose",
+                        "cn": "强加；征收"
+            },
+            {
+                        "en": "incorporate",
+                        "cn": "纳入；包含"
+            },
+            {
+                        "en": "induce",
+                        "cn": "导致；诱导"
+            },
+            {
+                        "en": "initiate",
+                        "cn": "开始；发起"
+            },
+            {
+                        "en": "inspect",
+                        "cn": "检查"
+            },
+            {
+                        "en": "integrate",
+                        "cn": "整合"
+            },
+            {
+                        "en": "interact",
+                        "cn": "互动"
+            },
+            {
+                        "en": "interpret",
+                        "cn": "解释；理解"
+            },
+            {
+                        "en": "intervene",
+                        "cn": "干预"
+            },
+            {
+                        "en": "isolate",
+                        "cn": "隔离；孤立"
+            },
+            {
+                        "en": "justify",
+                        "cn": "证明合理"
+            },
+            {
+                        "en": "manipulate",
+                        "cn": "操纵"
+            },
+            {
+                        "en": "minimize",
+                        "cn": "使最小化"
+            },
+            {
+                        "en": "modify",
+                        "cn": "修改"
+            },
+            {
+                        "en": "motivate",
+                        "cn": "激励"
+            },
+            {
+                        "en": "negotiate",
+                        "cn": "谈判"
+            },
+            {
+                        "en": "perceive",
+                        "cn": "察觉；认为"
+            },
+            {
+                        "en": "persist",
+                        "cn": "坚持"
+            },
+            {
+                        "en": "persuade",
+                        "cn": "说服"
+            },
+            {
+                        "en": "predict",
+                        "cn": "预测"
+            },
+            {
+                        "en": "preserve",
+                        "cn": "保存；保护"
+            },
+            {
+                        "en": "promote",
+                        "cn": "促进；推广"
+            },
+            {
+                        "en": "propose",
+                        "cn": "提议"
+            },
+            {
+                        "en": "pursue",
+                        "cn": "追求；从事"
+            },
+            {
+                        "en": "reinforce",
+                        "cn": "加强"
+            },
+            {
+                        "en": "reject",
+                        "cn": "拒绝"
+            },
+            {
+                        "en": "restore",
+                        "cn": "恢复"
+            },
+            {
+                        "en": "retain",
+                        "cn": "保留"
+            },
+            {
+                        "en": "reverse",
+                        "cn": "颠倒；逆转"
+            },
+            {
+                        "en": "revise",
+                        "cn": "修改；复习"
+            },
+            {
+                        "en": "simulate",
+                        "cn": "模拟"
+            },
+            {
+                        "en": "specify",
+                        "cn": "明确说明"
+            },
+            {
+                        "en": "strengthen",
+                        "cn": "加强"
+            },
+            {
+                        "en": "substitute",
+                        "cn": "替代"
+            },
+            {
+                        "en": "sustain",
+                        "cn": "维持"
+            },
+            {
+                        "en": "transform",
+                        "cn": "转变"
+            },
+            {
+                        "en": "transmit",
+                        "cn": "传输；传播"
+            },
+            {
+                        "en": "undergo",
+                        "cn": "经历"
+            },
+            {
+                        "en": "utilize",
+                        "cn": "利用"
+            },
+            {
+                        "en": "violate",
+                        "cn": "违反"
+            },
+            {
+                        "en": "yield",
+                        "cn": "产生；屈服"
+            },
+            {
+                        "en": "acquire",
+                        "cn": "获得"
+            },
+            {
+                        "en": "activate",
+                        "cn": "激活"
+            },
+            {
+                        "en": "address",
+                        "cn": "处理；解决"
+            },
+            {
+                        "en": "appeal",
+                        "cn": "呼吁；上诉"
+            },
+            {
+                        "en": "assemble",
+                        "cn": "组装；集合"
+            },
+            {
+                        "en": "assess",
+                        "cn": "评估"
+            },
+            {
+                        "en": "attribute",
+                        "cn": "把……归因于"
+            },
+            {
+                        "en": "boost",
+                        "cn": "促进；提高"
+            },
+            {
+                        "en": "cite",
+                        "cn": "引用"
+            },
+            {
+                        "en": "confine",
+                        "cn": "限制"
+            },
+            {
+                        "en": "consent",
+                        "cn": "同意"
+            },
+            {
+                        "en": "consolidate",
+                        "cn": "巩固；合并"
+            },
+            {
+                        "en": "construct",
+                        "cn": "建造；构建"
+            },
+            {
+                        "en": "convey",
+                        "cn": "传达"
+            },
+            {
+                        "en": "cope",
+                        "cn": "应对"
+            },
+            {
+                        "en": "criticize",
+                        "cn": "批评"
+            },
+            {
+                        "en": "differentiate",
+                        "cn": "区分"
+            },
+            {
+                        "en": "dispose",
+                        "cn": "处理；处置"
+            },
+            {
+                        "en": "distort",
+                        "cn": "扭曲"
+            },
+            {
+                        "en": "draft",
+                        "cn": "起草"
+            },
+            {
+                        "en": "embody",
+                        "cn": "体现"
+            },
+            {
+                        "en": "emerge",
+                        "cn": "出现；显现"
+            },
+            {
+                        "en": "enforce",
+                        "cn": "执行；强制"
+            },
+            {
+                        "en": "engage",
+                        "cn": "参与；吸引"
+            },
+            {
+                        "en": "enrich",
+                        "cn": "丰富"
+            },
+            {
+                        "en": "expose",
+                        "cn": "暴露"
+            },
+            {
+                        "en": "extract",
+                        "cn": "提取"
+            },
+            {
+                        "en": "forecast",
+                        "cn": "预测"
+            },
+            {
+                        "en": "fulfill",
+                        "cn": "履行；实现"
+            },
+            {
+                        "en": "govern",
+                        "cn": "管理；统治"
+            },
+            {
+                        "en": "grasp",
+                        "cn": "理解；抓住"
+            },
+            {
+                        "en": "guarantee",
+                        "cn": "保证"
+            },
+            {
+                        "en": "implement",
+                        "cn": "实施；执行"
+            },
+            {
+                        "en": "import",
+                        "cn": "进口；引入"
+            },
+            {
+                        "en": "inhibit",
+                        "cn": "抑制"
+            },
+            {
+                        "en": "innovate",
+                        "cn": "创新"
+            },
+            {
+                        "en": "instruct",
+                        "cn": "指导；命令"
+            },
+            {
+                        "en": "intensify",
+                        "cn": "加强"
+            },
+            {
+                        "en": "interrupt",
+                        "cn": "打断"
+            },
+            {
+                        "en": "investigate",
+                        "cn": "调查"
+            },
+            {
+                        "en": "launch",
+                        "cn": "推出；发起"
+            },
+            {
+                        "en": "legislate",
+                        "cn": "立法"
+            },
+            {
+                        "en": "mediate",
+                        "cn": "调解"
+            },
+            {
+                        "en": "monitor",
+                        "cn": "监测"
+            },
+            {
+                        "en": "neutralize",
+                        "cn": "使中立"
+            },
+            {
+                        "en": "occupy",
+                        "cn": "占据"
+            },
+            {
+                        "en": "pose",
+                        "cn": "提出；造成"
+            },
+            {
+                        "en": "proceed",
+                        "cn": "继续进行"
+            },
+            {
+                        "en": "prohibit",
+                        "cn": "禁止"
+            },
+            {
+                        "en": "regulate",
+                        "cn": "管理；监管"
+            },
+            {
+                        "en": "restrict",
+                        "cn": "限制"
+            },
+            {
+                        "en": "retrieve",
+                        "cn": "找回；检索"
+            },
+            {
+                        "en": "resolve",
+                        "cn": "解决"
+            },
+            {
+                        "en": "resume",
+                        "cn": "重新开始"
+            },
+            {
+                        "en": "stimulate",
+                        "cn": "刺激；促进"
+            },
+            {
+                        "en": "submit",
+                        "cn": "提交；服从"
+            },
+            {
+                        "en": "supplement",
+                        "cn": "补充"
+            },
+            {
+                        "en": "tackle",
+                        "cn": "处理；解决"
+            },
+            {
+                        "en": "trigger",
+                        "cn": "引发"
+            },
+            {
+                        "en": "undermine",
+                        "cn": "削弱"
+            },
+            {
+                        "en": "undertake",
+                        "cn": "承担；着手"
+            },
+            {
+                        "en": "verify",
+                        "cn": "核实"
+            },
+            {
+                        "en": "withstand",
+                        "cn": "经受住"
+            },
+            {
+                        "en": "characterize",
+                        "cn": "描述……特征"
+            },
+            {
+                        "en": "comprehend",
+                        "cn": "理解"
+            },
+            {
+                        "en": "deduce",
+                        "cn": "推断"
+            },
+            {
+                        "en": "denote",
+                        "cn": "表示"
+            },
+            {
+                        "en": "depress",
+                        "cn": "压低；使沮丧"
+            },
+            {
+                        "en": "deviate",
+                        "cn": "偏离"
+            },
+            {
+                        "en": "distinguish",
+                        "cn": "区分"
+            },
+            {
+                        "en": "distribute",
+                        "cn": "分配；分发"
+            },
+            {
+                        "en": "enable",
+                        "cn": "使能够"
+            },
+            {
+                        "en": "entail",
+                        "cn": "需要；涉及"
+            },
+            {
+                        "en": "equip",
+                        "cn": "配备"
+            },
+            {
+                        "en": "infer",
+                        "cn": "推断"
+            },
+            {
+                        "en": "insert",
+                        "cn": "插入"
+            },
+            {
+                        "en": "neglect",
+                        "cn": "忽视"
+            },
+            {
+                        "en": "offset",
+                        "cn": "抵消"
+            },
+            {
+                        "en": "optimize",
+                        "cn": "优化"
+            },
+            {
+                        "en": "orient",
+                        "cn": "使适应；确定方向"
+            },
+            {
+                        "en": "overlap",
+                        "cn": "重叠"
+            },
+            {
+                        "en": "precede",
+                        "cn": "在……之前"
+            },
+            {
+                        "en": "prescribe",
+                        "cn": "规定；开处方"
+            },
+            {
+                        "en": "presume",
+                        "cn": "推测；假定"
+            },
+            {
+                        "en": "prompt",
+                        "cn": "促使"
+            },
+            {
+                        "en": "quantify",
+                        "cn": "量化"
+            },
+            {
+                        "en": "refine",
+                        "cn": "改进；提炼"
+            },
+            {
+                        "en": "render",
+                        "cn": "使成为；提供"
+            },
+            {
+                        "en": "replicate",
+                        "cn": "复制；重复"
+            },
+            {
+                        "en": "rotate",
+                        "cn": "旋转"
+            },
+            {
+                        "en": "secure",
+                        "cn": "获得；保护"
+            },
+            {
+                        "en": "shift",
+                        "cn": "转移；改变"
+            },
+            {
+                        "en": "specialize",
+                        "cn": "专门研究"
+            },
+            {
+                        "en": "stabilize",
+                        "cn": "稳定"
+            },
+            {
+                        "en": "suppress",
+                        "cn": "抑制"
+            },
+            {
+                        "en": "suspend",
+                        "cn": "暂停"
+            },
+            {
+                        "en": "terminate",
+                        "cn": "终止"
+            },
+            {
+                        "en": "unify",
+                        "cn": "统一"
+            },
+            {
+                        "en": "validate",
+                        "cn": "验证"
+            },
+            {
+                        "en": "visualize",
+                        "cn": "使形象化"
+            },
+            {
+                        "en": "abolish",
+                        "cn": "废除"
+            },
+            {
+                        "en": "appoint",
+                        "cn": "任命"
+            },
+            {
+                        "en": "conceal",
+                        "cn": "隐藏"
+            },
+            {
+                        "en": "depict",
+                        "cn": "描绘"
+            },
+            {
+                        "en": "empower",
+                        "cn": "授权；使有能力"
+            },
+            {
+                        "en": "maximize",
+                        "cn": "最大化"
+            },
+            {
+                        "en": "mobilize",
+                        "cn": "动员"
+            },
+            {
+                        "en": "moderate",
+                        "cn": "调节；缓和"
+            },
+            {
+                        "en": "notify",
+                        "cn": "通知"
+            },
+            {
+                        "en": "prevail",
+                        "cn": "占优势"
+            },
+            {
+                        "en": "rehabilitate",
+                        "cn": "使恢复"
+            },
+            {
+                        "en": "restrain",
+                        "cn": "抑制；约束"
+            },
+            {
+                        "en": "alert",
+                        "cn": "使警觉"
+            },
+            {
+                        "en": "align",
+                        "cn": "使一致"
+            },
+            {
+                        "en": "amend",
+                        "cn": "修改"
+            },
+            {
+                        "en": "audit",
+                        "cn": "审计；检查"
+            },
+            {
+                        "en": "benchmark",
+                        "cn": "以……为基准"
+            },
+            {
+                        "en": "categorize",
+                        "cn": "分类"
+            },
+            {
+                        "en": "circulate",
+                        "cn": "流通；传播"
+            },
+            {
+                        "en": "coincide",
+                        "cn": "同时发生"
+            },
+            {
+                        "en": "compel",
+                        "cn": "迫使"
+            },
+            {
+                        "en": "compromise",
+                        "cn": "妥协"
+            },
+            {
+                        "en": "configure",
+                        "cn": "配置"
+            },
+            {
+                        "en": "conform",
+                        "cn": "遵守；符合"
+            },
+            {
+                        "en": "contaminate",
+                        "cn": "污染"
+            },
+            {
+                        "en": "customize",
+                        "cn": "定制"
+            },
+            {
+                        "en": "designate",
+                        "cn": "指定"
+            },
+            {
+                        "en": "diagnose",
+                        "cn": "诊断；判断问题"
+            },
+            {
+                        "en": "discard",
+                        "cn": "丢弃"
+            },
+            {
+                        "en": "disclose",
+                        "cn": "披露"
+            },
+            {
+                        "en": "disrupt",
+                        "cn": "扰乱"
+            },
+            {
+                        "en": "diversify",
+                        "cn": "使多样化"
+            },
+            {
+                        "en": "embrace",
+                        "cn": "接受；拥抱"
+            },
+            {
+                        "en": "endure",
+                        "cn": "忍受"
+            },
+            {
+                        "en": "enroll",
+                        "cn": "注册；入学"
+            },
+            {
+                        "en": "fluctuate",
+                        "cn": "波动"
+            },
+            {
+                        "en": "hinder",
+                        "cn": "阻碍"
+            },
+            {
+                        "en": "legitimize",
+                        "cn": "使合法"
+            },
+            {
+                        "en": "provoke",
+                        "cn": "激起"
+            },
+            {
+                        "en": "sacrifice",
+                        "cn": "牺牲"
+            },
+            {
+                        "en": "summarize",
+                        "cn": "总结"
+            },
+            {
+                        "en": "upgrade",
+                        "cn": "升级"
+            },
+            {
+                        "en": "urge",
+                        "cn": "敦促"
+            },
+            {
+                        "en": "abstract",
+                        "cn": "提取；概括"
+            },
+            {
+                        "en": "acknowledge",
+                        "cn": "承认"
+            },
+            {
+                        "en": "aggregate",
+                        "cn": "汇总"
+            },
+            {
+                        "en": "amplify",
+                        "cn": "放大；增强"
+            },
+            {
+                        "en": "articulate",
+                        "cn": "清楚表达"
+            },
+            {
+                        "en": "conceptualize",
+                        "cn": "构思"
+            },
+            {
+                        "en": "converge",
+                        "cn": "汇聚"
+            },
+            {
+                        "en": "correlate",
+                        "cn": "相关"
+            },
+            {
+                        "en": "devise",
+                        "cn": "设计；想出"
+            },
+            {
+                        "en": "disseminate",
+                        "cn": "传播"
+            },
+            {
+                        "en": "document",
+                        "cn": "记录"
+            },
+            {
+                        "en": "encompass",
+                        "cn": "包含"
+            },
+            {
+                        "en": "envision",
+                        "cn": "设想"
+            },
+            {
+                        "en": "hypothesize",
+                        "cn": "假设"
+            },
+            {
+                        "en": "leverage",
+                        "cn": "利用"
+            },
+            {
+                        "en": "navigate",
+                        "cn": "导航；应对"
+            },
+            {
+                        "en": "outline",
+                        "cn": "概述"
+            },
+            {
+                        "en": "prioritize",
+                        "cn": "优先处理"
+            },
+            {
+                        "en": "streamline",
+                        "cn": "简化；使高效"
+            },
+            {
+                        "en": "substantiate",
+                        "cn": "证实"
+            },
+            {
+                        "en": "synthesize",
+                        "cn": "综合"
+            },
+            {
+                        "en": "translate",
+                        "cn": "翻译；转化"
+            },
+            {
+                        "en": "authenticate",
+                        "cn": "验证真实性"
+            },
+            {
+                        "en": "concur",
+                        "cn": "同意"
+            }
+];
 
         // ================================================================
         //  核心状态
