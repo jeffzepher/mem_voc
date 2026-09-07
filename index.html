@@ -442,9 +442,9 @@
 
         .answer-toast {
             position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -42% ) scale(.92);
+            left: 16px;
+            top: 16px;
+            transform: translateY(-8px) scale(.96);
             padding: 13px 24px;
             border-radius: 16px;
             background: #2f855a;
@@ -460,7 +460,7 @@
         }
         .answer-toast.show {
             opacity: 1;
-            transform: translate(-50%, -42%) scale(1);
+            transform: translateY(0) scale(1);
             animation: correctPop .45s ease-out;
         }
         @keyframes correctPop {
@@ -3632,24 +3632,157 @@
             return arr;
         }
 
-        // 更难的干扰项：优先选择中文长度接近、共享字符、英文前缀/后缀相似的词，
-        // 避免出现一眼就能排除的“完全不搭边”选项。
-        function distractorScore(correctWord, candidateWord) {
-            const a = correctWord.cn || '';
-            const b = candidateWord.cn || '';
-            const ac = [...a].filter(ch => /[\u4e00-\u9fff]/.test(ch));
-            const bc = [...b].filter(ch => /[\u4e00-\u9fff]/.test(ch));
-            const shared = new Set(ac.filter(ch => bc.includes(ch))).size;
-            const lenDiff = Math.abs(ac.length - bc.length);
+        // 干扰项生成：不是简单随机抽错答案，而是优先寻找“意思容易混淆”的词。
+        // 目标是正常难度：三个错误选项都应该有一定迷惑性，但不能和正确答案几乎同义到无法判断。
+        const SEMANTIC_GROUPS = [
+            ['接受','接收','认可','承认','同意','允许','批准','答应'],
+            ['建议','提议','推荐','主张','劝告','鼓励','敦促'],
+            ['改变','变化','转换','转变','调整','修改','改进','改善','改革'],
+            ['开始','启动','开始做','发起','建立','创立','创建'],
+            ['结束','完成','停止','终止','取消','放弃','退出'],
+            ['包括','包含','组成','构成','涉及','涵盖'],
+            ['影响','作用','导致','引起','造成','产生'],
+            ['发现','找到','寻找','探索','调查','研究','检查'],
+            ['解释','说明','描述','表达','阐明','证明'],
+            ['显示','表明','展示','呈现','表现','证明'],
+            ['选择','决定','判断','考虑','决定做'],
+            ['需要','要求','请求','需求','依赖'],
+            ['提供','给予','供应','支持','帮助','协助'],
+            ['保护','保存','维持','保持','防止','避免'],
+            ['增加','提高','提升','增长','扩大','加强'],
+            ['减少','降低','下降','缩小','削弱'],
+            ['移动','搬运','运输','转移','迁移'],
+            ['参加','参与','出席','加入','进入'],
+            ['获得','得到','取得','赢得','赚取','收集'],
+            ['失去','丢失','错过','失败','放弃'],
+            ['使用','利用','应用','操作','采用'],
+            ['制造','生产','创造','建造','制作','开发'],
+            ['买','购买','支付','花费','消费'],
+            ['卖','销售','出售','交易'],
+            ['说','谈论','讨论','提到','告诉','回答','询问'],
+            ['看','观察','观看','检查','注意','注视'],
+            ['想','认为','相信','猜测','假设','意识到'],
+            ['学习','研究','练习','训练','教育','教'],
+            ['记住','记忆','忘记','提醒'],
+            ['旅行','到达','离开','返回','参观','访问'],
+            ['居住','生活','住','停留'],
+            ['帮助','协助','支持','服务','照顾'],
+            ['需要','缺少','缺乏','拥有','包括'],
+            ['同意','赞成','认可','反对','拒绝'],
+            ['允许','禁止','阻止','避免','防止'],
+            ['借','借给','借用','归还','还'],
+            ['赢','获胜','击败','战胜','输','失败'],
+            ['比较','区别','区分','不同','相似'],
+            ['连接','联系','关联','结合','分离','分开'],
+            ['增加','加','添加','加入','减少','删除','移除'],
+            ['发送','寄','传送','发送给','收到','接收'],
+            ['建造','建设','建立','创立','创建','发展'],
+            ['破坏','损坏','毁坏','伤害','伤'],
+            ['修理','维修','解决','处理','恢复'],
+            ['发生','出现','存在','产生','发展'],
+            ['变化','不同','相同','相似','区别'],
+            ['工作','工作于','经营','管理','处理'],
+            ['领导','管理','控制','指导','带领'],
+            ['控制','管理','限制','阻止','允许'],
+            ['展示','显示','出现','隐藏','遮盖'],
+            ['理解','了解','认识','意识','知道'],
+            ['记得','记住','提醒','忘记'],
+            ['希望','期待','计划','打算','想要'],
+            ['决定','选择','计划','安排','考虑'],
+            ['尝试','努力','练习','测试','实验'],
+            ['检查','测试','调查','研究','分析'],
+            ['预测','预期','估计','猜测','计划'],
+            ['解释','回答','解决','说明'],
+            ['保护','攻击','防御','伤害'],
+            ['同意','承认','接受','拒绝','否认'],
+            ['邀请','欢迎','接待','访问','参加'],
+            ['返回','回来','恢复','归还','返回到'],
+            ['离开','逃离','退出','消失'],
+            ['继续','保持','停止','暂停','结束'],
+            ['打开','关闭','关掉','启动','停止'],
+            ['发展','增长','进步','改善','提高'],
+            ['成功','失败','赢','获胜','完成'],
+            ['获得','提供','给予','接受','收到'],
+            ['创造','发明','发现','制造','生产']
+        ];
 
-            const enA = correctWord.en.toLowerCase();
-            const enB = candidateWord.en.toLowerCase();
+        const SEMANTIC_INDEX = new Map();
+        SEMANTIC_GROUPS.forEach((group, gi) => {
+            group.forEach(term => {
+                if (!SEMANTIC_INDEX.has(term)) SEMANTIC_INDEX.set(term, []);
+                SEMANTIC_INDEX.get(term).push(gi);
+            });
+        });
+
+        function cnTerms(text) {
+            return (text || '')
+                .replace(/[；;，,、/|（）()\[\]【】]/g, ' ')
+                .split(/\s+/)
+                .map(x => x.trim())
+                .filter(x => x.length >= 1);
+        }
+
+        function chineseMeaningSimilarity(a, b) {
+            const termsA = cnTerms(a);
+            const termsB = cnTerms(b);
+            const charsA = [...a].filter(ch => /[\u4e00-\u9fff]/.test(ch));
+            const charsB = [...b].filter(ch => /[\u4e00-\u9fff]/.test(ch));
+            const setA = new Set(charsA);
+            const setB = new Set(charsB);
+            const sharedChars = [...setA].filter(ch => setB.has(ch)).length;
+
+            let groupBonus = 0;
+            for (const ta of termsA) {
+                const groupsA = SEMANTIC_INDEX.get(ta) || [];
+                for (const tb of termsB) {
+                    const groupsB = SEMANTIC_INDEX.get(tb) || [];
+                    if (groupsA.some(g => groupsB.includes(g))) groupBonus = Math.max(groupBonus, 18);
+                }
+            }
+
+            // 直接共享较长中文词，比单个汉字重合更有意义。
+            let phraseBonus = 0;
+            for (const ta of termsA) {
+                for (const tb of termsB) {
+                    if (ta.length >= 2 && tb.length >= 2 && (ta.includes(tb) || tb.includes(ta))) {
+                        phraseBonus = Math.max(phraseBonus, 12);
+                    }
+                }
+            }
+
+            return sharedChars * 3 + groupBonus + phraseBonus;
+        }
+
+        function englishSimilarity(a, b) {
+            const enA = (a.en || '').toLowerCase();
+            const enB = (b.en || '').toLowerCase();
             let prefix = 0;
             while (prefix < Math.min(enA.length, enB.length) && enA[prefix] === enB[prefix]) prefix++;
-            const suffix = enA.slice(-2) === enB.slice(-2) ? 1 : 0;
-            const sameShape = (/[；;，,]/.test(a) === /[；;，,]/.test(b)) ? 1 : 0;
 
-            return shared * 5 + Math.max(0, 3 - lenDiff) * 2 + Math.min(prefix, 3) + suffix + sameShape;
+            let suffix = 0;
+            while (suffix < Math.min(enA.length, enB.length) &&
+                   enA[enA.length - 1 - suffix] === enB[enB.length - 1 - suffix] && suffix < 4) suffix++;
+
+            const aStem = enA.replace(/(ing|ed|es|s)$/i, '');
+            const bStem = enB.replace(/(ing|ed|es|s)$/i, '');
+            const stem = aStem === bStem ? 12 : 0;
+            const lenBonus = Math.max(0, 4 - Math.abs(enA.length - enB.length));
+
+            return Math.min(prefix, 4) * 2 + suffix + stem + lenBonus;
+        }
+
+        function distractorScore(correctWord, candidateWord) {
+            const cnA = correctWord.cn || '';
+            const cnB = candidateWord.cn || '';
+            const semantic = chineseMeaningSimilarity(cnA, cnB);
+            const lexical = englishSimilarity(correctWord, candidateWord);
+            const lenA = cnTerms(cnA).join('').length;
+            const lenB = cnTerms(cnB).join('').length;
+            const lenBonus = Math.max(0, 4 - Math.abs(lenA - lenB));
+            const samePunctuation = /[；;，,]/.test(cnA) === /[；;，,]/.test(cnB) ? 2 : 0;
+
+            // 中文意义相近是第一优先级；英文拼写相似只作为辅助。
+            return semantic * 3 + lexical + lenBonus + samePunctuation;
         }
 
         function getDistractors(correctWord, allWords, count = 3) {
@@ -3657,11 +3790,13 @@
                 .filter(w => w.en !== correctWord.en && w.cn !== correctWord.cn)
                 .map(w => ({ word: w, score: distractorScore(correctWord, w) }));
 
-            // 先按相似度分组，再在高分候选中随机取，既增加难度，也避免每次顺序完全固定。
+            // 优先从高相似度候选中选择，避免出现“电脑 / 跑步 / 天气”这种一眼可排除的答案。
             candidates.sort((a, b) => b.score - a.score || Math.random() - 0.5);
-            const topPoolSize = Math.min(candidates.length, Math.max(12, count * 5));
-            const topPool = shuffle(candidates.slice(0, topPoolSize));
-            return topPool.slice(0, count).map(x => x.word.cn);
+
+            const strongPool = candidates.filter(x => x.score >= 12);
+            const pool = strongPool.length >= count ? strongPool : candidates;
+            const topPoolSize = Math.min(pool.length, Math.max(18, count * 8));
+            return shuffle(pool.slice(0, topPoolSize)).slice(0, count).map(x => x.word.cn);
         }
 
         function generateOptions(correctWord, allWords) {
