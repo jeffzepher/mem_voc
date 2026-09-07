@@ -3785,18 +3785,72 @@
             return semantic * 3 + lexical + lenBonus + samePunctuation;
         }
 
+        // 将中文释义拆成可比较的短语，并用于防止“包含关系”造成的不公平选项。
+        function meaningParts(cn) {
+            return String(cn || '')
+                .replace(/[()（）]/g, '；')
+                .split(/[；;，,、/]/)
+                .map(x => x.trim())
+                .filter(Boolean);
+        }
+
+        function meaningKey(cn) {
+            return meaningParts(cn)
+                .join('')
+                .replace(/[\s“”‘’'".!！？?：:]/g, '');
+        }
+
+        // 两个选项如果完全相同，或一个选项完整包含另一个选项，视为冲突。
+        // 例如“承认” vs “承认；允许进入”不能同时出现。
+        function meaningConflict(cnA, cnB) {
+            const aParts = meaningParts(cnA);
+            const bParts = meaningParts(cnB);
+            const aKey = meaningKey(cnA);
+            const bKey = meaningKey(cnB);
+
+            if (!aKey || !bKey) return false;
+            if (aKey === bKey || aKey.includes(bKey) || bKey.includes(aKey)) return true;
+
+            // 如果某个释义短语完整出现在另一个选项中，也视为冲突。
+            for (const a of aParts) {
+                for (const b of bParts) {
+                    const aa = a.replace(/[\s“”‘’'".!！？?：:]/g, '');
+                    const bb = b.replace(/[\s“”‘’'".!！？?：:]/g, '');
+                    if (aa && bb && (aa === bb || aa.includes(bb) || bb.includes(aa))) return true;
+                }
+            }
+            return false;
+        }
+
         function getDistractors(correctWord, allWords, count = 3) {
             const candidates = allWords
-                .filter(w => w.en !== correctWord.en && w.cn !== correctWord.cn)
-                .map(w => ({ word: w, score: distractorScore(correctWord, w) }));
+                .filter(w => w.en !== correctWord.en && !meaningConflict(w.cn, correctWord.cn))
+                .map(w => ({ word: w, score: distractorScore(correctWord, w) }))
+                .sort((a, b) => b.score - a.score || Math.random() - 0.5);
 
-            // 优先从高相似度候选中选择，避免出现“电脑 / 跑步 / 天气”这种一眼可排除的答案。
-            candidates.sort((a, b) => b.score - a.score || Math.random() - 0.5);
-
+            // 逐个加入干扰项：不仅排除重复，还排除“一个选项包含另一个选项”的情况。
+            // 同时继续优先使用高相似度候选，让错误答案具有迷惑性。
             const strongPool = candidates.filter(x => x.score >= 12);
             const pool = strongPool.length >= count ? strongPool : candidates;
-            const topPoolSize = Math.min(pool.length, Math.max(18, count * 8));
-            return shuffle(pool.slice(0, topPoolSize)).slice(0, count).map(x => x.word.cn);
+            const topPoolSize = Math.min(pool.length, Math.max(30, count * 10));
+            const selected = [];
+
+            for (const item of shuffle(pool.slice(0, topPoolSize))) {
+                if (selected.some(x => meaningConflict(x.word.cn, item.word.cn))) continue;
+                selected.push(item);
+                if (selected.length >= count) break;
+            }
+
+            // 极端情况下补充候选，但仍然执行冲突检查。
+            if (selected.length < count) {
+                for (const item of candidates) {
+                    if (selected.some(x => x.word.en === item.word.en || meaningConflict(x.word.cn, item.word.cn))) continue;
+                    selected.push(item);
+                    if (selected.length >= count) break;
+                }
+            }
+
+            return selected.slice(0, count).map(x => x.word.cn);
         }
 
         function generateOptions(correctWord, allWords) {
