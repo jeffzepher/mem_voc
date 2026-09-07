@@ -768,7 +768,7 @@
 
     <script>
         // ================================================================
-        //  数据：631 个去重后的单词
+        //  数据：去重后的单词
         // ================================================================
         const WORDS_DATA = [
             {
@@ -3672,15 +3672,27 @@
         }
 
         // ---------- 本地 Cookie 持久化 ----------
-        const STORAGE_KEY = 'vocab_mcq_state_v2';
-        function cookieSet(name, value, days = 365) {
+        const STORAGE_KEY = 'vocab_mcq_state_v3';
+        const ERROR_COOKIE_KEY = 'vocab_mcq_errors_v3';
+        const COOKIE_DAYS = 30;
+
+        // 所有学习进度都保存到 Cookie，默认保留 30 天。
+        // 使用 expires + max-age 双保险，并统一 path=/。
+        function cookieSet(name, value, days = COOKIE_DAYS) {
             const encoded = encodeURIComponent(value);
-            document.cookie = `${name}=${encoded}; max-age=${days * 86400}; path=/; SameSite=Lax`;
+            const maxAge = Math.max(0, Math.floor(days * 86400));
+            const expires = new Date(Date.now() + maxAge * 1000).toUTCString();
+            document.cookie = `${name}=${encoded}; expires=${expires}; max-age=${maxAge}; path=/; SameSite=Lax`;
+        }
+        function cookieDelete(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/; SameSite=Lax`;
         }
         function cookieGet(name) {
             const prefix = name + '=';
-            const found = document.cookie.split('; ').find(row => row.startsWith(prefix));
-            return found ? decodeURIComponent(found.slice(prefix.length)) : null;
+            const parts = document.cookie ? document.cookie.split(';') : [];
+            const found = parts.map(v => v.trim()).find(row => row.startsWith(prefix));
+            if (!found) return null;
+            try { return decodeURIComponent(found.slice(prefix.length)); } catch (_) { return null; }
         }
         function encodeBits(bits) {
             const bytes = new Uint8Array(Math.ceil(bits.length / 8));
@@ -3703,40 +3715,86 @@
         }
         function saveLocalState() {
             if (!state.words.length) return;
-            const indexMap = new Map(state.words.map((w, i) => [w.en, i]));
 
-            // 重要：错题本是普通练习的“视图”，不能用错题本当前题目覆盖/清空
-            // 普通练习已经完成的记录。先读取已有记录，再只覆盖当前正在保存的题目。
+            const indexMap = new Map(state.words.map((w, i) => [w.en, i]));
             const saved = loadLocalState();
             const correct = saved ? decodeBits(saved.c, state.words.length) : state.words.map(() => false);
             const wrong = saved ? decodeBits(saved.w, state.words.length) : state.words.map(() => false);
 
+            // 错题集合单独维护：正常答对不会误删历史错题；
+            // 只有在“错题本”中重新答对时，才从错题本移除。
+            let errorBits = saved ? decodeBits(saved.e, state.words.length) : state.words.map(() => false);
+
             state.questions.forEach(q => {
                 const i = indexMap.get(q.en);
                 if (i === undefined || q.result === null) return;
-                correct[i] = q.result === 'correct';
-                wrong[i] = q.result === 'wrong';
+
+                if (state.isReviewMode) {
+                    // 错题本模式：答对=移除，答错=保留。
+                    if (q.result === 'correct') errorBits[i] = false;
+                    if (q.result === 'wrong') errorBits[i] = true;
+                } else {
+                    // 普通练习：记录答题结果；若答错则加入错题本。
+                    if (q.result === 'correct') {
+                        correct[i] = true;
+                        wrong[i] = false;
+                    } else if (q.result === 'wrong') {
+                        correct[i] = false;
+                        wrong[i] = true;
+                        errorBits[i] = true;
+                    }
+                }
             });
 
-            const errorBits = state.words.map(w => state.errorWords.some(e => e.en === w.en));
+            // 以 errorBits 为唯一来源重建错题集合，避免刷新后丢失。
+            state.errorWords = state.words.filter((_, i) => errorBits[i]);
+
             const payload = {
-                v: 2, n: state.words.length,
-                first: state.words[0].en, last: state.words[state.words.length - 1].en,
-                c: encodeBits(correct), w: encodeBits(wrong), e: encodeBits(errorBits),
-                // 不让“错题本模式”成为刷新后的永久模式；记录模式仅用于当前会话。
-                mode: state.isReviewMode, idx: state.currentIndex
+                v: 3,
+                n: state.words.length,
+                first: state.words[0].en,
+                last: state.words[state.words.length - 1].en,
+                c: encodeBits(correct),
+                w: encodeBits(wrong),
+                e: encodeBits(errorBits),
+                // 当前模式只用于恢复页面位置；错题数据本身独立保存。
+                mode: state.isReviewMode,
+                idx: state.currentIndex,
+                savedAt: Date.now()
             };
-            const value = JSON.stringify(payload);
-            cookieSet(STORAGE_KEY, value);
+
+            cookieSet(STORAGE_KEY, JSON.stringify(payload), COOKIE_DAYS);
+            // 再单独保存一次错题集合，避免任何模式切换影响错题本。
+            cookieSet(ERROR_COOKIE_KEY, encodeBits(errorBits), COOKIE_DAYS);
         }
         function loadLocalState() {
             const raw = cookieGet(STORAGE_KEY);
-            if (!raw) return null;
-            try {
-                const p = JSON.parse(raw);
-                if (p.v !== 2 || p.n !== state.words.length || p.first !== state.words[0].en || p.last !== state.words[state.words.length - 1].en) return null;
-                return p;
-            } catch (_) { return null; }
+            let p = null;
+            if (raw) {
+                try {
+                    p = JSON.parse(raw);
+                } catch (_) {
+                    p = null;
+                }
+            }
+
+            // 如果主 Cookie 正常存在但版本是旧版，兼容读取 v2。
+            if (!p) {
+                const legacyRaw = cookieGet('vocab_mcq_state_v2');
+                if (legacyRaw) {
+                    try { p = JSON.parse(legacyRaw); } catch (_) { p = null; }
+                }
+            }
+
+            if (!p || (p.v !== 3 && p.v !== 2) || p.n !== state.words.length ||
+                p.first !== state.words[0].en || p.last !== state.words[state.words.length - 1].en) {
+                return null;
+            }
+
+            // 独立错题 Cookie 优先；这样刷新/切换模式都不会把错题清空。
+            const errorRaw = cookieGet(ERROR_COOKIE_KEY);
+            if (errorRaw) p.e = errorRaw;
+            return p;
         }
 
         function buildQuestions(wordList, allWords) {
@@ -4084,7 +4142,7 @@
                     state.currentIndex++;
                     renderAll();
                     saveLocalState();
-                }, 1000);
+                }, 500);
             }
         }
 
@@ -4121,7 +4179,9 @@
                 state.errorWords = [];
                 state.isReviewMode = false;
                 state.questions = [];
-                cookieSet(STORAGE_KEY, '', -1);
+                cookieDelete(STORAGE_KEY);
+                cookieDelete(ERROR_COOKIE_KEY);
+                cookieDelete('vocab_mcq_state_v2');
                 initPractice();
                 saveLocalState();
             }
