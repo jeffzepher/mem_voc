@@ -21903,6 +21903,60 @@ const EXAMPLE_DATA = {"verb:accept":"Accept an argument.","verb:achieve":"They c
             group.forEach(candidate => { if (candidate !== word) NOUN_CONFUSION_INDEX.get(word).add(candidate); });
         }));
 
+        // 更细的“语义小组”：名词题优先从真正容易混淆的词里选，而不是只看大类别。
+        // 这些词全部来自现有 NOUNS_DATA；找不到小组时才退回原来的类别匹配。
+        const NOUN_SEMANTIC_GROUPS = [
+            ['way','method','means','approach','manner','style','form','type'],
+            ['reason','cause','factor','basis','purpose','motive','excuse'],
+            ['result','effect','outcome','consequence','impact','influence'],
+            ['chance','opportunity','possibility','probability','risk','prospect'],
+            ['problem','issue','difficulty','trouble','challenge','crisis','conflict'],
+            ['answer','solution','response','reply','reaction','explanation'],
+            ['idea','thought','opinion','view','belief','concept','theory','notion'],
+            ['fact','evidence','proof','information','data','detail','record'],
+            ['question','request','demand','claim','argument','statement','remark'],
+            ['choice','option','decision','selection','preference','alternative'],
+            ['plan','goal','aim','purpose','target','strategy','tactic','policy'],
+            ['value','quality','feature','character','nature','property','condition'],
+            ['amount','number','quantity','total','rate','level','degree','scale'],
+            ['price','cost','fee','charge','expense','income','profit','loss'],
+            ['job','work','career','profession','occupation','position','role','task'],
+            ['school','class','course','lesson','subject','study','education','training'],
+            ['student','teacher','professor','scholar','learner','pupil','researcher'],
+            ['book','article','report','story','text','paper','document','chapter'],
+            ['word','term','name','phrase','language','speech','message','sentence'],
+            ['family','team','group','community','society','organization','company','association'],
+            ['government','state','authority','agency','department','council','committee','administration'],
+            ['law','rule','policy','regulation','right','duty','justice','crime'],
+            ['health','disease','illness','pain','injury','treatment','medicine','care'],
+            ['body','head','face','hand','arm','leg','heart','brain','back'],
+            ['feeling','emotion','love','hope','fear','anger','joy','trust','interest'],
+            ['home','house','room','building','office','school','place','area'],
+            ['city','town','village','country','region','district','community','neighborhood'],
+            ['road','street','path','route','way','track','bridge','highway'],
+            ['car','vehicle','truck','bus','train','plane','ship','boat'],
+            ['phone','computer','machine','device','equipment','tool','system','technology'],
+            ['food','meal','dish','meat','bread','fruit','vegetable','drink'],
+            ['water','air','fire','earth','light','energy','weather','climate'],
+            ['time','period','moment','day','week','month','year','hour','minute'],
+            ['event','experience','activity','action','behavior','practice','process'],
+            ['change','growth','development','progress','increase','decline','improvement'],
+            ['success','achievement','victory','failure','loss','progress','performance']
+        ];
+        const NOUN_SEMANTIC_INDEX = new Map();
+        NOUN_SEMANTIC_GROUPS.forEach((group, gi) => group.forEach(word => {
+            if (!NOUN_SEMANTIC_INDEX.has(word)) NOUN_SEMANTIC_INDEX.set(word, new Set());
+            NOUN_SEMANTIC_INDEX.get(word).add(gi);
+        }));
+
+        function sameNounSemanticGroup(a, b) {
+            const ga = NOUN_SEMANTIC_INDEX.get(a.en);
+            const gb = NOUN_SEMANTIC_INDEX.get(b.en);
+            if (!ga || !gb) return false;
+            for (const id of ga) if (gb.has(id)) return true;
+            return false;
+        }
+
         function preferredNounWords(word) {
             if (NOUN_PRIORITY_POOLS[word.en]) return new Set(NOUN_PRIORITY_POOLS[word.en]);
             return NOUN_CONFUSION_INDEX.get(word.en) || null;
@@ -21913,16 +21967,18 @@ const EXAMPLE_DATA = {"verb:accept":"Accept an argument.","verb:achieve":"They c
         }
 
         function nounDistractorScore(correctWord, candidateWord) {
-            const sameCategory = effectiveNounCategory(correctWord) === effectiveNounCategory(candidateWord) ? 120 : 0;
-            const sameLevel = correctWord.level === candidateWord.level ? 34 : 0;
+            const sameSemanticGroup = sameNounSemanticGroup(correctWord, candidateWord) ? 260 : 0;
+            const sameCategory = effectiveNounCategory(correctWord) === effectiveNounCategory(candidateWord) ? 95 : 0;
+            const semanticCn = chineseMeaningSimilarity(correctWord.cn || '', candidateWord.cn || '') * 10;
+            const sameLevel = correctWord.level === candidateWord.level ? 28 : 0;
             const frequencyGap = Math.abs((correctWord.frequency || 0) - (candidateWord.frequency || 0));
-            const frequencyFit = Math.max(0, 28 - frequencyGap * 24);
+            const frequencyFit = Math.max(0, 30 - frequencyGap * 20);
             const rankGap = Math.abs((correctWord.rank || 0) - (candidateWord.rank || 0));
-            const rankFit = Math.max(0, 18 - rankGap / 250);
+            const rankFit = Math.max(0, 20 - rankGap / 220);
             const lenA = cnTerms(correctWord.cn).join('').length;
             const lenB = cnTerms(candidateWord.cn).join('').length;
-            const lengthFit = Math.max(0, 8 - Math.abs(lenA - lenB));
-            return sameCategory + sameLevel + frequencyFit + rankFit + lengthFit;
+            const lengthFit = Math.max(0, 10 - Math.abs(lenA - lenB));
+            return sameSemanticGroup + sameCategory + semanticCn + sameLevel + frequencyFit + rankFit + lengthFit;
         }
 
         function getDistractors(correctWord, allWords, count = 3) {
@@ -21947,10 +22003,10 @@ const EXAMPLE_DATA = {"verb:accept":"Accept an argument.","verb:achieve":"They c
             // 优先从高相似度候选中选择，避免出现“电脑 / 跑步 / 天气”这种一眼可排除的答案。
             candidates.sort((a, b) => b.score - a.score || Math.random() - 0.5);
 
-            const strongThreshold = correctWord.pos === 'noun' ? 105 : 12;
+            const strongThreshold = correctWord.pos === 'noun' ? 125 : 12;
             const strongPool = candidates.filter(x => x.score >= strongThreshold);
             const pool = strongPool.length >= count ? strongPool : candidates;
-            const preferredPoolSize = correctWord.pos === 'noun' ? 18 : 24;
+            const preferredPoolSize = correctWord.pos === 'noun' ? 12 : 24;
             const topPoolSize = Math.min(pool.length, Math.max(preferredPoolSize, count * 12));
             const unique = [];
             const usedMeanings = new Set([correctWord.cn.trim()]);
@@ -22342,7 +22398,7 @@ const EXAMPLE_DATA = {"verb:accept":"Accept an argument.","verb:achieve":"They c
             const wordEl = document.getElementById('wordDisplay');
             wordEl.textContent = q.en;
             wordEl.className = 'word-display';
-            renderExampleSentence(EXAMPLE_DATA[`${state.activeType}:${q.en}`] || '', q.en);
+            renderExampleSentence(getExampleSentence(q, state.activeType), q.en);
 
             document.getElementById('qNumber').textContent = `第 ${idx + 1} 题`;
 
@@ -22391,6 +22447,179 @@ const EXAMPLE_DATA = {"verb:accept":"Accept an argument.","verb:achieve":"They c
 
             document.getElementById('prevBtn').disabled = (idx === 0);
             document.getElementById('nextBtn').disabled = (idx === total - 1);
+        }
+
+        const LOW_QUALITY_EXAMPLE_PATTERNS = [
+            /^The .+ is important\.$/i,
+            /^We used the .+\.$/i,
+            /^We discussed the .+\.$/i,
+            /^The .+ is here\.$/i,
+            /^The .+ started today\.$/i,
+            /^The .+ has value\.$/i,
+            /^The .+ works together\.$/i,
+            /^We visited the .+\.$/i,
+            /^We enjoyed the .+\.$/i,
+            /^We saw the .+\.$/i,
+            /^We observed the .+\.$/i,
+            /^The .+ was clean\.$/i,
+            /^The .+ passed quickly\.$/i
+        ];
+
+        const NOUN_EXAMPLE_TEMPLATES = {
+            '思维与学习': [
+                'The teacher used {w} to explain the idea more clearly.',
+                'Her {w} helped the class understand the problem.',
+                'We learned about {w} through a simple example.',
+                'The lesson gave us a better understanding of {w}.'
+            ],
+            '语言与信息': [
+                'The {w} gave us useful information about what happened.',
+                'She included the {w} in her report for the class.',
+                'The teacher explained the {w} in a clear sentence.',
+                'We read the {w} carefully before answering the question.'
+            ],
+            '人物与社会': [
+                'The {w} spoke with the group after the meeting.',
+                'Everyone listened when the {w} began to speak.',
+                'The {w} helped people in the local community.',
+                'We met the {w} during the school event.'
+            ],
+            '群体与组织': [
+                'The {w} met to discuss the new plan.',
+                'The {w} made a decision after a long discussion.',
+                'Members of the {w} worked toward the same goal.',
+                'The {w} announced its decision this morning.'
+            ],
+            '经济与财产': [
+                'The {w} affected how much money the family could spend.',
+                'They checked the {w} before making a financial decision.',
+                'The company reported the {w} at the end of the month.',
+                'The {w} became an important part of the budget.'
+            ],
+            '情感': [
+                'His {w} was clear from the expression on his face.',
+                'She felt a strong sense of {w} after hearing the news.',
+                'The story filled the audience with {w}.',
+                'It was difficult for him to hide his {w}.'
+            ],
+            '身体与健康': [
+                'The doctor examined the {w} carefully during the visit.',
+                'The {w} caused discomfort, so she went to see a doctor.',
+                'Good habits can help protect your {w}.',
+                'The nurse checked the {w} before giving advice.'
+            ],
+            '饮食': [
+                'They served the {w} with the rest of the meal.',
+                'She prepared the {w} for dinner with her family.',
+                'We tasted the {w} during lunch.',
+                'The {w} was part of a simple homemade meal.'
+            ],
+            '动物': [
+                'We saw the {w} near the field early in the morning.',
+                'The {w} moved quietly as we watched from a distance.',
+                'The children learned about the {w} at the zoo.',
+                'A picture of the {w} appeared in the science book.'
+            ],
+            '地点与环境': [
+                'We arrived at the {w} before the weather changed.',
+                'The {w} was easy to find on the map.',
+                'They spent the afternoon exploring the {w}.',
+                'Many people passed through the {w} that day.'
+            ],
+            '自然与现象': [
+                'The {w} changed the conditions outside very quickly.',
+                'We could clearly see the effects of the {w}.',
+                'Scientists observed the {w} and recorded what happened.',
+                'The {w} became stronger later in the day.'
+            ],
+            '时间': [
+                'The {w} gave us enough time to finish the work.',
+                'We talked about the {w} when planning the schedule.',
+                'The {w} passed more quickly than we expected.',
+                'They chose the {w} carefully before making the plan.'
+            ],
+            '数量与度量': [
+                'The {w} was higher than we expected.',
+                'We checked the {w} before writing the answer.',
+                'The report showed a change in the {w}.',
+                'The teacher asked us to compare the {w} carefully.'
+            ],
+            '过程与变化': [
+                'The {w} happened slowly over several years.',
+                'We could see the {w} clearly in the new results.',
+                'The {w} continued as conditions began to change.',
+                'The report explains how the {w} took place.'
+            ],
+            '事件与经历': [
+                'The {w} changed what happened next.',
+                'Everyone remembered the {w} for a long time.',
+                'The report described the {w} in detail.',
+                'The {w} became an important part of the story.'
+            ],
+            '物品与科技': [
+                'The {w} was ready to use when we needed it.',
+                'She checked the {w} carefully before using it.',
+                'The {w} was kept in a safe place after use.',
+                'We learned how the {w} works in class.'
+            ],
+            '材料与物质': [
+                'The {w} was used to make the final product.',
+                'They tested the {w} before using it in the project.',
+                'The {w} changed when it was heated.',
+                'A small amount of {w} was added to the mixture.'
+            ],
+            '关系与逻辑': [
+                'The {w} between the two ideas became clear after discussion.',
+                'We studied the {w} to understand how the two parts were connected.',
+                'The teacher explained the {w} with a simple example.',
+                'The {w} helped us understand why the result made sense.'
+            ],
+            '性质与特征': [
+                'The {w} made this example different from the others.',
+                'We noticed the {w} as soon as we compared the two objects.',
+                'The teacher asked us to describe the {w} clearly.',
+                'The {w} was easy to recognize in the example.'
+            ],
+            '状态与处境': [
+                'The {w} made the situation harder to deal with.',
+                'They talked about the {w} before deciding what to do.',
+                'The {w} continued until the problem was solved.',
+                'Everyone understood the {w} after hearing the explanation.'
+            ],
+            '行为与活动': [
+                'The {w} took place after everyone was ready.',
+                'We watched the {w} from beginning to end.',
+                'The teacher explained how the {w} should be done.',
+                'The {w} required careful attention from everyone.'
+            ]
+        };
+
+        function stableWordHash(word) {
+            let h = 0;
+            for (let i = 0; i < word.length; i++) h = ((h << 5) - h + word.charCodeAt(i)) | 0;
+            return Math.abs(h);
+        }
+
+        function isLowQualityExample(sentence) {
+            if (!sentence) return true;
+            return LOW_QUALITY_EXAMPLE_PATTERNS.some(re => re.test(sentence.trim()));
+        }
+
+        function buildNounFallbackExample(word) {
+            const templates = NOUN_EXAMPLE_TEMPLATES[effectiveNounCategory(word)] || [
+                'The {w} was a useful example in today\'s lesson.',
+                'We learned the meaning of {w} from the context of the sentence.',
+                'The teacher used {w} in a clear and complete example.',
+                'The {w} became easier to understand after the explanation.'
+            ];
+            return templates[stableWordHash(word.en) % templates.length].replace('{w}', word.en);
+        }
+
+        function getExampleSentence(word, type) {
+            const original = EXAMPLE_DATA[`${type}:${word.en}`] || '';
+            // 动词例句保持原数据；本次只修复名词的模板化、重复例句。
+            if (type !== 'noun') return original;
+            return isLowQualityExample(original) ? buildNounFallbackExample(word) : original;
         }
 
         function renderExampleSentence(sentence, targetWord) {
