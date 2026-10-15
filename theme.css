@@ -1,0 +1,36 @@
+:root{--bg:#f4f6f8;--paper:#ffffff;--ink:#243746;--green:#2b628d;--muted:#586b7b;--line:#d9e1e8;--soft:#eaf0f6;--accent:#895526;--warm:#f5ebde;--red:#a23d34;--wrong:#fbece8;--button:#ffffff;--on:#ffffff;--focus:#ae7828;--success:#286740;--success-bg:#e6f2e8;--tag-s:#3f7a64;--tag-v:#a85d36;--tag-o:#46759a;--tag-c:#89649c;--tag-a:#8e7325;--tag-io:#a85672;--tag-do:#3e7778;color-scheme:light}
+:root[data-theme=eye]{--bg:#e7eee0;--paper:#f1f5e9;--ink:#293c2c;--green:#346346;--muted:#53684f;--line:#c9d5bf;--soft:#dce8d2;--button:#f1f5e9;--warm:#ece9d4;--wrong:#f1e2d9;--success-bg:#dcebd7}
+:root[data-theme=night]{--bg:#151a1e;--paper:#1e262c;--ink:#e2e9e8;--green:#8ecbb6;--muted:#a0afb5;--line:#36434a;--soft:#2b3c38;--accent:#dfb885;--warm:#3c342a;--red:#f4a598;--wrong:#402e2d;--button:#253039;--on:#13231f;--focus:#e6bf77;--success:#9bd2a6;--success-bg:#263c30;--tag-s:#9bcfb2;--tag-v:#e2aa86;--tag-o:#96bcdf;--tag-c:#c2a9de;--tag-a:#d6c07a;--tag-io:#e3a6be;--tag-do:#94cbcb;color-scheme:dark}
+.theme-select{font:14px "Segoe UI","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;max-width:100%;flex-shrink:0}.theme-select:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+body[data-page]{background:var(--bg);color:var(--ink)}
+/* 单词页：保留布局与字号，覆盖所有题目和答题状态的配色。 */
+body[data-page=words] .container{background:var(--paper);border-color:var(--line);box-shadow:0 12px 35px #00000012}
+body[data-page=words] :is(.header,.progress-tabs,.grid-container){border-color:var(--line)}
+body[data-page=words] :is(.header h1,.word-display,.q-number,.stats,.grid-toggle){color:var(--ink)}
+body[data-page=words] :is(.word-count,.progress-text,.example-sentence,.q-number .total,.word-display.empty){color:var(--muted)}
+body[data-page=words] .header a{color:var(--green)!important}
+body[data-page=words] :is(.stats,.question-area,.q-status,.grid-item,.progress-tabs .tab,.option-item .label){background:var(--soft);color:var(--ink);border-color:var(--line)}
+body[data-page=words] :is(.btn-reset,.nav-btn,.speaker-btn,.grid-toggle,.option-item,.word-type-select){background:var(--button);color:var(--ink);border-color:var(--line);box-shadow:none}
+body[data-page=words] .word-type-select{background-image:none;appearance:auto;padding-right:12px}
+body[data-page=words] :is(.btn-reset,.nav-btn,.speaker-btn,.grid-toggle,.option-item):hover:not(:disabled):not(.disabled){background:var(--soft);border-color:var(--green);color:var(--ink)}
+body[data-page=words] :is(.progress-tabs .tab.active,.nav-btn.primary){background:var(--green);border-color:var(--green);color:var(--on)}
+body[data-page=words] .progress-tabs .tab:hover{background:var(--soft)}
+body[data-page=words] .progress-tabs .tab.active:hover{background:var(--green)}
+body[data-page=words] :is(.option-item.correct,.option-item.reveal-correct,.q-status.answered){background:var(--success-bg);border-color:var(--success);color:var(--ink)}
+body[data-page=words] :is(.option-item.wrong,.q-status.wrong-status,.error-book-btn){background:var(--wrong);border-color:var(--red);color:var(--red)}
+body[data-page=words] :is(.stats .correct){color:var(--success)}
+body[data-page=words] :is(.stats .wrong,.example-target,.error-history,.storage-notice){color:var(--red)}
+body[data-page=words] :is(.grid-item.correct,.option-item.correct .label,.option-item.reveal-correct .label,.answer-toast){background:var(--success);color:var(--on)}
+body[data-page=words] :is(.grid-item.wrong,.option-item.wrong .label,.error-book-btn .count,.answer-toast.wrong-toast){background:var(--red);color:var(--on)}
+body[data-page=words] .grid-item.current{border-color:var(--green);box-shadow:0 0 0 2px var(--soft)}
+body[data-page=words] .permanent-review-bar{background:var(--soft);color:var(--ink)}
+body[data-page=words] .permanent-book-btn[aria-pressed=true]{background:var(--green);color:var(--on);border-color:var(--green)}
+/* 句子页：所有成分颜色在夜间提高亮度，仍保留原来的字号。 */
+body[data-page=sentence] .brand span,body[data-page=sentence] :is(.primary,.levels button.active){background:var(--green);color:var(--on)}
+body[data-page=sentence] .word{background:var(--button);border-color:var(--line)}
+body[data-page=sentence] .word.selected{background:var(--soft);outline-color:var(--green)}
+body[data-page=sentence] .word.assigned{background:color-mix(in srgb,var(--tag) 10%,var(--paper))}
+body[data-page=sentence] :is(.hint,.progress){background:var(--soft)}
+body[data-page=sentence] :is(.role,.secondary){background:var(--button);color:var(--ink)}
+body[data-page=sentence] .score,body[data-page=sentence] a{color:var(--green)}
+@media(max-width:600px){body[data-page=sentence] header{align-items:flex-start;gap:14px;flex-wrap:wrap}body[data-page=sentence] header nav{gap:12px;flex-wrap:wrap;align-items:center}body[data-page=words] .header-actions{flex-wrap:wrap}body[data-page=words] .theme-select{margin-right:4px}}
