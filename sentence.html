@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>句子实验室 · 句子成分练习</title>
+<script src="theme.js"></script>
+<style>
+:root{--ink:#203c37;--muted:#72817b;--green:#216650;--line:#dfe7df;--paper:#fffef9}*{box-sizing:border-box}body{margin:0;background:#f3f5ed;color:var(--ink);font-family:"Segoe UI","Microsoft YaHei",sans-serif}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.45}button:focus-visible,a:focus-visible{outline:3px solid #d19334;outline-offset:4px}header{max-width:1120px;margin:auto;padding:28px 24px;display:flex;justify-content:space-between;align-items:center}a{color:var(--green);text-decoration:none;font-size:14px}.brand{font-weight:750;letter-spacing:1px}.brand span{display:inline-grid;place-items:center;background:var(--green);color:white;border-radius:10px;width:32px;height:32px;margin-right:10px}main{max-width:1050px;margin:24px auto 60px;padding:0 24px}.eyebrow{font-size:12px;letter-spacing:3px;color:var(--green);font-weight:700}h1{font-size:38px;letter-spacing:-1px;margin:12px 0}p{line-height:1.8}.intro{color:var(--muted);margin-bottom:28px}.levels{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}.levels button{background:transparent;border:1px solid var(--line);padding:11px 22px;border-radius:30px;color:var(--muted)}.levels button.active{background:var(--green);color:white;border-color:var(--green)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:22px}.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:28px}.meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:12px}.badge{color:var(--green);font-weight:700}.sentence{display:flex;gap:8px;flex-wrap:wrap;margin:30px 0 22px;align-items:center;min-height:90px}.word{position:relative;border:1px solid #dce3d9;background:white;border-radius:10px;padding:14px 12px 10px;min-width:46px;color:var(--ink);font-size:23px;font-family:Georgia,serif;transition:background .15s,transform .15s}.word.selected{outline:2px solid var(--green);background:#eaf3e7;transform:translateY(-3px)}.word.assigned{border-bottom:4px solid var(--tag);background:color-mix(in srgb,var(--tag) 9%,white)}.word small{display:block;font:700 10px "Segoe UI",sans-serif;color:var(--tag);height:15px;margin-top:7px}.translation{color:var(--muted);font-size:14px;border-bottom:1px solid var(--line);padding-bottom:22px}.hint{background:#f0f3e9;padding:12px 15px;font-size:13px;border-radius:9px;line-height:1.7}.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.role{background:white;border:1px solid var(--line);border-radius:9px;padding:10px 14px;color:var(--ink)}.role b{color:var(--tag);margin-right:6px}.status{font-size:12px;color:var(--muted);min-height:20px;margin:18px 0}.actions{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:20px}.primary{background:var(--green);border:0;color:white;border-radius:10px;padding:12px 24px}.secondary{border:1px solid var(--line);background:white;color:var(--ink);border-radius:10px;padding:11px 16px}.guide h2{font-size:16px;margin-top:0}.guide ol{padding-left:20px;font-size:13px;color:var(--muted);line-height:2}.legend{display:grid;gap:12px;margin-top:24px}.legend div{font-size:12px;color:var(--muted)}.legend b{display:inline-block;width:30px;color:var(--tag)}.note{font-size:12px;color:var(--muted);line-height:1.8;margin-top:22px}.result{margin-top:22px}.result h2{margin-top:0;font-size:22px}.answer{border-top:1px solid var(--line);padding:15px 0}.answer p{font-size:13px;color:var(--muted);margin:7px 0 0}.answer strong{font-size:15px}.score{color:var(--green)}.progress{height:4px;background:#e5eadf;border-radius:4px;margin-top:17px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green);transition:width .2s}@media(max-width:760px){main{margin-top:10px;padding:0 16px}header{padding:20px 16px}.layout{grid-template-columns:1fr}.guide{order:2}.card{padding:21px}h1{font-size:30px}.word{font-size:21px}.sentence{margin-top:23px}.legend{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="stylesheet" href="theme.css">
+<style>
+header{padding:20px 24px}header nav{display:flex;gap:16px;align-items:center}main{margin:10px auto 40px}.intro{margin:0 0 20px}.layout{display:block}.card{border-radius:14px;padding:24px}.legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin:18px 0 0}.legend b{width:auto;margin-right:7px}.instructions{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}.instructions summary{font-size:13px;color:var(--muted);cursor:pointer}.instructions .note{margin-top:10px}.sentence{margin-top:24px}@media(max-width:760px){.card{padding:21px}header{padding:20px 16px}}
+</style>
+</head>
+<body data-page="sentence">
+<header><div class="brand"><span>句</span>句子实验室</div><nav><a href="phrasal.html">短语动词</a><a href="index.html">单词练习</a><select class="theme-select" aria-label="显示模式"><option value="normal">正常模式</option><option value="eye">护眼模式</option><option value="night">关灯模式</option></select></nav></header>
+<main><p class="intro">点选单词 → 标记成分 → 提交查看解析 · 每个难度 60 题</p>
+<nav class="levels" aria-label="练习难度" id="levels"></nav>
+<div class="layout"><section><div class="card"><div class="meta"><span class="badge" id="levelName"></span><span id="counter"></span></div><div class="progress"><span id="progress"></span></div><div class="sentence" id="sentence" aria-label="点选句中的单词"></div><p class="translation" id="translation"></p><div class="hint" id="hint"></div><div class="tools" id="tools" aria-label="成分标记"></div><div class="status" id="status" role="status" aria-live="polite"></div><div class="actions"><button class="secondary" id="reset">清空标记</button><div><button class="secondary" id="previous">上一题</button> <button class="primary" id="submit">提交答案</button> <button class="primary" id="next" hidden>下一题 →</button></div></div></div><section class="card result" id="result" aria-live="polite" hidden></section></section>
+<div class="legend" id="legend" aria-label="成分缩写"></div><details class="instructions"><summary>标记规则</summary><p class="note">短语完整标记，包含冠词和修饰词。再次点击取消选择；选中已标记单词可修改归类。标点不计分。</p><p class="note">复杂题按主句层级分析，从句整体归为一个成分。</p></details></div></main>
+<script src="sentence-bank.js"></script>
+<script>
+const roles={S:['主语','var(--tag-s)'],V:['谓语','var(--tag-v)'],O:['宾语','var(--tag-o)'],C:['补语 / 表语','var(--tag-c)'],A:['状语','var(--tag-a)'],IO:['间接宾语','var(--tag-io)'],DO:['直接宾语','var(--tag-do)'],X:['连接词','#7b8291']};
+// 每个分组是完整的句法成分；标点跟随单词显示，不单独评分。
+const bank=[
+{name:'简单',sub:'基础句型',items:[
+{parts:[['S','Birds','Birds 是动作的发出者，作主语。'],['V','sing.','sing 是不及物动词，独立构成谓语。']],zh:'鸟儿歌唱。',tip:'主谓结构：找出“谁”和“做什么”。'},
+{parts:[['S','The little girl','The little girl 是完整的名词短语，作主语；The 和 little 一并归入主语。'],['V','reads','reads 是谓语动词。'],['O','a book.','a book 是 reads 的对象，作宾语。']],zh:'这个小女孩读一本书。',tip:'主谓宾结构：冠词、形容词跟随它们修饰的名词归类。'},
+{parts:[['S','The soup','The soup 是被描述的主体，作主语。'],['V','smells','smells 在这里是系动词，意为“闻起来”。'],['C','delicious.','delicious 描述主语的性质，作表语。']],zh:'这汤闻起来很香。',tip:'本练习将系动词标为 V，将表语标为 C。'},
+{parts:[['S','My brother','My brother 是主语。'],['V','runs','runs 是谓语动词。'],['A','every morning.','every morning 表示动作发生的时间，作时间状语。']],zh:'我哥哥每天早上跑步。',tip:'思考：哪些词回答“什么时候”？'}]},
+{name:'中级',sub:'短语与扩展句型',items:[
+{parts:[['S','Our teacher','Our teacher 是主语。'],['V','gave','gave 是谓语动词，后接两个宾语。'],['IO','us','us 表示接受者，作间接宾语。'],['DO','some useful advice.','some useful advice 是给予的事物，作直接宾语。']],zh:'老师给了我们一些有用的建议。',tip:'双宾语结构：给了“谁”（IO）和“什么”（DO）？'},
+{parts:[['S','They','They 是主语。'],['V','painted','painted 是谓语动词。'],['O','the door','the door 是动作对象，作宾语。'],['C','blue.','blue 描述门被漆完后的颜色，作宾语补足语。']],zh:'他们把门漆成了蓝色。',tip:'C 也可表示宾语补足语，用来补充说明宾语。'},
+{parts:[['A','After lunch,','After lunch 是介词短语，作时间状语。'],['S','the children','the children 是主语。'],['V','played','played 是谓语动词。'],['A','in the garden.','in the garden 表示地点，作地点状语。']],zh:'午饭后，孩子们在花园里玩耍。',tip:'同一种成分可以出现多次；句首的短语也可能是状语。'},
+{parts:[['S','The woman in the red coat','in the red coat 修饰 woman，整个名词短语共同作主语。'],['V','is waiting','is waiting 是现在进行时的完整谓语，助动词也标为 V。'],['A','outside.','outside 表示地点，作状语。']],zh:'穿红色外套的女士正在外面等候。',tip:'按句子成分分析，主语内部的修饰语与主语一起标记。'}]},
+{name:'复杂',sub:'从句与非谓语',items:[
+{parts:[['A','Although it was raining,','Although 引导让步状语从句，整个从句在主句中作状语。'],['S','we','we 是主句主语。'],['V','continued','continued 是主句谓语动词。'],['O','our journey.','our journey 是 continued 的宾语。']],zh:'尽管下着雨，我们仍继续旅程。',tip:'按主句层级标记：Although 引导的整个从句归为 A。'},
+{parts:[['S','The book that you recommended','that you recommended 是修饰 book 的定语从句，与 The book 整体构成主语。'],['V','is','is 是主句的系动词。'],['C','very interesting.','very interesting 描述主语，整个形容词短语作表语。']],zh:'你推荐的那本书很有趣。',tip:'定语从句归入它修饰的主句成分，本题不拆分从句内部。'},
+{parts:[['S','What she said','What she said 是主语从句，整体作主句主语。'],['V','made','made 是使役动词，作主句谓语。'],['O','everyone','everyone 是 made 的宾语。'],['C','happy.','happy 补充说明宾语 everyone 的状态，作宾语补足语。']],zh:'她说的话让每个人都很开心。',tip:'先找主句谓语，再看前面的从句在主句中承担什么角色。'},
+{parts:[['A','To improve his English,','To improve his English 是不定式短语，说明目的，作目的状语。'],['S','Tom','Tom 是主句主语。'],['V','believes','believes 是主句谓语动词。'],['O','that he should practice every day.','that 引导宾语从句，整个从句是 believes 的宾语。']],zh:'为了提高英语水平，汤姆认为自己应该每天练习。',tip:'目的不定式整体标为 A；that 引导的宾语从句整体标为 O。'}]}
+];
+extendSentenceBank(bank);
+let level=0,index=0,selected=new Set(),assigned=[],submitted=false,notice='';
+const $=id=>document.getElementById(id);
+function current(){return bank[level].items[index]}
+function tokens(){return current().parts.flatMap(([role,phrase])=>phrase.split(' ').map(text=>({text,role})))}
+function start(){selected.clear();assigned=Array(tokens().length).fill(null);submitted=false;notice='';$('result').hidden=true;render()}
+function render(){
+ $('levels').innerHTML=bank.map((l,i)=>`<button class="${i===level?'active':''}" aria-pressed="${i===level}" data-level="${i}">${String(i+1).padStart(2,'0')} · ${l.name}</button>`).join('');
+ $('levelName').textContent=bank[level].name+' / '+bank[level].sub;$('counter').textContent=`练习 ${index+1} / ${bank[level].items.length}`;
+ $('sentence').innerHTML=tokens().map((t,i)=>`<button class="word ${selected.has(i)?'selected':''} ${assigned[i]?'assigned':''}" style="--tag:${assigned[i]?roles[assigned[i]][1]:'#aaa'}" data-word="${i}" aria-pressed="${selected.has(i)}" aria-label="${t.text}，${assigned[i]||'未标记'}" ${submitted?'disabled':''}>${t.text}<small>${assigned[i]||'·'}</small></button>`).join('');
+ $('translation').textContent=current().zh;$('hint').textContent=current().tip;
+ const activeRoles=Object.keys(roles).filter(r=>r!=='X');
+ $('tools').innerHTML=activeRoles.map(r=>`<button class="role" style="--tag:${roles[r][1]}" data-role="${r}" ${!selected.size||submitted?'disabled':''}><b>${r}</b>${roles[r][0]}</button>`).join('')+`<button class="role" data-role="clear" ${!selected.size||submitted?'disabled':''}>取消标记</button><button class="role" data-role="deselect" ${!selected.size||submitted?'disabled':''}>取消选择</button>`;
+ const count=assigned.filter(Boolean).length;$('progress').style.width=`${count/assigned.length*100}%`;
+ $('status').textContent=notice||(submitted?'已提交 · 下方查看答案与解析':`已标记 ${count} / ${assigned.length} 个单词${selected.size?' · 已选择 '+selected.size+' 个单词':''}`);
+ $('submit').hidden=submitted;$('next').hidden=!submitted;$('next').textContent=index===bank[level].items.length-1?'再练一轮 ↻':'下一题 →';$('previous').disabled=index===0;$('reset').textContent=submitted?'重新作答':'清空标记';
+}
+$('levels').onclick=e=>{const b=e.target.closest('[data-level]');if(b){level=Number(b.dataset.level);index=0;start()}};
+$('sentence').onclick=e=>{const b=e.target.closest('[data-word]');if(!b||submitted)return;const i=Number(b.dataset.word);selected.has(i)?selected.delete(i):selected.add(i);notice='';render()};
+$('tools').onclick=e=>{const b=e.target.closest('[data-role]');if(!b||submitted||!selected.size)return;const role=b.dataset.role;if(role!=='deselect')selected.forEach(i=>assigned[i]=role==='clear'?null:role);selected.clear();notice='';render()};
+$('reset').onclick=start;$('previous').onclick=()=>{if(index>0){index--;start()}};$('next').onclick=()=>{index=(index+1)%bank[level].items.length;start()};
+$('submit').onclick=()=>{
+ if(assigned.some(r=>!r)){notice='还有未标记的单词，请全部归类后再提交。';render();return}
+ submitted=true;selected.clear();const ts=tokens(),correct=ts.filter((t,i)=>t.role===assigned[i]).length;render();
+ let offset=0;$('result').innerHTML=`<h2>${correct===ts.length?'分析正确！':'一起看看句子结构'} <span class="score">${Math.round(correct/ts.length*100)} 分</span></h2><p class="note">按单词计分：${correct} / ${ts.length} 个单词正确。以下为正确答案。</p>`+current().parts.map(([role,phrase,explain])=>{const n=phrase.split(' ').length;const mine=assigned.slice(offset,offset+n);offset+=n;const ok=mine.every(r=>r===role);return `<div class="answer"><strong style="color:${roles[role][1]}">${role} · ${roles[role][0]}：${phrase}</strong><p>${ok?'✓ 标记正确':'需调整 · 你的标记：'+phrase.split(' ').map((w,i)=>w+' ['+mine[i]+']').join(' ' )}</p><p>${explain}</p></div>`}).join('');$('result').hidden=false;
+};
+$('legend').innerHTML=Object.entries(roles).filter(([r])=>r!=='X').map(([r,[name,color]])=>`<div style="--tag:${color}"><b>${r}</b>${name}</div>`).join('');start();
+</script>
+</body></html>
