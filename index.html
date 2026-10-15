@@ -755,6 +755,23 @@
             .nav-btn { min-width: 0; flex: 1; min-height: 48px; padding: 11px 12px; font-size: 15px; }
             .grid-bar { justify-content: center; }
         }
+        .permanent-review-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px; margin: 12px 0; padding: 12px 16px;
+            background: #f2f0ff; border-radius: 14px; color: #5a478c; font-size: 14px;
+        }
+        .permanent-review-bar[hidden], .error-history[hidden], .storage-notice[hidden] { display: none; }
+        .error-history { margin: 0 0 12px; color: #b45a45; font-size: 14px; font-weight: 600; }
+        .storage-notice { margin: 10px 0; color: #a3462f; font-size: 14px; }
+        .permanent-book-btn { border-color: #b8a7db; color: #654995; background: #f6f1ff; }
+        .header-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; width: 100%; }
+        .header-summary { display: flex; align-items: center; gap: 12px; }
+        .word-count { color: #6b7a8a; font-size: 15px; white-space: nowrap; }
+        .header-summary .stats { white-space: nowrap; }
+        @media (max-width: 640px) {
+            .header-summary { gap: 8px; }
+            .word-count { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -763,24 +780,30 @@
         <div class="answer-toast" id="answerToast" role="status" aria-live="polite"></div>
         <!-- 顶部 -->
 		<div class="header">
-			<h1>
-				📘 单词选择题
-				<small id="wordCountLabel">共 <span id="wordCountNum">631</span> 词</small>
-			</h1>
+            <div class="header-title-row">
+                <h1>📘 单词选择题</h1>
+                <div class="header-summary">
+                    <span class="word-count" id="wordCountLabel">共 <span id="wordCountNum">631</span> 词</span>
+                    <div class="stats">
+					<span>📝 已做 <span id="doneCount">0</span></span>
+					<span class="correct">✅ <span id="correctCount">0</span></span>
+					<span class="wrong">❌ <span id="wrongCount">0</span></span>
+				</div>
+                </div>
+            </div>
 			<div class="header-actions">
 				<select class="word-type-select" id="wordTypeSelect" aria-label="选择词性">
 					<option value="verb">动词</option>
 					<option value="noun">名词</option>
 				</select>
-				<div class="stats">
-					<span>📝 已做 <span id="doneCount">0</span></span>
-					<span class="correct">✅ <span id="correctCount">0</span></span>
-					<span class="wrong">❌ <span id="wrongCount">0</span></span>
-				</div>
+
 				<div class="quick-actions">
                     <button class="grid-toggle" id="gridToggle">📊 展开网格</button>
                     <button class="error-book-btn" id="errorBookBtn">
                         📕 错题本 <span class="count" id="errorCount">0</span>
+                    </button>
+                    <button class="error-book-btn permanent-book-btn" id="permanentBookBtn" type="button" aria-pressed="false">
+                        📚 永久错题 <span class="count">0</span>
                     </button>
                     <button class="btn-reset" id="resetBtn">↻ 重置</button>
                     <button class="btn-reset" id="soundToggle" type="button" aria-pressed="false">🔇 声音关</button>
@@ -788,6 +811,11 @@
 			</div>
 		</div>
 
+        <div class="storage-notice" id="storageNotice" role="status" hidden></div>
+        <div class="permanent-review-bar" id="permanentReviewBar" hidden>
+            <span id="permanentReviewInfo"></span>
+            <button class="btn-reset" id="repeatPermanentBtn" type="button">↻ 再练一轮</button>
+        </div>
         <!-- 进度标签 -->
         <div class="progress-tabs" id="progressTabs"></div>
 
@@ -808,6 +836,7 @@
                     <button class="speaker-btn" id="speakWordBtn" type="button" aria-label="朗读当前单词" title="朗读单词">🔊</button>
                 </div>
             </div>
+            <div class="error-history" id="errorHistory" aria-live="polite" hidden></div>
             <div class="example-sentence" id="exampleSentence"></div>
             <div class="options" id="optionsContainer"></div>
         </div>
@@ -24399,6 +24428,8 @@ const EXAMPLE_DATA = {
             currentIndex: 0,
             errorWords: [],
             isReviewMode: false,
+            isPermanentReviewMode: false,
+            permanentErrors: Object.create(null),
             dataLoaded: false,
         };
 
@@ -24569,6 +24600,48 @@ const EXAMPLE_DATA = {
         function errorCookieKey() { return `vocab_mcq_errors_v4_${state.activeType}`; }
         const COOKIE_DAYS = 30;
 
+        // 永久错题按词性独立存储，无过期时间，不参与重置学习进度。
+        function permanentErrorKey() { return `vocab_mcq_permanent_errors_v1_${state.activeType}`; }
+        function savePermanentErrors() {
+            try {
+                localStorage.setItem(permanentErrorKey(), JSON.stringify(state.permanentErrors));
+                document.getElementById('storageNotice').hidden = true;
+            } catch (_) {
+                const notice = document.getElementById('storageNotice');
+                notice.textContent = '当前浏览器无法保存永久错题，请允许本地存储后再练习。本次记录暂保留在页面中。';
+                notice.hidden = false;
+            }
+        }
+        function loadPermanentErrors() {
+            const records = Object.create(null);
+            try {
+                const saved = JSON.parse(localStorage.getItem(permanentErrorKey()) || '{}');
+                if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+                    state.words.forEach(word => {
+                        const count = saved[word.en];
+                        if (Number.isSafeInteger(count) && count > 0) records[word.en] = count;
+                    });
+                }
+            } catch (_) {}
+            state.permanentErrors = records;
+            // 原错题没有历史次数，首次迁入按至少答错过一次记录，以后逐次累加。
+            const saved = loadLocalState();
+            const errors = decodeBits(saved ? saved.e : cookieGet(errorCookieKey()), state.words.length);
+            let migrated = false;
+            state.words.forEach((word, index) => {
+                if (errors[index] && !records[word.en]) {
+                    records[word.en] = 1;
+                    migrated = true;
+                }
+            });
+            if (migrated) savePermanentErrors();
+        }
+        function permanentReviewWords() {
+            return state.words.filter(word => state.permanentErrors[word.en] > 0)
+                .sort((a, b) => state.permanentErrors[b.en] - state.permanentErrors[a.en]);
+        }
+
+
         // 所有学习进度都保存到 Cookie，默认保留 30 天。
         // 使用 expires + max-age 双保险，并统一 path=/。
         function cookieSet(name, value, days = COOKIE_DAYS) {
@@ -24622,7 +24695,10 @@ const EXAMPLE_DATA = {
                 const i = indexMap.get(q.en);
                 if (i === undefined || q.result === null) return;
 
-                if (state.isReviewMode) {
+                if (state.isPermanentReviewMode) {
+                    // 永久复习不改写普通练习进度；答错仍加入原错题本。
+                    if (q.result === 'wrong') errorBits[i] = true;
+                } else if (state.isReviewMode) {
                     // 错题本模式：答对=移除，答错=保留。
                     if (q.result === 'correct') errorBits[i] = false;
                     if (q.result === 'wrong') errorBits[i] = true;
@@ -24652,6 +24728,7 @@ const EXAMPLE_DATA = {
                 e: encodeBits(errorBits),
                 // 当前模式只用于恢复页面位置；错题数据本身独立保存。
                 mode: state.isReviewMode,
+                permanentMode: state.isPermanentReviewMode,
                 idx: state.currentIndex,
                 savedAt: Date.now()
             };
@@ -24712,11 +24789,13 @@ const EXAMPLE_DATA = {
             const wrong = decodeBits(saved.w, state.words.length);
             const errors = decodeBits(saved.e, state.words.length);
             state.errorWords = state.words.filter((_, i) => errors[i]);
-            state.isReviewMode = !!saved.mode && state.errorWords.length > 0;
-            let pool = state.isReviewMode ? [...state.errorWords] : [...state.words];
+            state.isPermanentReviewMode = !!saved.permanentMode && permanentReviewWords().length > 0;
+            state.isReviewMode = !state.isPermanentReviewMode && !!saved.mode && state.errorWords.length > 0;
+            let pool = state.isPermanentReviewMode ? permanentReviewWords() :
+                state.isReviewMode ? [...state.errorWords] : [...state.words];
             state.questions = buildQuestions(pool, state.words);
             // 错题本进入“重新复习”状态时必须允许再次作答，而不是沿用上次的锁定状态。
-            if (!state.isReviewMode) {
+            if (!state.isReviewMode && !state.isPermanentReviewMode) {
                 const statusMap = new Map(state.words.map((w, i) => [w.en, i]));
                 state.questions.forEach(q => {
                     const i = statusMap.get(q.en);
@@ -24728,7 +24807,7 @@ const EXAMPLE_DATA = {
             }
             // 普通练习严格按照 Word 去重后的原始顺序恢复：
             // 已做 N 题 -> 刷新后从第 N+1 题开始。
-            if (!state.isReviewMode) {
+            if (!state.isReviewMode && !state.isPermanentReviewMode) {
                 const completedCount = correct.reduce((sum, v, i) => sum + (v || wrong[i] ? 1 : 0), 0);
                 state.currentIndex = Math.min(completedCount, Math.max(0, state.questions.length - 1));
             } else {
@@ -24746,7 +24825,9 @@ const EXAMPLE_DATA = {
             // 普通练习不随机：始终按照 Word 文件去重后的原始顺序。
             let pool = [...state.words];
 
-            if (state.isReviewMode && state.errorWords.length > 0) {
+            if (state.isPermanentReviewMode) {
+                pool = permanentReviewWords();
+            } else if (state.isReviewMode && state.errorWords.length > 0) {
                 // 错题本也保持原始单词顺序，方便复习。
                 const errorSet = new Set(state.errorWords.map(w => w.en));
                 pool = state.words.filter(w => errorSet.has(w.en));
@@ -24763,8 +24844,8 @@ const EXAMPLE_DATA = {
 
             state.questions = buildQuestions(pool, state.words);
 
-            if (state.isReviewMode) {
-                // 错题本从第一道错题开始复习。
+            if (state.isReviewMode || state.isPermanentReviewMode) {
+                // 两种错题复习都从第一题开始。
                 state.currentIndex = 0;
             } else {
                 // 返回全部题目时，不清零进度：直接回到第一个未完成单词。
@@ -24827,6 +24908,8 @@ const EXAMPLE_DATA = {
 			state.dataLoaded = true;
 			state.errorWords = [];
 			state.isReviewMode = false;
+            state.isPermanentReviewMode = false;
+            loadPermanentErrors();
 
 			document.getElementById('wordCountNum').textContent = data.length;
 			// 删除下面这两行 —— 它们引用了不存在的元素
@@ -24930,7 +25013,14 @@ const EXAMPLE_DATA = {
             document.getElementById('qNumber').textContent = `第 ${idx + 1} 题`;
 
             const statusEl = document.getElementById('qStatus');
-            if (state.isReviewMode && state.questions.every(item => item.result !== null)) {
+            const history = document.getElementById('errorHistory');
+            const errors = state.permanentErrors[q.en] || 0;
+            history.hidden = errors === 0;
+            history.textContent = errors ? `累计答错 ${errors} 次` : '';
+            if (state.isPermanentReviewMode && state.questions.every(item => item.result !== null)) {
+                statusEl.textContent = '本轮检测完成，可再练一轮';
+                statusEl.className = 'q-status answered';
+            } else if (state.isReviewMode && state.questions.every(item => item.result !== null)) {
                 statusEl.textContent = '🎉 错题复习完成';
                 statusEl.className = 'q-status answered';
             } else if (q.result === 'correct') {
@@ -25029,6 +25119,15 @@ const EXAMPLE_DATA = {
         }
 
         function updateErrorBookUI() {
+            const permanentBtn = document.getElementById('permanentBookBtn');
+            const permanentCount = permanentReviewWords().length;
+            permanentBtn.textContent = state.isPermanentReviewMode ? '📚 返回全部题目' : `📚 永久错题 ${permanentCount}`;
+            permanentBtn.setAttribute('aria-pressed', String(state.isPermanentReviewMode));
+            document.getElementById('permanentReviewBar').hidden = !state.isPermanentReviewMode;
+            const done = state.questions.filter(q => q.result !== null).length;
+            const correct = state.questions.filter(q => q.result === 'correct').length;
+            document.getElementById('permanentReviewInfo').textContent =
+                `永久错题检测 · 本轮 ${done}/${state.questions.length} · 答对 ${correct} · 答对或重置均保留`;
             const btn = document.getElementById('errorBookBtn');
             if (state.isReviewMode) {
                 btn.innerHTML = '📕 全部题目 <span class="count" id="errorCount">✕</span>';
@@ -25087,10 +25186,12 @@ const EXAMPLE_DATA = {
             if (selected === q.cn) {
                 q.result = 'correct';
                 // 错题复习时答对，自动从错题本移除。
-                state.errorWords = state.errorWords.filter(w => w.en !== q.en);
+                if (state.isReviewMode) state.errorWords = state.errorWords.filter(w => w.en !== q.en);
                 showAnswerToast('✅ 回答正确');
             } else {
                 q.result = 'wrong';
+                state.permanentErrors[q.en] = (state.permanentErrors[q.en] || 0) + 1;
+                savePermanentErrors();
                 const wordObj = state.words.find(w => w.en === q.en);
                 if (wordObj && !state.errorWords.some(w => w.en === q.en)) state.errorWords.push(wordObj);
                 showAnswerToast('❌ 回答错误，正确答案已标出', true);
@@ -25140,9 +25241,11 @@ const EXAMPLE_DATA = {
                 alert('请先导入单词数据！');
                 return;
             }
-            if (confirm('确定要重置所有进度吗？')) {
+            if (confirm('确定要重置学习进度和普通错题本吗？永久错题和累计答错次数会保留。')) {
+                clearTimeout(autoNextTimer);
                 state.errorWords = [];
                 state.isReviewMode = false;
+                state.isPermanentReviewMode = false;
                 state.questions = [];
                 cookieDelete(storageKey());
                 cookieDelete(errorCookieKey());
@@ -25161,18 +25264,37 @@ const EXAMPLE_DATA = {
         // ================================================================
         function toggleErrorBook() {
             clearTimeout(autoNextTimer);
-            if (!state.dataLoaded || state.words.length === 0) {
-                alert('请先导入单词数据！');
-                return;
-            }
-            state.isReviewMode = !state.isReviewMode;
-            if (state.isReviewMode && state.errorWords.length === 0) {
+            if (!state.dataLoaded || !state.words.length) return;
+            if (!state.isReviewMode && state.errorWords.length === 0) {
                 alert('错题本为空，请先做题积累错题！');
-                state.isReviewMode = false;
                 return;
             }
+            saveLocalState();
+            state.isReviewMode = !state.isReviewMode;
+            state.isPermanentReviewMode = false;
             initPractice();
-            updateErrorBookUI();
+            saveLocalState();
+        }
+
+        function togglePermanentBook() {
+            clearTimeout(autoNextTimer);
+            if (!state.dataLoaded || !state.words.length) return;
+            if (!state.isPermanentReviewMode && permanentReviewWords().length === 0) {
+                alert('永久错题本为空，答错的单词会自动收录，并累计答错次数。');
+                return;
+            }
+            saveLocalState();
+            state.isPermanentReviewMode = !state.isPermanentReviewMode;
+            state.isReviewMode = false;
+            initPractice();
+            saveLocalState();
+        }
+
+        function repeatPermanentReview() {
+            if (!state.isPermanentReviewMode) return;
+            clearTimeout(autoNextTimer);
+            saveLocalState();
+            initPractice();
             saveLocalState();
         }
 
@@ -25204,6 +25326,8 @@ const EXAMPLE_DATA = {
             document.getElementById('nextBtn').addEventListener('click', goToNext);
             document.getElementById('resetBtn').addEventListener('click', resetAll);
             document.getElementById('errorBookBtn').addEventListener('click', toggleErrorBook);
+            document.getElementById('permanentBookBtn').addEventListener('click', togglePermanentBook);
+            document.getElementById('repeatPermanentBtn').addEventListener('click', repeatPermanentReview);
             document.getElementById('gridToggle').addEventListener('click', toggleGrid);
             document.getElementById('wordTypeSelect').addEventListener('change', (event) => switchWordType(event.target.value));
             document.getElementById('speakWordBtn').addEventListener('click', speakCurrentWord);
