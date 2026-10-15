@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>搭配练习室 · Phrasal Verbs</title>
+<link rel="stylesheet" href="phrasal.css">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="theme.css">
+<script src="phrasal-data.js" defer></script><script src="phrasal-extra.js" defer></script><script src="phrasal.js" defer></script>
+</head>
+<body data-page="phrasal">
+<header class="topbar"><a class="brand" href="phrasal.html"><span class="brand-mark">pv.</span>短语动词</a><nav aria-label="导航与外观"><a href="index.html">单词练习</a><a href="sentence.html">句子成分</a><select id="theme" class="theme-select" aria-label="显示模式"><option value="normal">正常模式</option><option value="eye">护眼模式</option><option value="night">关灯模式</option></select></nav></header>
+<main>
+<section class="stats" aria-label="学习统计"><div>已学 <strong id="learnedCount">0</strong></div><div>错题 <strong id="mistakeCount">0</strong></div><div>正确率 <strong id="accuracy">—</strong></div><span id="saveStatus">本地保存</span></section>
+<nav class="tabs" aria-label="学习模式" id="tabs"><button data-tab="learn" class="active" aria-pressed="true">学习卡</button><button data-tab="practice" aria-pressed="false">情境练习</button><button data-tab="review" aria-pressed="false">错题复习 <span id="reviewBadge">0</span></button></nav>
+<section class="filters" aria-label="筛选短语"><div id="topics" class="topics"></div><div class="filter-right"><label class="sr-only" for="difficulty">难度</label><select id="difficulty"><option value="all">全部难度</option><option value="1">入门</option><option value="2">进阶</option></select><label class="sr-only" for="search">搜索短语或中文</label><input id="search" type="search" placeholder="搜索短语或中文…" autocomplete="off"></div></section>
+<nav class="alphabet" id="alphabet" aria-label="按短语首字母筛选"></nav>
+<div class="filter-summary"><span id="filterCount" role="status"></span><button class="text-button" id="clearFilters">重置筛选</button></div>
+<div class="workspace" id="workspace"><section class="panel" id="content" aria-label="学习内容"></section><aside id="sidebar" class="sidebar"></aside></div>
+<footer>例句为练习编写 · <a href="https://dictionary.cambridge.org/grammar/british-grammar/phrasal-verbs-and-multi-word-verbs" target="_blank" rel="noopener noreferrer">语法参考</a></footer>
+</main>
+</body></html>
