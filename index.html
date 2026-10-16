@@ -761,7 +761,8 @@
             background: #f2f0ff; border-radius: 14px; color: #5a478c; font-size: 14px;
         }
         .permanent-review-bar[hidden], .error-history[hidden], .storage-notice[hidden] { display: none; }
-        .error-history { margin: 0 0 12px; color: #b45a45; font-size: 14px; font-weight: 600; }
+        .error-history { color: #8a7270; font-size: 13px; font-weight: 400; }
+        .question-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; }
         .storage-notice { margin: 10px 0; color: #a3462f; font-size: 14px; }
         .permanent-book-btn { border-color: #b8a7db; color: #654995; background: #f6f1ff; }
         .header-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; width: 100%; }
@@ -772,9 +773,25 @@
             .header-summary { gap: 8px; }
             .word-count { font-size: 13px; }
         }
-        .question-countdown { display: inline-block; margin-right: 8px; color: #526680; font-size: 14px; font-weight: 700; white-space: nowrap; }
-        .question-countdown.urgent { color: #d32f2f; }
-        .question-countdown[hidden] { display: none; }
+        .question-countdown {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: min(100%, 300px); min-height: 22px; margin: 0 auto 18px;
+            color: #718096; font-size: 12px; font-variant-numeric: tabular-nums;
+        }
+        .question-countdown[hidden] { display: flex; visibility: hidden; }
+        .countdown-label { flex: 0 0 32px; white-space: nowrap; }
+        .countdown-progress {
+            appearance: none; -webkit-appearance: none; border: 0; border-radius: 99px;
+            overflow: hidden; flex: 1; min-width: 0; height: 7px; background: #e8edf3;
+            color: #7398b9; accent-color: #7398b9;
+        }
+        .countdown-progress::-webkit-progress-bar { background: #e8edf3; border-radius: 99px; }
+        .countdown-progress::-webkit-progress-value { background: #7398b9; border-radius: 99px; transition: width 0.2s linear; }
+        .countdown-progress::-moz-progress-bar { background: #7398b9; border-radius: 99px; }
+        .question-countdown.urgent { color: #c76556; }
+        .urgent .countdown-progress { color: #ce7b6b; accent-color: #ce7b6b; }
+        .urgent .countdown-progress::-webkit-progress-value { background: #ce7b6b; }
+        .urgent .countdown-progress::-moz-progress-bar { background: #ce7b6b; }
     </style>
 </head>
 <body>
@@ -831,19 +848,22 @@
         <div class="question-area">
             <div class="question-heading">
                 <div class="q-header">
-                    <span class="q-number" id="qNumber">第 1 题 <span class="total">/ <span id="totalQ">0</span></span></span>
-                    <div>
-                        <span class="question-countdown" id="questionCountdown" role="timer" aria-label="本题剩余时间" hidden></span>
-                        <span class="q-status" id="qStatus">未作答</span>
+                    <div class="question-meta">
+                        <span class="q-number" id="qNumber">第 1 题</span>
+                        <span class="error-history" id="errorHistory" aria-live="polite" hidden></span>
                     </div>
+                    <span class="q-status" id="qStatus">未作答</span>
                 </div>
                 <div class="word-row">
                     <div class="word-display" id="wordDisplay">loading...</div>
                     <button class="speaker-btn" id="speakWordBtn" type="button" aria-label="朗读当前单词" title="朗读单词">🔊</button>
                 </div>
             </div>
-            <div class="error-history" id="errorHistory" aria-live="polite" hidden></div>
             <div class="example-sentence" id="exampleSentence"></div>
+            <div class="question-countdown" id="questionCountdown" hidden>
+                <progress class="countdown-progress" id="questionTimeProgress" max="5" value="5" aria-label="本题剩余秒数"></progress>
+                <span class="countdown-label" id="countdownLabel">5 秒</span>
+            </div>
             <div class="options" id="optionsContainer"></div>
         </div>
 
@@ -25025,7 +25045,7 @@ const EXAMPLE_DATA = {
             const history = document.getElementById('errorHistory');
             const errors = state.permanentErrors[q.en] || 0;
             history.hidden = errors === 0;
-            history.textContent = errors ? `累计答错 ${errors} 次` : '';
+            history.textContent = errors ? `（累计答错 ${errors} 次）` : '';
             if (state.isPermanentReviewMode && state.questions.every(item => item.result !== null)) {
                 statusEl.textContent = '本轮检测完成，可再练一轮';
                 statusEl.className = 'q-status answered';
@@ -25163,10 +25183,13 @@ const EXAMPLE_DATA = {
 
         function syncQuestionCountdown(q) {
             const display = document.getElementById('questionCountdown');
+            const progress = document.getElementById('questionTimeProgress');
+            const label = document.getElementById('countdownLabel');
             if (q.result !== null) {
                 stopQuestionCountdown();
                 display.hidden = !q.timedOut;
-                display.textContent = q.timedOut ? '⏱ 0 秒' : '';
+                progress.value = 0;
+                label.textContent = q.timedOut ? '0 秒' : '';
                 display.className = 'question-countdown' + (q.timedOut ? ' urgent' : '');
                 return;
             }
@@ -25179,7 +25202,8 @@ const EXAMPLE_DATA = {
                 if (timedQuestion !== q || state.questions[state.currentIndex] !== q || q.result !== null) return;
                 const remaining = questionDeadline - Date.now();
                 display.hidden = false;
-                display.textContent = `⏱ ${Math.max(0, Math.ceil(remaining / 1000))} 秒`;
+                progress.value = Math.max(0, remaining / 1000);
+                label.textContent = `${Math.max(0, Math.ceil(remaining / 1000))} 秒`;
                 display.className = 'question-countdown' + (remaining <= 2000 ? ' urgent' : '');
                 if (remaining <= 0) {
                     handleAnswer(null, true);
