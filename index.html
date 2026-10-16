@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>单词选择题练习</title>
-    <script src="theme.js"></script>
     <style>
         * {
             margin: 0;
@@ -773,10 +772,12 @@
             .header-summary { gap: 8px; }
             .word-count { font-size: 13px; }
         }
+        .question-countdown { display: inline-block; margin-right: 8px; color: #526680; font-size: 14px; font-weight: 700; white-space: nowrap; }
+        .question-countdown.urgent { color: #d32f2f; }
+        .question-countdown[hidden] { display: none; }
     </style>
-    <link rel="stylesheet" href="theme.css">
 </head>
-<body data-page="words">
+<body>
 
     <div class="container" id="app">
         <div class="answer-toast" id="answerToast" role="status" aria-live="polite"></div>
@@ -784,8 +785,6 @@
 		<div class="header">
             <div class="header-title-row">
                 <h1>📘 单词选择题</h1>
-                <a href="sentence.html" style="color:#24547e;font-size:14px;text-decoration:none">句子成分练习 →</a>
-                <a href="phrasal.html" style="color:#24547e;font-size:14px;text-decoration:none">短语动词练习 →</a>
                 <div class="header-summary">
                     <span class="word-count" id="wordCountLabel">共 <span id="wordCountNum">631</span> 词</span>
                     <div class="stats">
@@ -796,7 +795,6 @@
                 </div>
             </div>
 			<div class="header-actions">
-                <select class="theme-select" aria-label="显示模式"><option value="normal">正常模式</option><option value="eye">护眼模式</option><option value="night">关灯模式</option></select>
 				<select class="word-type-select" id="wordTypeSelect" aria-label="选择词性">
 					<option value="verb">动词</option>
 					<option value="noun">名词</option>
@@ -834,7 +832,10 @@
             <div class="question-heading">
                 <div class="q-header">
                     <span class="q-number" id="qNumber">第 1 题 <span class="total">/ <span id="totalQ">0</span></span></span>
-                    <span class="q-status" id="qStatus">未作答</span>
+                    <div>
+                        <span class="question-countdown" id="questionCountdown" role="timer" aria-label="本题剩余时间" hidden></span>
+                        <span class="q-status" id="qStatus">未作答</span>
+                    </div>
                 </div>
                 <div class="word-row">
                     <div class="word-display" id="wordDisplay">loading...</div>
@@ -24876,6 +24877,8 @@ const EXAMPLE_DATA = {
         }
 
         function renderEmptyState() {
+            stopQuestionCountdown();
+            document.getElementById('questionCountdown').hidden = true;
             document.getElementById('wordDisplay').textContent = '📂 请先导入单词数据';
             document.getElementById('wordDisplay').className = 'word-display empty';
             document.getElementById('optionsContainer').innerHTML = '';
@@ -24987,6 +24990,7 @@ const EXAMPLE_DATA = {
 					const page = parseInt(e.currentTarget.dataset.page);
 					const idx = page * 100;
 					if (idx < state.questions.length) {
+						clearTimeout(autoNextTimer);
 						state.currentIndex = idx;
 						renderAll();
 					}
@@ -25032,7 +25036,7 @@ const EXAMPLE_DATA = {
                 statusEl.textContent = '✅ 回答正确';
                 statusEl.className = 'q-status answered';
             } else if (q.result === 'wrong') {
-                statusEl.textContent = '❌ 回答错误';
+                statusEl.textContent = q.timedOut ? '⏱ 超时，判为错误' : '❌ 回答错误';
                 statusEl.className = 'q-status wrong-status';
             } else {
                 statusEl.textContent = '未作答';
@@ -25069,6 +25073,7 @@ const EXAMPLE_DATA = {
 
             document.getElementById('prevBtn').disabled = (idx === 0);
             document.getElementById('nextBtn').disabled = (idx === total - 1);
+            syncQuestionCountdown(q);
         }
 
         function renderExampleSentence(sentence, targetWord) {
@@ -25144,6 +25149,47 @@ const EXAMPLE_DATA = {
         // ================================================================
         //  答题逻辑
         // ================================================================
+        const QUESTION_TIME_LIMIT = 5000;
+        let questionTimer = null;
+        let timedQuestion = null;
+        let questionDeadline = 0;
+
+        function stopQuestionCountdown() {
+            clearTimeout(questionTimer);
+            questionTimer = null;
+            timedQuestion = null;
+            questionDeadline = 0;
+        }
+
+        function syncQuestionCountdown(q) {
+            const display = document.getElementById('questionCountdown');
+            if (q.result !== null) {
+                stopQuestionCountdown();
+                display.hidden = !q.timedOut;
+                display.textContent = q.timedOut ? '⏱ 0 秒' : '';
+                display.className = 'question-countdown' + (q.timedOut ? ' urgent' : '');
+                return;
+            }
+            // 同一题重绘不重置时间，翻题、切换练习或再练一轮才重新计时。
+            if (timedQuestion === q) return;
+            stopQuestionCountdown();
+            timedQuestion = q;
+            questionDeadline = Date.now() + QUESTION_TIME_LIMIT;
+            function tick() {
+                if (timedQuestion !== q || state.questions[state.currentIndex] !== q || q.result !== null) return;
+                const remaining = questionDeadline - Date.now();
+                display.hidden = false;
+                display.textContent = `⏱ ${Math.max(0, Math.ceil(remaining / 1000))} 秒`;
+                display.className = 'question-countdown' + (remaining <= 2000 ? ' urgent' : '');
+                if (remaining <= 0) {
+                    handleAnswer(null, true);
+                    return;
+                }
+                questionTimer = setTimeout(tick, Math.min(200, remaining));
+            }
+            tick();
+        }
+
         let autoNextTimer = null;
         let toastTimer = null;
         function showAnswerToast(message, isWrong = false) {
@@ -25183,10 +25229,14 @@ const EXAMPLE_DATA = {
             else if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
-        function handleAnswer(selected) {
+        function handleAnswer(selected, timedOut = false) {
             const q = state.questions[state.currentIndex];
-            if (q.result !== null) return;
-
+            if (!q || q.result !== null) return;
+            // 后台标签页的计时回调可能延迟；到期后的点击也按超时处理。
+            if (timedQuestion === q && Date.now() >= questionDeadline) timedOut = true;
+            stopQuestionCountdown();
+            q.timedOut = timedOut;
+            if (timedOut) selected = null;
             q.userAnswer = selected;
             if (selected === q.cn) {
                 q.result = 'correct';
@@ -25199,7 +25249,7 @@ const EXAMPLE_DATA = {
                 savePermanentErrors();
                 const wordObj = state.words.find(w => w.en === q.en);
                 if (wordObj && !state.errorWords.some(w => w.en === q.en)) state.errorWords.push(wordObj);
-                showAnswerToast('❌ 回答错误，正确答案已标出', true);
+                showAnswerToast(timedOut ? '⏱ 5 秒已到，自动判错，正确答案已标出' : '❌ 回答错误，正确答案已标出', true);
             }
             saveLocalState();
             renderAll();
