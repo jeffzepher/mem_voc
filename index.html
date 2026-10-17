@@ -815,6 +815,10 @@
 				<select class="word-type-select" id="wordTypeSelect" aria-label="选择词性">
 					<option value="verb">动词</option>
 					<option value="noun">名词</option>
+                    <option value="adjective">形容词</option>
+                    <option value="adverb">副词</option>
+                    <option value="preposition">介词</option>
+                    <option value="conjunction">连词</option>
 				</select>
 
 				<div class="quick-actions">
@@ -21728,7 +21732,4528 @@ const NOUNS_DATA = [
   }
 ];
 
-        const WORD_SETS = { verb: WORDS_DATA, noun: NOUNS_DATA };
+        // 新增词类独立维护，保留原动词和名词数据。
+        const EXTRA_WORD_SETS = {
+  "adjective": [
+    {
+      "en": "able",
+      "cn": "能够的",
+      "pos": "adjective"
+    },
+    {
+      "en": "absent",
+      "cn": "缺席的",
+      "pos": "adjective"
+    },
+    {
+      "en": "absolute",
+      "cn": "绝对的",
+      "pos": "adjective"
+    },
+    {
+      "en": "abstract",
+      "cn": "抽象的",
+      "pos": "adjective"
+    },
+    {
+      "en": "academic",
+      "cn": "学术的",
+      "pos": "adjective"
+    },
+    {
+      "en": "acceptable",
+      "cn": "可接受的",
+      "pos": "adjective"
+    },
+    {
+      "en": "accessible",
+      "cn": "可进入的；易理解的",
+      "pos": "adjective"
+    },
+    {
+      "en": "accurate",
+      "cn": "准确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "active",
+      "cn": "活跃的；积极的",
+      "pos": "adjective"
+    },
+    {
+      "en": "actual",
+      "cn": "实际的",
+      "pos": "adjective"
+    },
+    {
+      "en": "additional",
+      "cn": "额外的",
+      "pos": "adjective"
+    },
+    {
+      "en": "adequate",
+      "cn": "足够的",
+      "pos": "adjective"
+    },
+    {
+      "en": "adjacent",
+      "cn": "相邻的",
+      "pos": "adjective"
+    },
+    {
+      "en": "administrative",
+      "cn": "行政的",
+      "pos": "adjective"
+    },
+    {
+      "en": "advanced",
+      "cn": "高级的；先进的",
+      "pos": "adjective"
+    },
+    {
+      "en": "adverse",
+      "cn": "不利的",
+      "pos": "adjective"
+    },
+    {
+      "en": "affordable",
+      "cn": "负担得起的",
+      "pos": "adjective"
+    },
+    {
+      "en": "aggressive",
+      "cn": "好斗的；激进的",
+      "pos": "adjective"
+    },
+    {
+      "en": "agricultural",
+      "cn": "农业的",
+      "pos": "adjective"
+    },
+    {
+      "en": "alive",
+      "cn": "活着的",
+      "pos": "adjective"
+    },
+    {
+      "en": "alternative",
+      "cn": "可供选择的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ambiguous",
+      "cn": "含糊不清的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ambitious",
+      "cn": "有雄心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ancient",
+      "cn": "古代的",
+      "pos": "adjective"
+    },
+    {
+      "en": "annual",
+      "cn": "每年的",
+      "pos": "adjective"
+    },
+    {
+      "en": "anxious",
+      "cn": "焦虑的",
+      "pos": "adjective"
+    },
+    {
+      "en": "apparent",
+      "cn": "明显的",
+      "pos": "adjective"
+    },
+    {
+      "en": "applicable",
+      "cn": "适用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "appropriate",
+      "cn": "合适的",
+      "pos": "adjective"
+    },
+    {
+      "en": "approximate",
+      "cn": "大约的",
+      "pos": "adjective"
+    },
+    {
+      "en": "artificial",
+      "cn": "人工的",
+      "pos": "adjective"
+    },
+    {
+      "en": "artistic",
+      "cn": "艺术的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ashamed",
+      "cn": "羞愧的",
+      "pos": "adjective"
+    },
+    {
+      "en": "asleep",
+      "cn": "睡着的",
+      "pos": "adjective"
+    },
+    {
+      "en": "associated",
+      "cn": "相关的",
+      "pos": "adjective"
+    },
+    {
+      "en": "attractive",
+      "cn": "有吸引力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "automatic",
+      "cn": "自动的",
+      "pos": "adjective"
+    },
+    {
+      "en": "available",
+      "cn": "可获得的；有空的",
+      "pos": "adjective"
+    },
+    {
+      "en": "average",
+      "cn": "平均的；普通的",
+      "pos": "adjective"
+    },
+    {
+      "en": "aware",
+      "cn": "意识到的",
+      "pos": "adjective"
+    },
+    {
+      "en": "awkward",
+      "cn": "尴尬的；笨拙的",
+      "pos": "adjective"
+    },
+    {
+      "en": "basic",
+      "cn": "基本的",
+      "pos": "adjective"
+    },
+    {
+      "en": "beneficial",
+      "cn": "有益的",
+      "pos": "adjective"
+    },
+    {
+      "en": "biological",
+      "cn": "生物的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bitter",
+      "cn": "苦的",
+      "pos": "adjective"
+    },
+    {
+      "en": "blank",
+      "cn": "空白的",
+      "pos": "adjective"
+    },
+    {
+      "en": "blind",
+      "cn": "失明的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bold",
+      "cn": "大胆的",
+      "pos": "adjective"
+    },
+    {
+      "en": "boring",
+      "cn": "无聊的",
+      "pos": "adjective"
+    },
+    {
+      "en": "brief",
+      "cn": "简短的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bright",
+      "cn": "明亮的；聪明的",
+      "pos": "adjective"
+    },
+    {
+      "en": "broad",
+      "cn": "宽广的",
+      "pos": "adjective"
+    },
+    {
+      "en": "busy",
+      "cn": "忙碌的",
+      "pos": "adjective"
+    },
+    {
+      "en": "capable",
+      "cn": "有能力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "careful",
+      "cn": "小心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "casual",
+      "cn": "随意的；非正式的",
+      "pos": "adjective"
+    },
+    {
+      "en": "central",
+      "cn": "中心的；核心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "certain",
+      "cn": "确定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "challenging",
+      "cn": "有挑战性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "characteristic",
+      "cn": "典型的",
+      "pos": "adjective"
+    },
+    {
+      "en": "chemical",
+      "cn": "化学的",
+      "pos": "adjective"
+    },
+    {
+      "en": "chronic",
+      "cn": "慢性的；长期的",
+      "pos": "adjective"
+    },
+    {
+      "en": "civil",
+      "cn": "公民的；民事的",
+      "pos": "adjective"
+    },
+    {
+      "en": "classical",
+      "cn": "古典的",
+      "pos": "adjective"
+    },
+    {
+      "en": "clear",
+      "cn": "清楚的",
+      "pos": "adjective"
+    },
+    {
+      "en": "clinical",
+      "cn": "临床的",
+      "pos": "adjective"
+    },
+    {
+      "en": "coastal",
+      "cn": "沿海的",
+      "pos": "adjective"
+    },
+    {
+      "en": "cognitive",
+      "cn": "认知的",
+      "pos": "adjective"
+    },
+    {
+      "en": "coherent",
+      "cn": "连贯的",
+      "pos": "adjective"
+    },
+    {
+      "en": "collective",
+      "cn": "集体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "comfortable",
+      "cn": "舒适的",
+      "pos": "adjective"
+    },
+    {
+      "en": "commercial",
+      "cn": "商业的",
+      "pos": "adjective"
+    },
+    {
+      "en": "common",
+      "cn": "常见的",
+      "pos": "adjective"
+    },
+    {
+      "en": "comparable",
+      "cn": "可比较的",
+      "pos": "adjective"
+    },
+    {
+      "en": "compatible",
+      "cn": "兼容的",
+      "pos": "adjective"
+    },
+    {
+      "en": "competitive",
+      "cn": "有竞争力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "complex",
+      "cn": "复杂的",
+      "pos": "adjective"
+    },
+    {
+      "en": "comprehensive",
+      "cn": "全面的",
+      "pos": "adjective"
+    },
+    {
+      "en": "compulsory",
+      "cn": "强制的",
+      "pos": "adjective"
+    },
+    {
+      "en": "concrete",
+      "cn": "具体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "confident",
+      "cn": "自信的",
+      "pos": "adjective"
+    },
+    {
+      "en": "conscious",
+      "cn": "有意识的；清醒的",
+      "pos": "adjective"
+    },
+    {
+      "en": "consecutive",
+      "cn": "连续的",
+      "pos": "adjective"
+    },
+    {
+      "en": "considerable",
+      "cn": "相当大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "consistent",
+      "cn": "一致的；稳定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "constant",
+      "cn": "持续的；不变的",
+      "pos": "adjective"
+    },
+    {
+      "en": "constructive",
+      "cn": "建设性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "contemporary",
+      "cn": "当代的",
+      "pos": "adjective"
+    },
+    {
+      "en": "continuous",
+      "cn": "连续不断的",
+      "pos": "adjective"
+    },
+    {
+      "en": "contrary",
+      "cn": "相反的",
+      "pos": "adjective"
+    },
+    {
+      "en": "controversial",
+      "cn": "有争议的",
+      "pos": "adjective"
+    },
+    {
+      "en": "convenient",
+      "cn": "方便的",
+      "pos": "adjective"
+    },
+    {
+      "en": "conventional",
+      "cn": "传统的；常规的",
+      "pos": "adjective"
+    },
+    {
+      "en": "convincing",
+      "cn": "令人信服的",
+      "pos": "adjective"
+    },
+    {
+      "en": "cooperative",
+      "cn": "合作的",
+      "pos": "adjective"
+    },
+    {
+      "en": "crucial",
+      "cn": "至关重要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "cultural",
+      "cn": "文化的",
+      "pos": "adjective"
+    },
+    {
+      "en": "curious",
+      "cn": "好奇的",
+      "pos": "adjective"
+    },
+    {
+      "en": "current",
+      "cn": "当前的",
+      "pos": "adjective"
+    },
+    {
+      "en": "daily",
+      "cn": "每天的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dangerous",
+      "cn": "危险的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dark",
+      "cn": "黑暗的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dead",
+      "cn": "死的",
+      "pos": "adjective"
+    },
+    {
+      "en": "decent",
+      "cn": "像样的；得体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "decisive",
+      "cn": "决定性的；果断的",
+      "pos": "adjective"
+    },
+    {
+      "en": "deep",
+      "cn": "深的",
+      "pos": "adjective"
+    },
+    {
+      "en": "definite",
+      "cn": "明确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "deliberate",
+      "cn": "故意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "delicate",
+      "cn": "易损的；精细的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dense",
+      "cn": "密集的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dependent",
+      "cn": "依赖的",
+      "pos": "adjective"
+    },
+    {
+      "en": "desirable",
+      "cn": "值得拥有的；理想的",
+      "pos": "adjective"
+    },
+    {
+      "en": "detailed",
+      "cn": "详细的",
+      "pos": "adjective"
+    },
+    {
+      "en": "determined",
+      "cn": "坚决的",
+      "pos": "adjective"
+    },
+    {
+      "en": "developing",
+      "cn": "发展中的",
+      "pos": "adjective"
+    },
+    {
+      "en": "different",
+      "cn": "不同的",
+      "pos": "adjective"
+    },
+    {
+      "en": "difficult",
+      "cn": "困难的",
+      "pos": "adjective"
+    },
+    {
+      "en": "digital",
+      "cn": "数字的",
+      "pos": "adjective"
+    },
+    {
+      "en": "direct",
+      "cn": "直接的",
+      "pos": "adjective"
+    },
+    {
+      "en": "disappointed",
+      "cn": "失望的",
+      "pos": "adjective"
+    },
+    {
+      "en": "distinct",
+      "cn": "明显不同的",
+      "pos": "adjective"
+    },
+    {
+      "en": "distinctive",
+      "cn": "有特色的",
+      "pos": "adjective"
+    },
+    {
+      "en": "diverse",
+      "cn": "多种多样的",
+      "pos": "adjective"
+    },
+    {
+      "en": "domestic",
+      "cn": "国内的；家庭的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dominant",
+      "cn": "占主导地位的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dramatic",
+      "cn": "显著的；戏剧性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dry",
+      "cn": "干燥的",
+      "pos": "adjective"
+    },
+    {
+      "en": "due",
+      "cn": "到期的；预期到达的",
+      "pos": "adjective"
+    },
+    {
+      "en": "durable",
+      "cn": "耐用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dynamic",
+      "cn": "不断变化的；有活力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "eager",
+      "cn": "渴望的",
+      "pos": "adjective"
+    },
+    {
+      "en": "early",
+      "cn": "早的",
+      "pos": "adjective"
+    },
+    {
+      "en": "eastern",
+      "cn": "东方的",
+      "pos": "adjective"
+    },
+    {
+      "en": "easy",
+      "cn": "容易的",
+      "pos": "adjective"
+    },
+    {
+      "en": "economic",
+      "cn": "经济的",
+      "pos": "adjective"
+    },
+    {
+      "en": "efficient",
+      "cn": "高效的",
+      "pos": "adjective"
+    },
+    {
+      "en": "elaborate",
+      "cn": "精心制作的；复杂的",
+      "pos": "adjective"
+    },
+    {
+      "en": "elderly",
+      "cn": "年老的",
+      "pos": "adjective"
+    },
+    {
+      "en": "electric",
+      "cn": "电的",
+      "pos": "adjective"
+    },
+    {
+      "en": "electronic",
+      "cn": "电子的",
+      "pos": "adjective"
+    },
+    {
+      "en": "embarrassed",
+      "cn": "尴尬的",
+      "pos": "adjective"
+    },
+    {
+      "en": "emotional",
+      "cn": "情感的",
+      "pos": "adjective"
+    },
+    {
+      "en": "empirical",
+      "cn": "以实证为依据的",
+      "pos": "adjective"
+    },
+    {
+      "en": "empty",
+      "cn": "空的",
+      "pos": "adjective"
+    },
+    {
+      "en": "endangered",
+      "cn": "濒危的",
+      "pos": "adjective"
+    },
+    {
+      "en": "enormous",
+      "cn": "巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "entire",
+      "cn": "整个的",
+      "pos": "adjective"
+    },
+    {
+      "en": "environmental",
+      "cn": "环境的",
+      "pos": "adjective"
+    },
+    {
+      "en": "equal",
+      "cn": "相等的；平等的",
+      "pos": "adjective"
+    },
+    {
+      "en": "equivalent",
+      "cn": "等同的",
+      "pos": "adjective"
+    },
+    {
+      "en": "essential",
+      "cn": "必不可少的",
+      "pos": "adjective"
+    },
+    {
+      "en": "established",
+      "cn": "已确立的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ethical",
+      "cn": "道德的",
+      "pos": "adjective"
+    },
+    {
+      "en": "eventual",
+      "cn": "最终的",
+      "pos": "adjective"
+    },
+    {
+      "en": "evident",
+      "cn": "明显的",
+      "pos": "adjective"
+    },
+    {
+      "en": "exact",
+      "cn": "精确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "excellent",
+      "cn": "优秀的",
+      "pos": "adjective"
+    },
+    {
+      "en": "exceptional",
+      "cn": "杰出的；异常的",
+      "pos": "adjective"
+    },
+    {
+      "en": "excessive",
+      "cn": "过度的",
+      "pos": "adjective"
+    },
+    {
+      "en": "excited",
+      "cn": "兴奋的",
+      "pos": "adjective"
+    },
+    {
+      "en": "exclusive",
+      "cn": "独有的；专用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "existing",
+      "cn": "现存的",
+      "pos": "adjective"
+    },
+    {
+      "en": "expensive",
+      "cn": "昂贵的",
+      "pos": "adjective"
+    },
+    {
+      "en": "experimental",
+      "cn": "实验性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "explicit",
+      "cn": "明确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "external",
+      "cn": "外部的",
+      "pos": "adjective"
+    },
+    {
+      "en": "extraordinary",
+      "cn": "非凡的",
+      "pos": "adjective"
+    },
+    {
+      "en": "extreme",
+      "cn": "极端的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fair",
+      "cn": "公平的",
+      "pos": "adjective"
+    },
+    {
+      "en": "familiar",
+      "cn": "熟悉的",
+      "pos": "adjective"
+    },
+    {
+      "en": "famous",
+      "cn": "著名的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fascinating",
+      "cn": "极有吸引力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "favorable",
+      "cn": "有利的",
+      "pos": "adjective"
+    },
+    {
+      "en": "federal",
+      "cn": "联邦的",
+      "pos": "adjective"
+    },
+    {
+      "en": "final",
+      "cn": "最后的",
+      "pos": "adjective"
+    },
+    {
+      "en": "financial",
+      "cn": "财务的",
+      "pos": "adjective"
+    },
+    {
+      "en": "finite",
+      "cn": "有限的",
+      "pos": "adjective"
+    },
+    {
+      "en": "firm",
+      "cn": "坚固的；坚定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "flexible",
+      "cn": "灵活的",
+      "pos": "adjective"
+    },
+    {
+      "en": "foreign",
+      "cn": "外国的",
+      "pos": "adjective"
+    },
+    {
+      "en": "formal",
+      "cn": "正式的",
+      "pos": "adjective"
+    },
+    {
+      "en": "former",
+      "cn": "以前的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fortunate",
+      "cn": "幸运的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fragile",
+      "cn": "易碎的；脆弱的",
+      "pos": "adjective"
+    },
+    {
+      "en": "frequent",
+      "cn": "频繁的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fresh",
+      "cn": "新鲜的",
+      "pos": "adjective"
+    },
+    {
+      "en": "friendly",
+      "cn": "友好的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fundamental",
+      "cn": "根本的",
+      "pos": "adjective"
+    },
+    {
+      "en": "general",
+      "cn": "普遍的；总体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "generous",
+      "cn": "慷慨的",
+      "pos": "adjective"
+    },
+    {
+      "en": "genetic",
+      "cn": "遗传的",
+      "pos": "adjective"
+    },
+    {
+      "en": "genuine",
+      "cn": "真正的；真诚的",
+      "pos": "adjective"
+    },
+    {
+      "en": "geographical",
+      "cn": "地理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "global",
+      "cn": "全球的",
+      "pos": "adjective"
+    },
+    {
+      "en": "gradual",
+      "cn": "逐渐的",
+      "pos": "adjective"
+    },
+    {
+      "en": "grateful",
+      "cn": "感激的",
+      "pos": "adjective"
+    },
+    {
+      "en": "great",
+      "cn": "很好的；巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "guilty",
+      "cn": "有罪的；内疚的",
+      "pos": "adjective"
+    },
+    {
+      "en": "harmful",
+      "cn": "有害的",
+      "pos": "adjective"
+    },
+    {
+      "en": "healthy",
+      "cn": "健康的",
+      "pos": "adjective"
+    },
+    {
+      "en": "heavy",
+      "cn": "重的",
+      "pos": "adjective"
+    },
+    {
+      "en": "helpful",
+      "cn": "有帮助的",
+      "pos": "adjective"
+    },
+    {
+      "en": "historical",
+      "cn": "历史的",
+      "pos": "adjective"
+    },
+    {
+      "en": "honest",
+      "cn": "诚实的",
+      "pos": "adjective"
+    },
+    {
+      "en": "hostile",
+      "cn": "敌意的；恶劣的",
+      "pos": "adjective"
+    },
+    {
+      "en": "huge",
+      "cn": "巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "human",
+      "cn": "人类的",
+      "pos": "adjective"
+    },
+    {
+      "en": "humid",
+      "cn": "潮湿的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ideal",
+      "cn": "理想的",
+      "pos": "adjective"
+    },
+    {
+      "en": "identical",
+      "cn": "完全相同的",
+      "pos": "adjective"
+    },
+    {
+      "en": "illegal",
+      "cn": "非法的",
+      "pos": "adjective"
+    },
+    {
+      "en": "immediate",
+      "cn": "立即的",
+      "pos": "adjective"
+    },
+    {
+      "en": "immune",
+      "cn": "免疫的",
+      "pos": "adjective"
+    },
+    {
+      "en": "implicit",
+      "cn": "含蓄的；隐含的",
+      "pos": "adjective"
+    },
+    {
+      "en": "important",
+      "cn": "重要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "impossible",
+      "cn": "不可能的",
+      "pos": "adjective"
+    },
+    {
+      "en": "impressive",
+      "cn": "令人印象深刻的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inadequate",
+      "cn": "不足的",
+      "pos": "adjective"
+    },
+    {
+      "en": "independent",
+      "cn": "独立的",
+      "pos": "adjective"
+    },
+    {
+      "en": "indigenous",
+      "cn": "本土的；原住民的",
+      "pos": "adjective"
+    },
+    {
+      "en": "individual",
+      "cn": "个别的；个人的",
+      "pos": "adjective"
+    },
+    {
+      "en": "industrial",
+      "cn": "工业的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inevitable",
+      "cn": "不可避免的",
+      "pos": "adjective"
+    },
+    {
+      "en": "infinite",
+      "cn": "无限的",
+      "pos": "adjective"
+    },
+    {
+      "en": "influential",
+      "cn": "有影响力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "initial",
+      "cn": "最初的",
+      "pos": "adjective"
+    },
+    {
+      "en": "innovative",
+      "cn": "创新的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intellectual",
+      "cn": "智力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intense",
+      "cn": "强烈的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intentional",
+      "cn": "故意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "internal",
+      "cn": "内部的",
+      "pos": "adjective"
+    },
+    {
+      "en": "international",
+      "cn": "国际的",
+      "pos": "adjective"
+    },
+    {
+      "en": "invisible",
+      "cn": "看不见的",
+      "pos": "adjective"
+    },
+    {
+      "en": "irrelevant",
+      "cn": "不相关的",
+      "pos": "adjective"
+    },
+    {
+      "en": "isolated",
+      "cn": "偏远的；孤立的",
+      "pos": "adjective"
+    },
+    {
+      "en": "joint",
+      "cn": "共同的",
+      "pos": "adjective"
+    },
+    {
+      "en": "keen",
+      "cn": "热切的；敏锐的",
+      "pos": "adjective"
+    },
+    {
+      "en": "legal",
+      "cn": "合法的",
+      "pos": "adjective"
+    },
+    {
+      "en": "likely",
+      "cn": "可能的",
+      "pos": "adjective"
+    },
+    {
+      "en": "limited",
+      "cn": "有限的",
+      "pos": "adjective"
+    },
+    {
+      "en": "linguistic",
+      "cn": "语言的",
+      "pos": "adjective"
+    },
+    {
+      "en": "local",
+      "cn": "当地的",
+      "pos": "adjective"
+    },
+    {
+      "en": "logical",
+      "cn": "合乎逻辑的",
+      "pos": "adjective"
+    },
+    {
+      "en": "long-term",
+      "cn": "长期的",
+      "pos": "adjective"
+    },
+    {
+      "en": "loose",
+      "cn": "松的",
+      "pos": "adjective"
+    },
+    {
+      "en": "major",
+      "cn": "主要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "marine",
+      "cn": "海洋的",
+      "pos": "adjective"
+    },
+    {
+      "en": "massive",
+      "cn": "巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mature",
+      "cn": "成熟的",
+      "pos": "adjective"
+    },
+    {
+      "en": "maximum",
+      "cn": "最大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "meaningful",
+      "cn": "有意义的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mental",
+      "cn": "心理的；智力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mere",
+      "cn": "仅仅的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mild",
+      "cn": "温和的",
+      "pos": "adjective"
+    },
+    {
+      "en": "minimal",
+      "cn": "极少的",
+      "pos": "adjective"
+    },
+    {
+      "en": "minimum",
+      "cn": "最小的",
+      "pos": "adjective"
+    },
+    {
+      "en": "minor",
+      "cn": "次要的；轻微的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mobile",
+      "cn": "可移动的",
+      "pos": "adjective"
+    },
+    {
+      "en": "moderate",
+      "cn": "适中的",
+      "pos": "adjective"
+    },
+    {
+      "en": "modern",
+      "cn": "现代的",
+      "pos": "adjective"
+    },
+    {
+      "en": "multiple",
+      "cn": "多个的",
+      "pos": "adjective"
+    },
+    {
+      "en": "narrow",
+      "cn": "狭窄的",
+      "pos": "adjective"
+    },
+    {
+      "en": "native",
+      "cn": "本地的；母语的",
+      "pos": "adjective"
+    },
+    {
+      "en": "natural",
+      "cn": "自然的",
+      "pos": "adjective"
+    },
+    {
+      "en": "necessary",
+      "cn": "必要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "negative",
+      "cn": "消极的；负面的",
+      "pos": "adjective"
+    },
+    {
+      "en": "neutral",
+      "cn": "中立的",
+      "pos": "adjective"
+    },
+    {
+      "en": "normal",
+      "cn": "正常的",
+      "pos": "adjective"
+    },
+    {
+      "en": "notable",
+      "cn": "显著的；著名的",
+      "pos": "adjective"
+    },
+    {
+      "en": "numerous",
+      "cn": "众多的",
+      "pos": "adjective"
+    },
+    {
+      "en": "objective",
+      "cn": "客观的",
+      "pos": "adjective"
+    },
+    {
+      "en": "obvious",
+      "cn": "明显的",
+      "pos": "adjective"
+    },
+    {
+      "en": "occasional",
+      "cn": "偶尔的",
+      "pos": "adjective"
+    },
+    {
+      "en": "official",
+      "cn": "官方的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ongoing",
+      "cn": "持续的",
+      "pos": "adjective"
+    },
+    {
+      "en": "open",
+      "cn": "开放的；开着的",
+      "pos": "adjective"
+    },
+    {
+      "en": "optimistic",
+      "cn": "乐观的",
+      "pos": "adjective"
+    },
+    {
+      "en": "optional",
+      "cn": "可选择的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ordinary",
+      "cn": "普通的",
+      "pos": "adjective"
+    },
+    {
+      "en": "organic",
+      "cn": "有机的",
+      "pos": "adjective"
+    },
+    {
+      "en": "original",
+      "cn": "最初的；原创的",
+      "pos": "adjective"
+    },
+    {
+      "en": "parallel",
+      "cn": "平行的",
+      "pos": "adjective"
+    },
+    {
+      "en": "partial",
+      "cn": "部分的",
+      "pos": "adjective"
+    },
+    {
+      "en": "particular",
+      "cn": "特定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "passive",
+      "cn": "被动的",
+      "pos": "adjective"
+    },
+    {
+      "en": "patient",
+      "cn": "有耐心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "permanent",
+      "cn": "永久的",
+      "pos": "adjective"
+    },
+    {
+      "en": "persistent",
+      "cn": "持续的；坚持不懈的",
+      "pos": "adjective"
+    },
+    {
+      "en": "personal",
+      "cn": "个人的",
+      "pos": "adjective"
+    },
+    {
+      "en": "physical",
+      "cn": "身体的；物理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "pleasant",
+      "cn": "令人愉快的",
+      "pos": "adjective"
+    },
+    {
+      "en": "plentiful",
+      "cn": "充足的",
+      "pos": "adjective"
+    },
+    {
+      "en": "political",
+      "cn": "政治的",
+      "pos": "adjective"
+    },
+    {
+      "en": "poor",
+      "cn": "贫穷的；差的",
+      "pos": "adjective"
+    },
+    {
+      "en": "popular",
+      "cn": "受欢迎的",
+      "pos": "adjective"
+    },
+    {
+      "en": "positive",
+      "cn": "积极的；正面的",
+      "pos": "adjective"
+    },
+    {
+      "en": "possible",
+      "cn": "可能的",
+      "pos": "adjective"
+    },
+    {
+      "en": "potential",
+      "cn": "潜在的",
+      "pos": "adjective"
+    },
+    {
+      "en": "practical",
+      "cn": "实用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "precise",
+      "cn": "精确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "predictable",
+      "cn": "可预测的",
+      "pos": "adjective"
+    },
+    {
+      "en": "preliminary",
+      "cn": "初步的",
+      "pos": "adjective"
+    },
+    {
+      "en": "previous",
+      "cn": "以前的",
+      "pos": "adjective"
+    },
+    {
+      "en": "primary",
+      "cn": "首要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "primitive",
+      "cn": "原始的",
+      "pos": "adjective"
+    },
+    {
+      "en": "principal",
+      "cn": "最主要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prior",
+      "cn": "先前的",
+      "pos": "adjective"
+    },
+    {
+      "en": "private",
+      "cn": "私人的",
+      "pos": "adjective"
+    },
+    {
+      "en": "probable",
+      "cn": "很可能的",
+      "pos": "adjective"
+    },
+    {
+      "en": "productive",
+      "cn": "富有成效的",
+      "pos": "adjective"
+    },
+    {
+      "en": "professional",
+      "cn": "专业的",
+      "pos": "adjective"
+    },
+    {
+      "en": "profound",
+      "cn": "深刻的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prominent",
+      "cn": "突出的；著名的",
+      "pos": "adjective"
+    },
+    {
+      "en": "promising",
+      "cn": "有希望的",
+      "pos": "adjective"
+    },
+    {
+      "en": "proper",
+      "cn": "恰当的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prosperous",
+      "cn": "繁荣的",
+      "pos": "adjective"
+    },
+    {
+      "en": "proud",
+      "cn": "自豪的",
+      "pos": "adjective"
+    },
+    {
+      "en": "psychological",
+      "cn": "心理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "public",
+      "cn": "公共的",
+      "pos": "adjective"
+    },
+    {
+      "en": "qualified",
+      "cn": "合格的",
+      "pos": "adjective"
+    },
+    {
+      "en": "quantitative",
+      "cn": "定量的",
+      "pos": "adjective"
+    },
+    {
+      "en": "radical",
+      "cn": "根本的；激进的",
+      "pos": "adjective"
+    },
+    {
+      "en": "random",
+      "cn": "随机的",
+      "pos": "adjective"
+    },
+    {
+      "en": "rare",
+      "cn": "稀有的",
+      "pos": "adjective"
+    },
+    {
+      "en": "rational",
+      "cn": "理性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "raw",
+      "cn": "生的；未加工的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ready",
+      "cn": "准备好的",
+      "pos": "adjective"
+    },
+    {
+      "en": "realistic",
+      "cn": "现实的",
+      "pos": "adjective"
+    },
+    {
+      "en": "reasonable",
+      "cn": "合理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "recent",
+      "cn": "最近的",
+      "pos": "adjective"
+    },
+    {
+      "en": "relevant",
+      "cn": "相关的",
+      "pos": "adjective"
+    },
+    {
+      "en": "reliable",
+      "cn": "可靠的",
+      "pos": "adjective"
+    },
+    {
+      "en": "remarkable",
+      "cn": "非凡的",
+      "pos": "adjective"
+    },
+    {
+      "en": "remote",
+      "cn": "偏远的",
+      "pos": "adjective"
+    },
+    {
+      "en": "renewable",
+      "cn": "可再生的",
+      "pos": "adjective"
+    },
+    {
+      "en": "representative",
+      "cn": "有代表性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "responsible",
+      "cn": "负责任的",
+      "pos": "adjective"
+    },
+    {
+      "en": "restricted",
+      "cn": "受限制的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ridiculous",
+      "cn": "荒谬的",
+      "pos": "adjective"
+    },
+    {
+      "en": "rigid",
+      "cn": "僵硬的；严格的",
+      "pos": "adjective"
+    },
+    {
+      "en": "risky",
+      "cn": "有风险的",
+      "pos": "adjective"
+    },
+    {
+      "en": "rough",
+      "cn": "粗糙的",
+      "pos": "adjective"
+    },
+    {
+      "en": "rural",
+      "cn": "乡村的",
+      "pos": "adjective"
+    },
+    {
+      "en": "safe",
+      "cn": "安全的",
+      "pos": "adjective"
+    },
+    {
+      "en": "satisfied",
+      "cn": "满意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "scarce",
+      "cn": "稀缺的",
+      "pos": "adjective"
+    },
+    {
+      "en": "scientific",
+      "cn": "科学的",
+      "pos": "adjective"
+    },
+    {
+      "en": "secure",
+      "cn": "安全稳固的",
+      "pos": "adjective"
+    },
+    {
+      "en": "selective",
+      "cn": "有选择性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sensitive",
+      "cn": "敏感的",
+      "pos": "adjective"
+    },
+    {
+      "en": "separate",
+      "cn": "单独的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sequential",
+      "cn": "按顺序的",
+      "pos": "adjective"
+    },
+    {
+      "en": "serious",
+      "cn": "严重的；认真的",
+      "pos": "adjective"
+    },
+    {
+      "en": "severe",
+      "cn": "严峻的",
+      "pos": "adjective"
+    },
+    {
+      "en": "shallow",
+      "cn": "浅的",
+      "pos": "adjective"
+    },
+    {
+      "en": "short",
+      "cn": "短的",
+      "pos": "adjective"
+    },
+    {
+      "en": "significant",
+      "cn": "显著的；重要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "similar",
+      "cn": "相似的",
+      "pos": "adjective"
+    },
+    {
+      "en": "simple",
+      "cn": "简单的",
+      "pos": "adjective"
+    },
+    {
+      "en": "simultaneous",
+      "cn": "同时发生的",
+      "pos": "adjective"
+    },
+    {
+      "en": "single",
+      "cn": "单个的",
+      "pos": "adjective"
+    },
+    {
+      "en": "skilled",
+      "cn": "熟练的",
+      "pos": "adjective"
+    },
+    {
+      "en": "slight",
+      "cn": "轻微的",
+      "pos": "adjective"
+    },
+    {
+      "en": "smooth",
+      "cn": "光滑的；顺利的",
+      "pos": "adjective"
+    },
+    {
+      "en": "social",
+      "cn": "社会的",
+      "pos": "adjective"
+    },
+    {
+      "en": "solar",
+      "cn": "太阳的",
+      "pos": "adjective"
+    },
+    {
+      "en": "solid",
+      "cn": "坚固的；固体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sophisticated",
+      "cn": "复杂精密的",
+      "pos": "adjective"
+    },
+    {
+      "en": "specific",
+      "cn": "具体的",
+      "pos": "adjective"
+    },
+    {
+      "en": "spectacular",
+      "cn": "壮观的",
+      "pos": "adjective"
+    },
+    {
+      "en": "spiritual",
+      "cn": "精神的",
+      "pos": "adjective"
+    },
+    {
+      "en": "spontaneous",
+      "cn": "自发的",
+      "pos": "adjective"
+    },
+    {
+      "en": "stable",
+      "cn": "稳定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "standard",
+      "cn": "标准的",
+      "pos": "adjective"
+    },
+    {
+      "en": "steady",
+      "cn": "稳步的；稳定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "steep",
+      "cn": "陡峭的",
+      "pos": "adjective"
+    },
+    {
+      "en": "strict",
+      "cn": "严格的",
+      "pos": "adjective"
+    },
+    {
+      "en": "structural",
+      "cn": "结构的",
+      "pos": "adjective"
+    },
+    {
+      "en": "subsequent",
+      "cn": "随后的",
+      "pos": "adjective"
+    },
+    {
+      "en": "substantial",
+      "cn": "大量的；实质性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "subtle",
+      "cn": "细微的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sufficient",
+      "cn": "足够的",
+      "pos": "adjective"
+    },
+    {
+      "en": "suitable",
+      "cn": "合适的",
+      "pos": "adjective"
+    },
+    {
+      "en": "superior",
+      "cn": "更好的；优越的",
+      "pos": "adjective"
+    },
+    {
+      "en": "supplementary",
+      "cn": "补充的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sustainable",
+      "cn": "可持续的",
+      "pos": "adjective"
+    },
+    {
+      "en": "symbolic",
+      "cn": "象征性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "systematic",
+      "cn": "系统的",
+      "pos": "adjective"
+    },
+    {
+      "en": "technical",
+      "cn": "技术的",
+      "pos": "adjective"
+    },
+    {
+      "en": "temporary",
+      "cn": "临时的",
+      "pos": "adjective"
+    },
+    {
+      "en": "terrestrial",
+      "cn": "陆地的；地球的",
+      "pos": "adjective"
+    },
+    {
+      "en": "theoretical",
+      "cn": "理论的",
+      "pos": "adjective"
+    },
+    {
+      "en": "thorough",
+      "cn": "彻底的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tiny",
+      "cn": "极小的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tough",
+      "cn": "艰难的；坚韧的",
+      "pos": "adjective"
+    },
+    {
+      "en": "toxic",
+      "cn": "有毒的",
+      "pos": "adjective"
+    },
+    {
+      "en": "traditional",
+      "cn": "传统的",
+      "pos": "adjective"
+    },
+    {
+      "en": "transparent",
+      "cn": "透明的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tremendous",
+      "cn": "巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tropical",
+      "cn": "热带的",
+      "pos": "adjective"
+    },
+    {
+      "en": "typical",
+      "cn": "典型的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ultimate",
+      "cn": "最终的",
+      "pos": "adjective"
+    },
+    {
+      "en": "uncertain",
+      "cn": "不确定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "underlying",
+      "cn": "潜在的；根本的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unexpected",
+      "cn": "意外的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unfair",
+      "cn": "不公平的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unique",
+      "cn": "独特的",
+      "pos": "adjective"
+    },
+    {
+      "en": "universal",
+      "cn": "普遍的；通用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unknown",
+      "cn": "未知的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unlikely",
+      "cn": "不大可能的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unprecedented",
+      "cn": "前所未有的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unusual",
+      "cn": "不寻常的",
+      "pos": "adjective"
+    },
+    {
+      "en": "urban",
+      "cn": "城市的",
+      "pos": "adjective"
+    },
+    {
+      "en": "urgent",
+      "cn": "紧急的",
+      "pos": "adjective"
+    },
+    {
+      "en": "useful",
+      "cn": "有用的",
+      "pos": "adjective"
+    },
+    {
+      "en": "valid",
+      "cn": "有效的；合理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "valuable",
+      "cn": "宝贵的",
+      "pos": "adjective"
+    },
+    {
+      "en": "variable",
+      "cn": "变化不定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vast",
+      "cn": "广阔的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vertical",
+      "cn": "垂直的",
+      "pos": "adjective"
+    },
+    {
+      "en": "visible",
+      "cn": "可见的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vital",
+      "cn": "至关重要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "voluntary",
+      "cn": "自愿的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vulnerable",
+      "cn": "易受伤害的",
+      "pos": "adjective"
+    },
+    {
+      "en": "warm",
+      "cn": "温暖的",
+      "pos": "adjective"
+    },
+    {
+      "en": "weak",
+      "cn": "虚弱的；薄弱的",
+      "pos": "adjective"
+    },
+    {
+      "en": "wealthy",
+      "cn": "富有的",
+      "pos": "adjective"
+    },
+    {
+      "en": "wet",
+      "cn": "湿的",
+      "pos": "adjective"
+    },
+    {
+      "en": "widespread",
+      "cn": "广泛的",
+      "pos": "adjective"
+    },
+    {
+      "en": "willing",
+      "cn": "愿意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "wise",
+      "cn": "明智的",
+      "pos": "adjective"
+    },
+    {
+      "en": "worthy",
+      "cn": "值得的",
+      "pos": "adjective"
+    },
+    {
+      "en": "abnormal",
+      "cn": "异常的",
+      "pos": "adjective"
+    },
+    {
+      "en": "abrupt",
+      "cn": "突然的",
+      "pos": "adjective"
+    },
+    {
+      "en": "abundant",
+      "cn": "丰富的",
+      "pos": "adjective"
+    },
+    {
+      "en": "accidental",
+      "cn": "意外的",
+      "pos": "adjective"
+    },
+    {
+      "en": "accountable",
+      "cn": "负有责任的",
+      "pos": "adjective"
+    },
+    {
+      "en": "acute",
+      "cn": "急性的；敏锐的",
+      "pos": "adjective"
+    },
+    {
+      "en": "adaptive",
+      "cn": "适应性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "aesthetic",
+      "cn": "美学的",
+      "pos": "adjective"
+    },
+    {
+      "en": "alert",
+      "cn": "警觉的",
+      "pos": "adjective"
+    },
+    {
+      "en": "alien",
+      "cn": "陌生的；外来的",
+      "pos": "adjective"
+    },
+    {
+      "en": "analogous",
+      "cn": "类似的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ancestral",
+      "cn": "祖先的",
+      "pos": "adjective"
+    },
+    {
+      "en": "anonymous",
+      "cn": "匿名的",
+      "pos": "adjective"
+    },
+    {
+      "en": "anticipated",
+      "cn": "预期的",
+      "pos": "adjective"
+    },
+    {
+      "en": "approachable",
+      "cn": "平易近人的",
+      "pos": "adjective"
+    },
+    {
+      "en": "aquatic",
+      "cn": "水生的",
+      "pos": "adjective"
+    },
+    {
+      "en": "arbitrary",
+      "cn": "任意的；武断的",
+      "pos": "adjective"
+    },
+    {
+      "en": "archaeological",
+      "cn": "考古的",
+      "pos": "adjective"
+    },
+    {
+      "en": "arid",
+      "cn": "干旱的",
+      "pos": "adjective"
+    },
+    {
+      "en": "arrogant",
+      "cn": "傲慢的",
+      "pos": "adjective"
+    },
+    {
+      "en": "attentive",
+      "cn": "专心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "authentic",
+      "cn": "真实的；正宗的",
+      "pos": "adjective"
+    },
+    {
+      "en": "autonomous",
+      "cn": "自治的；自主的",
+      "pos": "adjective"
+    },
+    {
+      "en": "beneficent",
+      "cn": "行善的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bleak",
+      "cn": "暗淡的；荒凉的",
+      "pos": "adjective"
+    },
+    {
+      "en": "brittle",
+      "cn": "易碎的；脆弱的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bureaucratic",
+      "cn": "官僚的",
+      "pos": "adjective"
+    },
+    {
+      "en": "calm",
+      "cn": "平静的",
+      "pos": "adjective"
+    },
+    {
+      "en": "carbon-neutral",
+      "cn": "碳中和的",
+      "pos": "adjective"
+    },
+    {
+      "en": "cautious",
+      "cn": "谨慎的",
+      "pos": "adjective"
+    },
+    {
+      "en": "chaotic",
+      "cn": "混乱的",
+      "pos": "adjective"
+    },
+    {
+      "en": "circular",
+      "cn": "圆形的",
+      "pos": "adjective"
+    },
+    {
+      "en": "climatic",
+      "cn": "气候的",
+      "pos": "adjective"
+    },
+    {
+      "en": "coincidental",
+      "cn": "巧合的",
+      "pos": "adjective"
+    },
+    {
+      "en": "colonial",
+      "cn": "殖民地的",
+      "pos": "adjective"
+    },
+    {
+      "en": "compact",
+      "cn": "紧凑的",
+      "pos": "adjective"
+    },
+    {
+      "en": "compassionate",
+      "cn": "富有同情心的",
+      "pos": "adjective"
+    },
+    {
+      "en": "compelling",
+      "cn": "令人信服的",
+      "pos": "adjective"
+    },
+    {
+      "en": "competent",
+      "cn": "有能力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "complementary",
+      "cn": "互补的",
+      "pos": "adjective"
+    },
+    {
+      "en": "complicated",
+      "cn": "复杂的",
+      "pos": "adjective"
+    },
+    {
+      "en": "conceivable",
+      "cn": "可以想象的",
+      "pos": "adjective"
+    },
+    {
+      "en": "confidential",
+      "cn": "保密的",
+      "pos": "adjective"
+    },
+    {
+      "en": "conscientious",
+      "cn": "认真负责的",
+      "pos": "adjective"
+    },
+    {
+      "en": "conservative",
+      "cn": "保守的",
+      "pos": "adjective"
+    },
+    {
+      "en": "contaminated",
+      "cn": "受污染的",
+      "pos": "adjective"
+    },
+    {
+      "en": "credible",
+      "cn": "可信的",
+      "pos": "adjective"
+    },
+    {
+      "en": "cumulative",
+      "cn": "累积的",
+      "pos": "adjective"
+    },
+    {
+      "en": "customary",
+      "cn": "习惯的；惯常的",
+      "pos": "adjective"
+    },
+    {
+      "en": "damp",
+      "cn": "潮湿的",
+      "pos": "adjective"
+    },
+    {
+      "en": "deaf",
+      "cn": "失聪的",
+      "pos": "adjective"
+    },
+    {
+      "en": "deceptive",
+      "cn": "具有欺骗性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "deficient",
+      "cn": "缺乏的",
+      "pos": "adjective"
+    },
+    {
+      "en": "democratic",
+      "cn": "民主的",
+      "pos": "adjective"
+    },
+    {
+      "en": "destructive",
+      "cn": "破坏性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "detrimental",
+      "cn": "有害的",
+      "pos": "adjective"
+    },
+    {
+      "en": "diplomatic",
+      "cn": "外交的",
+      "pos": "adjective"
+    },
+    {
+      "en": "discrete",
+      "cn": "分离的；独立的",
+      "pos": "adjective"
+    },
+    {
+      "en": "disposable",
+      "cn": "一次性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dissatisfied",
+      "cn": "不满意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dormant",
+      "cn": "休眠的",
+      "pos": "adjective"
+    },
+    {
+      "en": "dubious",
+      "cn": "可疑的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ecological",
+      "cn": "生态的",
+      "pos": "adjective"
+    },
+    {
+      "en": "effective",
+      "cn": "有效的",
+      "pos": "adjective"
+    },
+    {
+      "en": "elegant",
+      "cn": "优雅的",
+      "pos": "adjective"
+    },
+    {
+      "en": "embryonic",
+      "cn": "胚胎的；初期的",
+      "pos": "adjective"
+    },
+    {
+      "en": "eminent",
+      "cn": "杰出的",
+      "pos": "adjective"
+    },
+    {
+      "en": "endemic",
+      "cn": "地方特有的",
+      "pos": "adjective"
+    },
+    {
+      "en": "enduring",
+      "cn": "持久的",
+      "pos": "adjective"
+    },
+    {
+      "en": "energetic",
+      "cn": "精力充沛的",
+      "pos": "adjective"
+    },
+    {
+      "en": "equitable",
+      "cn": "公平合理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "evolutionary",
+      "cn": "进化的",
+      "pos": "adjective"
+    },
+    {
+      "en": "exhaustive",
+      "cn": "详尽的",
+      "pos": "adjective"
+    },
+    {
+      "en": "exotic",
+      "cn": "异国的；外来的",
+      "pos": "adjective"
+    },
+    {
+      "en": "expansive",
+      "cn": "广阔的",
+      "pos": "adjective"
+    },
+    {
+      "en": "extinct",
+      "cn": "灭绝的",
+      "pos": "adjective"
+    },
+    {
+      "en": "feasible",
+      "cn": "可行的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fertile",
+      "cn": "肥沃的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fierce",
+      "cn": "凶猛的；激烈的",
+      "pos": "adjective"
+    },
+    {
+      "en": "fluent",
+      "cn": "流利的",
+      "pos": "adjective"
+    },
+    {
+      "en": "foreseeable",
+      "cn": "可预见的",
+      "pos": "adjective"
+    },
+    {
+      "en": "frank",
+      "cn": "坦率的",
+      "pos": "adjective"
+    },
+    {
+      "en": "frugal",
+      "cn": "节俭的",
+      "pos": "adjective"
+    },
+    {
+      "en": "functional",
+      "cn": "功能性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "geological",
+      "cn": "地质的",
+      "pos": "adjective"
+    },
+    {
+      "en": "glacial",
+      "cn": "冰川的",
+      "pos": "adjective"
+    },
+    {
+      "en": "good",
+      "cn": "好的",
+      "pos": "adjective"
+    },
+    {
+      "en": "grim",
+      "cn": "严峻的",
+      "pos": "adjective"
+    },
+    {
+      "en": "hard",
+      "cn": "困难的；坚硬的",
+      "pos": "adjective"
+    },
+    {
+      "en": "hazardous",
+      "cn": "危险的",
+      "pos": "adjective"
+    },
+    {
+      "en": "hereditary",
+      "cn": "遗传的",
+      "pos": "adjective"
+    },
+    {
+      "en": "heterogeneous",
+      "cn": "异质的；多样的",
+      "pos": "adjective"
+    },
+    {
+      "en": "homogeneous",
+      "cn": "同质的；均匀的",
+      "pos": "adjective"
+    },
+    {
+      "en": "horizontal",
+      "cn": "水平的",
+      "pos": "adjective"
+    },
+    {
+      "en": "humble",
+      "cn": "谦逊的",
+      "pos": "adjective"
+    },
+    {
+      "en": "hypothetical",
+      "cn": "假设的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ignorant",
+      "cn": "不了解的",
+      "pos": "adjective"
+    },
+    {
+      "en": "immense",
+      "cn": "巨大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "imminent",
+      "cn": "即将发生的",
+      "pos": "adjective"
+    },
+    {
+      "en": "impartial",
+      "cn": "公正的",
+      "pos": "adjective"
+    },
+    {
+      "en": "imperative",
+      "cn": "至关重要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "incentive",
+      "cn": "激励性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inclusive",
+      "cn": "包容的",
+      "pos": "adjective"
+    },
+    {
+      "en": "incompatible",
+      "cn": "不兼容的",
+      "pos": "adjective"
+    },
+    {
+      "en": "incomplete",
+      "cn": "不完整的",
+      "pos": "adjective"
+    },
+    {
+      "en": "incremental",
+      "cn": "逐步增加的",
+      "pos": "adjective"
+    },
+    {
+      "en": "indispensable",
+      "cn": "不可或缺的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inert",
+      "cn": "不活泼的；惰性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inferior",
+      "cn": "较差的",
+      "pos": "adjective"
+    },
+    {
+      "en": "inherent",
+      "cn": "固有的",
+      "pos": "adjective"
+    },
+    {
+      "en": "innate",
+      "cn": "先天的",
+      "pos": "adjective"
+    },
+    {
+      "en": "insightful",
+      "cn": "有洞察力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intact",
+      "cn": "完整无损的",
+      "pos": "adjective"
+    },
+    {
+      "en": "integral",
+      "cn": "不可缺少的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intermediate",
+      "cn": "中级的；中间的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intermittent",
+      "cn": "间歇的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intricate",
+      "cn": "错综复杂的",
+      "pos": "adjective"
+    },
+    {
+      "en": "intrinsic",
+      "cn": "内在的",
+      "pos": "adjective"
+    },
+    {
+      "en": "invasive",
+      "cn": "侵入的",
+      "pos": "adjective"
+    },
+    {
+      "en": "ironic",
+      "cn": "讽刺的",
+      "pos": "adjective"
+    },
+    {
+      "en": "irreversible",
+      "cn": "不可逆的",
+      "pos": "adjective"
+    },
+    {
+      "en": "legitimate",
+      "cn": "合法的；合理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "lengthy",
+      "cn": "漫长的",
+      "pos": "adjective"
+    },
+    {
+      "en": "lethal",
+      "cn": "致命的",
+      "pos": "adjective"
+    },
+    {
+      "en": "literary",
+      "cn": "文学的",
+      "pos": "adjective"
+    },
+    {
+      "en": "luminous",
+      "cn": "发光的",
+      "pos": "adjective"
+    },
+    {
+      "en": "magnificent",
+      "cn": "壮丽的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mandatory",
+      "cn": "强制的",
+      "pos": "adjective"
+    },
+    {
+      "en": "marginal",
+      "cn": "微小的；边缘的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mechanical",
+      "cn": "机械的",
+      "pos": "adjective"
+    },
+    {
+      "en": "medieval",
+      "cn": "中世纪的",
+      "pos": "adjective"
+    },
+    {
+      "en": "meticulous",
+      "cn": "一丝不苟的",
+      "pos": "adjective"
+    },
+    {
+      "en": "metropolitan",
+      "cn": "大都市的",
+      "pos": "adjective"
+    },
+    {
+      "en": "misleading",
+      "cn": "误导的",
+      "pos": "adjective"
+    },
+    {
+      "en": "molecular",
+      "cn": "分子的",
+      "pos": "adjective"
+    },
+    {
+      "en": "monotonous",
+      "cn": "单调的",
+      "pos": "adjective"
+    },
+    {
+      "en": "mutual",
+      "cn": "相互的",
+      "pos": "adjective"
+    },
+    {
+      "en": "negligible",
+      "cn": "微不足道的",
+      "pos": "adjective"
+    },
+    {
+      "en": "nominal",
+      "cn": "名义上的；少量的",
+      "pos": "adjective"
+    },
+    {
+      "en": "notorious",
+      "cn": "臭名昭著的",
+      "pos": "adjective"
+    },
+    {
+      "en": "novel",
+      "cn": "新颖的",
+      "pos": "adjective"
+    },
+    {
+      "en": "obscure",
+      "cn": "晦涩的；不为人知的",
+      "pos": "adjective"
+    },
+    {
+      "en": "obsolete",
+      "cn": "过时的",
+      "pos": "adjective"
+    },
+    {
+      "en": "oral",
+      "cn": "口头的",
+      "pos": "adjective"
+    },
+    {
+      "en": "orderly",
+      "cn": "整齐的；有秩序的",
+      "pos": "adjective"
+    },
+    {
+      "en": "outstanding",
+      "cn": "杰出的",
+      "pos": "adjective"
+    },
+    {
+      "en": "passionate",
+      "cn": "热情的",
+      "pos": "adjective"
+    },
+    {
+      "en": "pathetic",
+      "cn": "可怜的",
+      "pos": "adjective"
+    },
+    {
+      "en": "peculiar",
+      "cn": "奇特的",
+      "pos": "adjective"
+    },
+    {
+      "en": "periodic",
+      "cn": "周期性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "peripheral",
+      "cn": "外围的；次要的",
+      "pos": "adjective"
+    },
+    {
+      "en": "pessimistic",
+      "cn": "悲观的",
+      "pos": "adjective"
+    },
+    {
+      "en": "plausible",
+      "cn": "似乎合理的",
+      "pos": "adjective"
+    },
+    {
+      "en": "polar",
+      "cn": "极地的",
+      "pos": "adjective"
+    },
+    {
+      "en": "portable",
+      "cn": "便携的",
+      "pos": "adjective"
+    },
+    {
+      "en": "predominant",
+      "cn": "占主导地位的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prestigious",
+      "cn": "有声望的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prevalent",
+      "cn": "普遍的",
+      "pos": "adjective"
+    },
+    {
+      "en": "profitable",
+      "cn": "有利润的",
+      "pos": "adjective"
+    },
+    {
+      "en": "proportional",
+      "cn": "成比例的",
+      "pos": "adjective"
+    },
+    {
+      "en": "prospective",
+      "cn": "预期的；潜在的",
+      "pos": "adjective"
+    },
+    {
+      "en": "punctual",
+      "cn": "准时的",
+      "pos": "adjective"
+    },
+    {
+      "en": "qualitative",
+      "cn": "定性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "receptive",
+      "cn": "乐于接受的",
+      "pos": "adjective"
+    },
+    {
+      "en": "redundant",
+      "cn": "多余的",
+      "pos": "adjective"
+    },
+    {
+      "en": "regulatory",
+      "cn": "监管的",
+      "pos": "adjective"
+    },
+    {
+      "en": "reluctant",
+      "cn": "不情愿的",
+      "pos": "adjective"
+    },
+    {
+      "en": "residential",
+      "cn": "住宅的",
+      "pos": "adjective"
+    },
+    {
+      "en": "resilient",
+      "cn": "有恢复力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "retrospective",
+      "cn": "回顾性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "reversible",
+      "cn": "可逆的",
+      "pos": "adjective"
+    },
+    {
+      "en": "robust",
+      "cn": "强健的；稳健的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sacred",
+      "cn": "神圣的",
+      "pos": "adjective"
+    },
+    {
+      "en": "saline",
+      "cn": "含盐的",
+      "pos": "adjective"
+    },
+    {
+      "en": "skeptical",
+      "cn": "怀疑的",
+      "pos": "adjective"
+    },
+    {
+      "en": "slender",
+      "cn": "细长的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sluggish",
+      "cn": "缓慢的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sole",
+      "cn": "唯一的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sparse",
+      "cn": "稀疏的",
+      "pos": "adjective"
+    },
+    {
+      "en": "spatial",
+      "cn": "空间的",
+      "pos": "adjective"
+    },
+    {
+      "en": "splendid",
+      "cn": "极好的；壮丽的",
+      "pos": "adjective"
+    },
+    {
+      "en": "stagnant",
+      "cn": "停滞的",
+      "pos": "adjective"
+    },
+    {
+      "en": "statistical",
+      "cn": "统计的",
+      "pos": "adjective"
+    },
+    {
+      "en": "stern",
+      "cn": "严厉的",
+      "pos": "adjective"
+    },
+    {
+      "en": "striking",
+      "cn": "显著的；引人注目的",
+      "pos": "adjective"
+    },
+    {
+      "en": "sturdy",
+      "cn": "结实的",
+      "pos": "adjective"
+    },
+    {
+      "en": "subjective",
+      "cn": "主观的",
+      "pos": "adjective"
+    },
+    {
+      "en": "subordinate",
+      "cn": "次要的；从属的",
+      "pos": "adjective"
+    },
+    {
+      "en": "superficial",
+      "cn": "表面的；肤浅的",
+      "pos": "adjective"
+    },
+    {
+      "en": "surplus",
+      "cn": "多余的",
+      "pos": "adjective"
+    },
+    {
+      "en": "susceptible",
+      "cn": "易受影响的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tangible",
+      "cn": "有形的；切实的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tedious",
+      "cn": "乏味的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tentative",
+      "cn": "暂定的；试探性的",
+      "pos": "adjective"
+    },
+    {
+      "en": "terminal",
+      "cn": "末期的；末端的",
+      "pos": "adjective"
+    },
+    {
+      "en": "thermal",
+      "cn": "热的",
+      "pos": "adjective"
+    },
+    {
+      "en": "thirsty",
+      "cn": "口渴的",
+      "pos": "adjective"
+    },
+    {
+      "en": "tranquil",
+      "cn": "宁静的",
+      "pos": "adjective"
+    },
+    {
+      "en": "transient",
+      "cn": "短暂的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unanimous",
+      "cn": "一致同意的",
+      "pos": "adjective"
+    },
+    {
+      "en": "uniform",
+      "cn": "一致的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unstable",
+      "cn": "不稳定的",
+      "pos": "adjective"
+    },
+    {
+      "en": "utmost",
+      "cn": "极度的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vague",
+      "cn": "模糊的",
+      "pos": "adjective"
+    },
+    {
+      "en": "versatile",
+      "cn": "多用途的；多才多艺的",
+      "pos": "adjective"
+    },
+    {
+      "en": "viable",
+      "cn": "可行的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vigorous",
+      "cn": "充满活力的",
+      "pos": "adjective"
+    },
+    {
+      "en": "virtual",
+      "cn": "虚拟的",
+      "pos": "adjective"
+    },
+    {
+      "en": "visual",
+      "cn": "视觉的",
+      "pos": "adjective"
+    },
+    {
+      "en": "vivid",
+      "cn": "生动的；鲜明的",
+      "pos": "adjective"
+    },
+    {
+      "en": "volatile",
+      "cn": "易变的",
+      "pos": "adjective"
+    },
+    {
+      "en": "complete",
+      "cn": "完整的",
+      "pos": "adjective"
+    },
+    {
+      "en": "correct",
+      "cn": "正确的",
+      "pos": "adjective"
+    },
+    {
+      "en": "full",
+      "cn": "满的；完整的",
+      "pos": "adjective"
+    },
+    {
+      "en": "large",
+      "cn": "大的",
+      "pos": "adjective"
+    },
+    {
+      "en": "late",
+      "cn": "迟的",
+      "pos": "adjective"
+    },
+    {
+      "en": "quick",
+      "cn": "迅速的",
+      "pos": "adjective"
+    },
+    {
+      "en": "quiet",
+      "cn": "安静的",
+      "pos": "adjective"
+    },
+    {
+      "en": "regular",
+      "cn": "定期的；规则的",
+      "pos": "adjective"
+    },
+    {
+      "en": "repeated",
+      "cn": "反复的",
+      "pos": "adjective"
+    },
+    {
+      "en": "slow",
+      "cn": "缓慢的",
+      "pos": "adjective"
+    },
+    {
+      "en": "seeming",
+      "cn": "表面上的",
+      "pos": "adjective"
+    },
+    {
+      "en": "true",
+      "cn": "真实的",
+      "pos": "adjective"
+    },
+    {
+      "en": "whole",
+      "cn": "整个的",
+      "pos": "adjective"
+    },
+    {
+      "en": "wide",
+      "cn": "宽的",
+      "pos": "adjective"
+    },
+    {
+      "en": "bad",
+      "cn": "坏的；差的",
+      "pos": "adjective"
+    },
+    {
+      "en": "comparative",
+      "cn": "比较的；相对的",
+      "pos": "adjective"
+    },
+    {
+      "en": "continual",
+      "cn": "反复发生的",
+      "pos": "adjective"
+    },
+    {
+      "en": "converse",
+      "cn": "相反的",
+      "pos": "adjective"
+    },
+    {
+      "en": "successful",
+      "cn": "成功的",
+      "pos": "adjective"
+    },
+    {
+      "en": "unfortunate",
+      "cn": "不幸的",
+      "pos": "adjective"
+    }
+  ],
+  "adverb": [
+    {
+      "en": "accordingly",
+      "cn": "因此；相应地",
+      "pos": "adverb"
+    },
+    {
+      "en": "admittedly",
+      "cn": "诚然",
+      "pos": "adverb"
+    },
+    {
+      "en": "afterward",
+      "cn": "后来",
+      "pos": "adverb"
+    },
+    {
+      "en": "again",
+      "cn": "再次",
+      "pos": "adverb"
+    },
+    {
+      "en": "almost",
+      "cn": "几乎",
+      "pos": "adverb"
+    },
+    {
+      "en": "alone",
+      "cn": "单独地",
+      "pos": "adverb"
+    },
+    {
+      "en": "already",
+      "cn": "已经",
+      "pos": "adverb"
+    },
+    {
+      "en": "also",
+      "cn": "也",
+      "pos": "adverb"
+    },
+    {
+      "en": "altogether",
+      "cn": "总共；完全",
+      "pos": "adverb"
+    },
+    {
+      "en": "always",
+      "cn": "总是",
+      "pos": "adverb"
+    },
+    {
+      "en": "arguably",
+      "cn": "可以说",
+      "pos": "adverb"
+    },
+    {
+      "en": "barely",
+      "cn": "勉强；几乎不",
+      "pos": "adverb"
+    },
+    {
+      "en": "chiefly",
+      "cn": "主要地",
+      "pos": "adverb"
+    },
+    {
+      "en": "closely",
+      "cn": "密切地",
+      "pos": "adverb"
+    },
+    {
+      "en": "consequently",
+      "cn": "因此",
+      "pos": "adverb"
+    },
+    {
+      "en": "elsewhere",
+      "cn": "在别处",
+      "pos": "adverb"
+    },
+    {
+      "en": "especially",
+      "cn": "尤其",
+      "pos": "adverb"
+    },
+    {
+      "en": "essentially",
+      "cn": "本质上",
+      "pos": "adverb"
+    },
+    {
+      "en": "extensively",
+      "cn": "广泛地",
+      "pos": "adverb"
+    },
+    {
+      "en": "fairly",
+      "cn": "相当地；公平地",
+      "pos": "adverb"
+    },
+    {
+      "en": "first",
+      "cn": "首先",
+      "pos": "adverb"
+    },
+    {
+      "en": "hardly",
+      "cn": "几乎不",
+      "pos": "adverb"
+    },
+    {
+      "en": "here",
+      "cn": "在这里",
+      "pos": "adverb"
+    },
+    {
+      "en": "highly",
+      "cn": "高度地",
+      "pos": "adverb"
+    },
+    {
+      "en": "however",
+      "cn": "然而",
+      "pos": "adverb"
+    },
+    {
+      "en": "increasingly",
+      "cn": "越来越",
+      "pos": "adverb"
+    },
+    {
+      "en": "indeed",
+      "cn": "确实",
+      "pos": "adverb"
+    },
+    {
+      "en": "indirectly",
+      "cn": "间接地",
+      "pos": "adverb"
+    },
+    {
+      "en": "instead",
+      "cn": "代替；反而",
+      "pos": "adverb"
+    },
+    {
+      "en": "invariably",
+      "cn": "总是",
+      "pos": "adverb"
+    },
+    {
+      "en": "lately",
+      "cn": "最近",
+      "pos": "adverb"
+    },
+    {
+      "en": "later",
+      "cn": "后来",
+      "pos": "adverb"
+    },
+    {
+      "en": "likely",
+      "cn": "很可能",
+      "pos": "adverb"
+    },
+    {
+      "en": "literally",
+      "cn": "按字面地；确实地",
+      "pos": "adverb"
+    },
+    {
+      "en": "mainly",
+      "cn": "主要地",
+      "pos": "adverb"
+    },
+    {
+      "en": "moreover",
+      "cn": "此外",
+      "pos": "adverb"
+    },
+    {
+      "en": "mostly",
+      "cn": "主要地；大部分",
+      "pos": "adverb"
+    },
+    {
+      "en": "nearly",
+      "cn": "几乎",
+      "pos": "adverb"
+    },
+    {
+      "en": "nevertheless",
+      "cn": "尽管如此",
+      "pos": "adverb"
+    },
+    {
+      "en": "now",
+      "cn": "现在",
+      "pos": "adverb"
+    },
+    {
+      "en": "nowadays",
+      "cn": "如今",
+      "pos": "adverb"
+    },
+    {
+      "en": "often",
+      "cn": "经常",
+      "pos": "adverb"
+    },
+    {
+      "en": "only",
+      "cn": "仅仅",
+      "pos": "adverb"
+    },
+    {
+      "en": "otherwise",
+      "cn": "否则",
+      "pos": "adverb"
+    },
+    {
+      "en": "overall",
+      "cn": "总体上",
+      "pos": "adverb"
+    },
+    {
+      "en": "partly",
+      "cn": "部分地",
+      "pos": "adverb"
+    },
+    {
+      "en": "practically",
+      "cn": "几乎；实际上",
+      "pos": "adverb"
+    },
+    {
+      "en": "presently",
+      "cn": "不久；目前",
+      "pos": "adverb"
+    },
+    {
+      "en": "presumably",
+      "cn": "大概；想必",
+      "pos": "adverb"
+    },
+    {
+      "en": "purely",
+      "cn": "纯粹地",
+      "pos": "adverb"
+    },
+    {
+      "en": "quite",
+      "cn": "相当",
+      "pos": "adverb"
+    },
+    {
+      "en": "really",
+      "cn": "真正地；很",
+      "pos": "adverb"
+    },
+    {
+      "en": "relatively",
+      "cn": "相对地",
+      "pos": "adverb"
+    },
+    {
+      "en": "respectively",
+      "cn": "分别地",
+      "pos": "adverb"
+    },
+    {
+      "en": "scarcely",
+      "cn": "几乎不",
+      "pos": "adverb"
+    },
+    {
+      "en": "seldom",
+      "cn": "很少",
+      "pos": "adverb"
+    },
+    {
+      "en": "somehow",
+      "cn": "以某种方式；不知怎么地",
+      "pos": "adverb"
+    },
+    {
+      "en": "sometimes",
+      "cn": "有时",
+      "pos": "adverb"
+    },
+    {
+      "en": "somewhat",
+      "cn": "有点",
+      "pos": "adverb"
+    },
+    {
+      "en": "soon",
+      "cn": "不久",
+      "pos": "adverb"
+    },
+    {
+      "en": "specifically",
+      "cn": "具体地；专门地",
+      "pos": "adverb"
+    },
+    {
+      "en": "still",
+      "cn": "仍然",
+      "pos": "adverb"
+    },
+    {
+      "en": "suddenly",
+      "cn": "突然地",
+      "pos": "adverb"
+    },
+    {
+      "en": "supposedly",
+      "cn": "据说",
+      "pos": "adverb"
+    },
+    {
+      "en": "surely",
+      "cn": "无疑；必定",
+      "pos": "adverb"
+    },
+    {
+      "en": "surprisingly",
+      "cn": "令人惊讶地",
+      "pos": "adverb"
+    },
+    {
+      "en": "systematically",
+      "cn": "系统地",
+      "pos": "adverb"
+    },
+    {
+      "en": "there",
+      "cn": "在那里",
+      "pos": "adverb"
+    },
+    {
+      "en": "thereby",
+      "cn": "从而",
+      "pos": "adverb"
+    },
+    {
+      "en": "therefore",
+      "cn": "因此",
+      "pos": "adverb"
+    },
+    {
+      "en": "thus",
+      "cn": "因此",
+      "pos": "adverb"
+    },
+    {
+      "en": "together",
+      "cn": "一起",
+      "pos": "adverb"
+    },
+    {
+      "en": "too",
+      "cn": "太；也",
+      "pos": "adverb"
+    },
+    {
+      "en": "totally",
+      "cn": "完全地",
+      "pos": "adverb"
+    },
+    {
+      "en": "usually",
+      "cn": "通常",
+      "pos": "adverb"
+    },
+    {
+      "en": "yet",
+      "cn": "还；尚",
+      "pos": "adverb"
+    },
+    {
+      "en": "abroad",
+      "cn": "在国外",
+      "pos": "adverb"
+    },
+    {
+      "en": "afar",
+      "cn": "在远处",
+      "pos": "adverb"
+    },
+    {
+      "en": "afresh",
+      "cn": "重新",
+      "pos": "adverb"
+    },
+    {
+      "en": "ahead",
+      "cn": "在前面；提前",
+      "pos": "adverb"
+    },
+    {
+      "en": "alike",
+      "cn": "相似地",
+      "pos": "adverb"
+    },
+    {
+      "en": "alongside",
+      "cn": "在旁边",
+      "pos": "adverb"
+    },
+    {
+      "en": "aloud",
+      "cn": "出声地",
+      "pos": "adverb"
+    },
+    {
+      "en": "anew",
+      "cn": "重新",
+      "pos": "adverb"
+    },
+    {
+      "en": "apart",
+      "cn": "分开地",
+      "pos": "adverb"
+    },
+    {
+      "en": "aside",
+      "cn": "到旁边",
+      "pos": "adverb"
+    },
+    {
+      "en": "astray",
+      "cn": "迷路地；误入歧途地",
+      "pos": "adverb"
+    },
+    {
+      "en": "away",
+      "cn": "离开",
+      "pos": "adverb"
+    },
+    {
+      "en": "back",
+      "cn": "回到原处",
+      "pos": "adverb"
+    },
+    {
+      "en": "backward",
+      "cn": "向后",
+      "pos": "adverb"
+    },
+    {
+      "en": "beforehand",
+      "cn": "事先",
+      "pos": "adverb"
+    },
+    {
+      "en": "clockwise",
+      "cn": "顺时针地",
+      "pos": "adverb"
+    },
+    {
+      "en": "counterclockwise",
+      "cn": "逆时针地",
+      "pos": "adverb"
+    },
+    {
+      "en": "downhill",
+      "cn": "向山下",
+      "pos": "adverb"
+    },
+    {
+      "en": "downstairs",
+      "cn": "在楼下",
+      "pos": "adverb"
+    },
+    {
+      "en": "downtown",
+      "cn": "往市中心",
+      "pos": "adverb"
+    },
+    {
+      "en": "eastward",
+      "cn": "向东",
+      "pos": "adverb"
+    },
+    {
+      "en": "enough",
+      "cn": "足够地",
+      "pos": "adverb"
+    },
+    {
+      "en": "even",
+      "cn": "甚至",
+      "pos": "adverb"
+    },
+    {
+      "en": "ever",
+      "cn": "曾经",
+      "pos": "adverb"
+    },
+    {
+      "en": "everywhere",
+      "cn": "到处",
+      "pos": "adverb"
+    },
+    {
+      "en": "far",
+      "cn": "远",
+      "pos": "adverb"
+    },
+    {
+      "en": "forever",
+      "cn": "永远",
+      "pos": "adverb"
+    },
+    {
+      "en": "forth",
+      "cn": "向前",
+      "pos": "adverb"
+    },
+    {
+      "en": "forward",
+      "cn": "向前",
+      "pos": "adverb"
+    },
+    {
+      "en": "furthermore",
+      "cn": "此外",
+      "pos": "adverb"
+    },
+    {
+      "en": "hence",
+      "cn": "因此",
+      "pos": "adverb"
+    },
+    {
+      "en": "henceforth",
+      "cn": "从今以后",
+      "pos": "adverb"
+    },
+    {
+      "en": "hereafter",
+      "cn": "此后",
+      "pos": "adverb"
+    },
+    {
+      "en": "hereby",
+      "cn": "特此",
+      "pos": "adverb"
+    },
+    {
+      "en": "indoors",
+      "cn": "在室内",
+      "pos": "adverb"
+    },
+    {
+      "en": "inland",
+      "cn": "向内陆",
+      "pos": "adverb"
+    },
+    {
+      "en": "inward",
+      "cn": "向内",
+      "pos": "adverb"
+    },
+    {
+      "en": "likewise",
+      "cn": "同样地",
+      "pos": "adverb"
+    },
+    {
+      "en": "meanwhile",
+      "cn": "与此同时",
+      "pos": "adverb"
+    },
+    {
+      "en": "nonetheless",
+      "cn": "尽管如此",
+      "pos": "adverb"
+    },
+    {
+      "en": "nowhere",
+      "cn": "无处",
+      "pos": "adverb"
+    },
+    {
+      "en": "outdoors",
+      "cn": "在户外",
+      "pos": "adverb"
+    },
+    {
+      "en": "outright",
+      "cn": "彻底地；直接地",
+      "pos": "adverb"
+    },
+    {
+      "en": "outward",
+      "cn": "向外",
+      "pos": "adverb"
+    },
+    {
+      "en": "overhead",
+      "cn": "在头顶上方",
+      "pos": "adverb"
+    },
+    {
+      "en": "overnight",
+      "cn": "在夜间；一夜之间",
+      "pos": "adverb"
+    },
+    {
+      "en": "overseas",
+      "cn": "在海外",
+      "pos": "adverb"
+    },
+    {
+      "en": "rather",
+      "cn": "相当地；宁可",
+      "pos": "adverb"
+    },
+    {
+      "en": "regardless",
+      "cn": "不管怎样",
+      "pos": "adverb"
+    },
+    {
+      "en": "sideways",
+      "cn": "侧向地",
+      "pos": "adverb"
+    },
+    {
+      "en": "sometime",
+      "cn": "在某个时候",
+      "pos": "adverb"
+    },
+    {
+      "en": "somewhere",
+      "cn": "在某处",
+      "pos": "adverb"
+    },
+    {
+      "en": "straight",
+      "cn": "径直地",
+      "pos": "adverb"
+    },
+    {
+      "en": "then",
+      "cn": "然后；那时",
+      "pos": "adverb"
+    },
+    {
+      "en": "thereafter",
+      "cn": "此后",
+      "pos": "adverb"
+    },
+    {
+      "en": "therein",
+      "cn": "在其中",
+      "pos": "adverb"
+    },
+    {
+      "en": "thrice",
+      "cn": "三次",
+      "pos": "adverb"
+    },
+    {
+      "en": "twice",
+      "cn": "两次",
+      "pos": "adverb"
+    },
+    {
+      "en": "underway",
+      "cn": "在进行中",
+      "pos": "adverb"
+    },
+    {
+      "en": "undoubtedly",
+      "cn": "无疑地",
+      "pos": "adverb"
+    },
+    {
+      "en": "uphill",
+      "cn": "向山上",
+      "pos": "adverb"
+    },
+    {
+      "en": "upstairs",
+      "cn": "在楼上",
+      "pos": "adverb"
+    },
+    {
+      "en": "upward",
+      "cn": "向上",
+      "pos": "adverb"
+    },
+    {
+      "en": "utterly",
+      "cn": "完全地",
+      "pos": "adverb"
+    },
+    {
+      "en": "well",
+      "cn": "好地",
+      "pos": "adverb"
+    },
+    {
+      "en": "whereby",
+      "cn": "凭此；借以",
+      "pos": "adverb"
+    },
+    {
+      "en": "whereupon",
+      "cn": "随即",
+      "pos": "adverb"
+    },
+    {
+      "en": "wholesale",
+      "cn": "整体地；大批地",
+      "pos": "adverb"
+    },
+    {
+      "en": "hard",
+      "cn": "努力地",
+      "pos": "adverb"
+    },
+    {
+      "en": "largely",
+      "cn": "主要地；在很大程度上",
+      "pos": "adverb"
+    },
+    {
+      "en": "notably",
+      "cn": "尤其；显著地",
+      "pos": "adverb"
+    },
+    {
+      "en": "particularly",
+      "cn": "尤其",
+      "pos": "adverb"
+    },
+    {
+      "en": "readily",
+      "cn": "容易地；乐意地",
+      "pos": "adverb"
+    },
+    {
+      "en": "roughly",
+      "cn": "大约；粗略地",
+      "pos": "adverb"
+    },
+    {
+      "en": "virtually",
+      "cn": "几乎",
+      "pos": "adverb"
+    }
+  ],
+  "preposition": [
+    {
+      "en": "about",
+      "cn": "关于",
+      "pos": "preposition"
+    },
+    {
+      "en": "above",
+      "cn": "在……上方",
+      "pos": "preposition"
+    },
+    {
+      "en": "across",
+      "cn": "穿过；在……对面",
+      "pos": "preposition"
+    },
+    {
+      "en": "after",
+      "cn": "在……之后",
+      "pos": "preposition"
+    },
+    {
+      "en": "against",
+      "cn": "倚靠；反对",
+      "pos": "preposition"
+    },
+    {
+      "en": "along",
+      "cn": "沿着",
+      "pos": "preposition"
+    },
+    {
+      "en": "amid",
+      "cn": "在……之中",
+      "pos": "preposition"
+    },
+    {
+      "en": "among",
+      "cn": "在……当中",
+      "pos": "preposition"
+    },
+    {
+      "en": "around",
+      "cn": "围绕；在……周围",
+      "pos": "preposition"
+    },
+    {
+      "en": "at",
+      "cn": "在……处",
+      "pos": "preposition"
+    },
+    {
+      "en": "before",
+      "cn": "在……之前",
+      "pos": "preposition"
+    },
+    {
+      "en": "behind",
+      "cn": "在……后面",
+      "pos": "preposition"
+    },
+    {
+      "en": "below",
+      "cn": "在……下方",
+      "pos": "preposition"
+    },
+    {
+      "en": "beneath",
+      "cn": "在……下面",
+      "pos": "preposition"
+    },
+    {
+      "en": "beside",
+      "cn": "在……旁边",
+      "pos": "preposition"
+    },
+    {
+      "en": "besides",
+      "cn": "除……之外还",
+      "pos": "preposition"
+    },
+    {
+      "en": "between",
+      "cn": "在……之间",
+      "pos": "preposition"
+    },
+    {
+      "en": "beyond",
+      "cn": "超出；在……那边",
+      "pos": "preposition"
+    },
+    {
+      "en": "by",
+      "cn": "由；在……旁边",
+      "pos": "preposition"
+    },
+    {
+      "en": "concerning",
+      "cn": "关于",
+      "pos": "preposition"
+    },
+    {
+      "en": "considering",
+      "cn": "考虑到",
+      "pos": "preposition"
+    },
+    {
+      "en": "despite",
+      "cn": "尽管",
+      "pos": "preposition"
+    },
+    {
+      "en": "down",
+      "cn": "沿着……向下",
+      "pos": "preposition"
+    },
+    {
+      "en": "during",
+      "cn": "在……期间",
+      "pos": "preposition"
+    },
+    {
+      "en": "except",
+      "cn": "除……之外",
+      "pos": "preposition"
+    },
+    {
+      "en": "for",
+      "cn": "为了；给",
+      "pos": "preposition"
+    },
+    {
+      "en": "from",
+      "cn": "从；来自",
+      "pos": "preposition"
+    },
+    {
+      "en": "in",
+      "cn": "在……里面",
+      "pos": "preposition"
+    },
+    {
+      "en": "inside",
+      "cn": "在……内部",
+      "pos": "preposition"
+    },
+    {
+      "en": "into",
+      "cn": "进入",
+      "pos": "preposition"
+    },
+    {
+      "en": "like",
+      "cn": "像",
+      "pos": "preposition"
+    },
+    {
+      "en": "near",
+      "cn": "在……附近",
+      "pos": "preposition"
+    },
+    {
+      "en": "of",
+      "cn": "……的",
+      "pos": "preposition"
+    },
+    {
+      "en": "off",
+      "cn": "离开；从……离开",
+      "pos": "preposition"
+    },
+    {
+      "en": "on",
+      "cn": "在……上",
+      "pos": "preposition"
+    },
+    {
+      "en": "onto",
+      "cn": "到……之上",
+      "pos": "preposition"
+    },
+    {
+      "en": "opposite",
+      "cn": "在……对面",
+      "pos": "preposition"
+    },
+    {
+      "en": "outside",
+      "cn": "在……外面",
+      "pos": "preposition"
+    },
+    {
+      "en": "over",
+      "cn": "在……上方",
+      "pos": "preposition"
+    },
+    {
+      "en": "past",
+      "cn": "经过；超过",
+      "pos": "preposition"
+    },
+    {
+      "en": "per",
+      "cn": "每",
+      "pos": "preposition"
+    },
+    {
+      "en": "regarding",
+      "cn": "关于",
+      "pos": "preposition"
+    },
+    {
+      "en": "through",
+      "cn": "穿过",
+      "pos": "preposition"
+    },
+    {
+      "en": "throughout",
+      "cn": "遍及；贯穿",
+      "pos": "preposition"
+    },
+    {
+      "en": "to",
+      "cn": "到；向",
+      "pos": "preposition"
+    },
+    {
+      "en": "toward",
+      "cn": "朝向",
+      "pos": "preposition"
+    },
+    {
+      "en": "under",
+      "cn": "在……下面",
+      "pos": "preposition"
+    },
+    {
+      "en": "underneath",
+      "cn": "在……下面",
+      "pos": "preposition"
+    },
+    {
+      "en": "unlike",
+      "cn": "不像",
+      "pos": "preposition"
+    },
+    {
+      "en": "until",
+      "cn": "直到",
+      "pos": "preposition"
+    },
+    {
+      "en": "upon",
+      "cn": "在……上",
+      "pos": "preposition"
+    },
+    {
+      "en": "via",
+      "cn": "经由；通过",
+      "pos": "preposition"
+    },
+    {
+      "en": "with",
+      "cn": "和；用",
+      "pos": "preposition"
+    },
+    {
+      "en": "within",
+      "cn": "在……之内",
+      "pos": "preposition"
+    },
+    {
+      "en": "without",
+      "cn": "没有",
+      "pos": "preposition"
+    }
+  ],
+  "conjunction": [
+    {
+      "en": "although",
+      "cn": "虽然",
+      "pos": "conjunction"
+    },
+    {
+      "en": "and",
+      "cn": "和；并且",
+      "pos": "conjunction"
+    },
+    {
+      "en": "as",
+      "cn": "当……时；因为",
+      "pos": "conjunction"
+    },
+    {
+      "en": "because",
+      "cn": "因为",
+      "pos": "conjunction"
+    },
+    {
+      "en": "before",
+      "cn": "在……之前",
+      "pos": "conjunction"
+    },
+    {
+      "en": "but",
+      "cn": "但是",
+      "pos": "conjunction"
+    },
+    {
+      "en": "even though",
+      "cn": "即使；虽然",
+      "pos": "conjunction"
+    },
+    {
+      "en": "if",
+      "cn": "如果",
+      "pos": "conjunction"
+    },
+    {
+      "en": "in case",
+      "cn": "以防",
+      "pos": "conjunction"
+    },
+    {
+      "en": "in order that",
+      "cn": "为了",
+      "pos": "conjunction"
+    },
+    {
+      "en": "inasmuch as",
+      "cn": "由于；鉴于",
+      "pos": "conjunction"
+    },
+    {
+      "en": "lest",
+      "cn": "以免",
+      "pos": "conjunction"
+    },
+    {
+      "en": "now that",
+      "cn": "既然",
+      "pos": "conjunction"
+    },
+    {
+      "en": "once",
+      "cn": "一旦",
+      "pos": "conjunction"
+    },
+    {
+      "en": "or",
+      "cn": "或者",
+      "pos": "conjunction"
+    },
+    {
+      "en": "provided that",
+      "cn": "只要",
+      "pos": "conjunction"
+    },
+    {
+      "en": "rather than",
+      "cn": "而不是",
+      "pos": "conjunction"
+    },
+    {
+      "en": "since",
+      "cn": "自从；因为",
+      "pos": "conjunction"
+    },
+    {
+      "en": "so",
+      "cn": "所以",
+      "pos": "conjunction"
+    },
+    {
+      "en": "so that",
+      "cn": "以便",
+      "pos": "conjunction"
+    },
+    {
+      "en": "than",
+      "cn": "比",
+      "pos": "conjunction"
+    },
+    {
+      "en": "though",
+      "cn": "虽然",
+      "pos": "conjunction"
+    },
+    {
+      "en": "till",
+      "cn": "直到",
+      "pos": "conjunction"
+    },
+    {
+      "en": "unless",
+      "cn": "除非",
+      "pos": "conjunction"
+    },
+    {
+      "en": "until",
+      "cn": "直到",
+      "pos": "conjunction"
+    },
+    {
+      "en": "when",
+      "cn": "当……时",
+      "pos": "conjunction"
+    },
+    {
+      "en": "whenever",
+      "cn": "每当；无论何时",
+      "pos": "conjunction"
+    },
+    {
+      "en": "where",
+      "cn": "在……的地方",
+      "pos": "conjunction"
+    },
+    {
+      "en": "whereas",
+      "cn": "然而；而",
+      "pos": "conjunction"
+    },
+    {
+      "en": "wherever",
+      "cn": "无论哪里",
+      "pos": "conjunction"
+    },
+    {
+      "en": "whether",
+      "cn": "是否",
+      "pos": "conjunction"
+    },
+    {
+      "en": "while",
+      "cn": "当……时；然而",
+      "pos": "conjunction"
+    },
+    {
+      "en": "yet",
+      "cn": "然而",
+      "pos": "conjunction"
+    }
+  ]
+};
+        const WORD_SETS = { verb: WORDS_DATA, noun: NOUNS_DATA, ...EXTRA_WORD_SETS };
 // 逐词编写的常用语境例句，按词性分别匹配。
 const EXAMPLE_DATA = {
   "verb:accept": "I accept your invitation.",
@@ -24441,7 +28966,912 @@ const EXAMPLE_DATA = {
   "noun:import": "Coffee is an important import.",
   "noun:jurisdiction": "The case falls within this court's jurisdiction."
 };
-        const WORD_TYPE_LABELS = { verb: '动词', noun: '名词' };
+        Object.assign(EXAMPLE_DATA, {
+  "adjective:able": "She is able to swim.",
+  "adjective:absent": "Two students are absent today.",
+  "adjective:absolute": "There is no absolute certainty.",
+  "adjective:abstract": "This is an abstract concept.",
+  "adjective:academic": "She reads academic journals.",
+  "adjective:acceptable": "This solution is acceptable.",
+  "adjective:accessible": "The museum is accessible to everyone.",
+  "adjective:accurate": "The measurements are accurate.",
+  "adjective:active": "My grandfather stays active.",
+  "adjective:actual": "The actual cost was lower.",
+  "adjective:additional": "We need additional information.",
+  "adjective:adequate": "The room has adequate lighting.",
+  "adjective:adjacent": "They live in adjacent buildings.",
+  "adjective:administrative": "She handles administrative tasks.",
+  "adjective:advanced": "The lab uses advanced equipment.",
+  "adjective:adverse": "The storm had adverse effects.",
+  "adjective:affordable": "We need affordable housing.",
+  "adjective:aggressive": "The dog became aggressive.",
+  "adjective:agricultural": "The region produces agricultural goods.",
+  "adjective:alive": "The plant is still alive.",
+  "adjective:alternative": "We need an alternative route.",
+  "adjective:ambiguous": "The instructions are ambiguous.",
+  "adjective:ambitious": "She has ambitious plans.",
+  "adjective:ancient": "We studied ancient history.",
+  "adjective:annual": "The annual festival begins tomorrow.",
+  "adjective:anxious": "He felt anxious before the exam.",
+  "adjective:apparent": "The difference is apparent.",
+  "adjective:applicable": "This rule is applicable here.",
+  "adjective:appropriate": "Wear appropriate clothing.",
+  "adjective:approximate": "Can you give an approximate cost?",
+  "adjective:artificial": "The room has artificial lighting.",
+  "adjective:artistic": "She has artistic talent.",
+  "adjective:ashamed": "He felt ashamed of his behavior.",
+  "adjective:asleep": "The baby is asleep.",
+  "adjective:associated": "We examined the associated risks.",
+  "adjective:attractive": "The garden is attractive.",
+  "adjective:automatic": "The building has automatic doors.",
+  "adjective:available": "Fresh fruit is available here.",
+  "adjective:average": "The average temperature increased.",
+  "adjective:aware": "We are aware of the problem.",
+  "adjective:awkward": "There was an awkward silence.",
+  "adjective:basic": "Water is a basic need.",
+  "adjective:beneficial": "Exercise is beneficial to health.",
+  "adjective:biological": "They studied biological processes.",
+  "adjective:bitter": "The medicine tastes bitter.",
+  "adjective:blank": "Please use a blank sheet.",
+  "adjective:blind": "The blind musician plays beautifully.",
+  "adjective:bold": "They made a bold decision.",
+  "adjective:boring": "The movie was boring.",
+  "adjective:brief": "We had a brief discussion.",
+  "adjective:bright": "The room is bright.",
+  "adjective:broad": "The river is broad here.",
+  "adjective:busy": "The station is busy today.",
+  "adjective:capable": "She is a capable leader.",
+  "adjective:careful": "Be careful on the stairs.",
+  "adjective:casual": "They wore casual clothes.",
+  "adjective:central": "Trust is a central issue.",
+  "adjective:certain": "I am certain of the answer.",
+  "adjective:challenging": "The course is challenging.",
+  "adjective:characteristic": "This is a characteristic feature.",
+  "adjective:chemical": "The process involves chemical changes.",
+  "adjective:chronic": "He suffers from chronic pain.",
+  "adjective:civil": "The law protects civil rights.",
+  "adjective:classical": "She enjoys classical music.",
+  "adjective:clear": "The instructions are clear.",
+  "adjective:clinical": "The treatment needs clinical testing.",
+  "adjective:coastal": "We visited a coastal town.",
+  "adjective:cognitive": "Sleep affects cognitive ability.",
+  "adjective:coherent": "Her explanation was coherent.",
+  "adjective:collective": "This was a collective decision.",
+  "adjective:comfortable": "The chair is comfortable.",
+  "adjective:commercial": "This is a commercial building.",
+  "adjective:common": "This is a common mistake.",
+  "adjective:comparable": "The two results are comparable.",
+  "adjective:compatible": "The software is compatible with my computer.",
+  "adjective:competitive": "The company offers competitive prices.",
+  "adjective:complex": "The system is complex.",
+  "adjective:comprehensive": "The report gives a comprehensive overview.",
+  "adjective:compulsory": "Attendance is compulsory.",
+  "adjective:concrete": "Please give a concrete example.",
+  "adjective:confident": "She sounds confident.",
+  "adjective:conscious": "The patient is conscious.",
+  "adjective:consecutive": "It rained for three consecutive days.",
+  "adjective:considerable": "The project requires considerable effort.",
+  "adjective:consistent": "The results are consistent.",
+  "adjective:constant": "Plants need a constant water supply.",
+  "adjective:constructive": "Thank you for the constructive feedback.",
+  "adjective:contemporary": "The gallery displays contemporary art.",
+  "adjective:continuous": "The machine needs continuous power.",
+  "adjective:contrary": "They expressed contrary opinions.",
+  "adjective:controversial": "The proposal is controversial.",
+  "adjective:convenient": "This location is convenient.",
+  "adjective:conventional": "They used conventional methods.",
+  "adjective:convincing": "Her explanation was convincing.",
+  "adjective:cooperative": "The students were cooperative.",
+  "adjective:crucial": "Timing is crucial.",
+  "adjective:cultural": "The city has cultural diversity.",
+  "adjective:curious": "The child is curious.",
+  "adjective:current": "We discussed the current situation.",
+  "adjective:daily": "Walking is my daily exercise.",
+  "adjective:dangerous": "The road is dangerous.",
+  "adjective:dark": "The room was dark.",
+  "adjective:dead": "The tree is dead.",
+  "adjective:decent": "They need a decent place to live.",
+  "adjective:decisive": "This was a decisive moment.",
+  "adjective:deep": "The lake is deep.",
+  "adjective:definite": "We need a definite answer.",
+  "adjective:deliberate": "That was a deliberate choice.",
+  "adjective:delicate": "Handle the delicate glass carefully.",
+  "adjective:dense": "The island has dense forests.",
+  "adjective:dependent": "Children are dependent on adults.",
+  "adjective:desirable": "Experience is desirable for this job.",
+  "adjective:detailed": "She gave a detailed description.",
+  "adjective:determined": "He is determined to succeed.",
+  "adjective:developing": "The program supports developing countries.",
+  "adjective:different": "We have different opinions.",
+  "adjective:difficult": "The question is difficult.",
+  "adjective:digital": "She bought a digital camera.",
+  "adjective:direct": "There is a direct flight.",
+  "adjective:disappointed": "She was disappointed with the result.",
+  "adjective:distinct": "These are two distinct species.",
+  "adjective:distinctive": "The bird has a distinctive call.",
+  "adjective:diverse": "The city has a diverse population.",
+  "adjective:domestic": "Domestic flights leave from this terminal.",
+  "adjective:dominant": "The company holds a dominant position.",
+  "adjective:dramatic": "There was a dramatic increase.",
+  "adjective:dry": "Keep the paper dry.",
+  "adjective:due": "The report is due tomorrow.",
+  "adjective:durable": "This fabric is durable.",
+  "adjective:dynamic": "We live in a dynamic world.",
+  "adjective:eager": "The children are eager to learn.",
+  "adjective:early": "We took an early train.",
+  "adjective:eastern": "The storm hit the eastern coast.",
+  "adjective:easy": "The puzzle is easy.",
+  "adjective:economic": "The country experienced economic growth.",
+  "adjective:efficient": "This machine is efficient.",
+  "adjective:elaborate": "The festival involved elaborate preparations.",
+  "adjective:elderly": "We help elderly neighbors.",
+  "adjective:electric": "She drives an electric car.",
+  "adjective:electronic": "Please turn off electronic devices.",
+  "adjective:embarrassed": "He looked embarrassed.",
+  "adjective:emotional": "The story had an emotional ending.",
+  "adjective:empirical": "The theory needs empirical evidence.",
+  "adjective:empty": "The bottle is empty.",
+  "adjective:endangered": "The park protects endangered animals.",
+  "adjective:enormous": "The building is enormous.",
+  "adjective:entire": "We spent the entire day outside.",
+  "adjective:environmental": "We discussed environmental problems.",
+  "adjective:equal": "The pieces are equal in size.",
+  "adjective:equivalent": "The two amounts are equivalent.",
+  "adjective:essential": "Water is essential for life.",
+  "adjective:established": "We followed established procedures.",
+  "adjective:ethical": "The study raised ethical questions.",
+  "adjective:eventual": "Her eventual success surprised no one.",
+  "adjective:evident": "His excitement was evident.",
+  "adjective:exact": "Tell me the exact time.",
+  "adjective:excellent": "The food was excellent.",
+  "adjective:exceptional": "She has exceptional talent.",
+  "adjective:excessive": "Avoid excessive noise.",
+  "adjective:excited": "The children are excited.",
+  "adjective:exclusive": "The hotel has an exclusive entrance.",
+  "adjective:existing": "We improved the existing system.",
+  "adjective:expensive": "The tickets are expensive.",
+  "adjective:experimental": "They tested an experimental design.",
+  "adjective:explicit": "The teacher gave explicit instructions.",
+  "adjective:external": "The house has external lighting.",
+  "adjective:extraordinary": "She showed extraordinary courage.",
+  "adjective:extreme": "The region experiences extreme heat.",
+  "adjective:fair": "The rules are fair.",
+  "adjective:familiar": "Her voice sounds familiar.",
+  "adjective:famous": "The city has a famous museum.",
+  "adjective:fascinating": "The lecture was fascinating.",
+  "adjective:favorable": "Conditions are favorable for growth.",
+  "adjective:federal": "The program receives federal funding.",
+  "adjective:final": "This is the final chapter.",
+  "adjective:financial": "We need financial support.",
+  "adjective:finite": "Earth has finite resources.",
+  "adjective:firm": "Keep a firm grip.",
+  "adjective:flexible": "Our schedule is flexible.",
+  "adjective:foreign": "She studies foreign languages.",
+  "adjective:formal": "He received a formal invitation.",
+  "adjective:former": "My former teacher visited us.",
+  "adjective:fortunate": "We were fortunate to escape.",
+  "adjective:fragile": "The vase is fragile.",
+  "adjective:frequent": "The city has frequent buses.",
+  "adjective:fresh": "We bought fresh vegetables.",
+  "adjective:friendly": "Our neighbors are friendly.",
+  "adjective:fundamental": "This is a fundamental principle.",
+  "adjective:general": "We discussed the general situation.",
+  "adjective:generous": "Thank you for the generous donation.",
+  "adjective:genetic": "Scientists study genetic variation.",
+  "adjective:genuine": "Her concern was genuine.",
+  "adjective:geographical": "The region has geographical advantages.",
+  "adjective:global": "Climate change is a global issue.",
+  "adjective:gradual": "We noticed a gradual improvement.",
+  "adjective:grateful": "I am grateful for your help.",
+  "adjective:great": "That is a great idea.",
+  "adjective:guilty": "He felt guilty about lying.",
+  "adjective:harmful": "Smoke is harmful to health.",
+  "adjective:healthy": "She follows a healthy diet.",
+  "adjective:heavy": "The suitcase is heavy.",
+  "adjective:helpful": "Your advice was helpful.",
+  "adjective:historical": "We examined historical records.",
+  "adjective:honest": "Please give an honest answer.",
+  "adjective:hostile": "The environment is hostile to life.",
+  "adjective:huge": "They live in a huge house.",
+  "adjective:human": "The course explores human behavior.",
+  "adjective:humid": "The air is humid.",
+  "adjective:ideal": "This is an ideal location.",
+  "adjective:identical": "The twins wore identical coats.",
+  "adjective:illegal": "Dumping waste here is illegal.",
+  "adjective:immediate": "The patient needs immediate help.",
+  "adjective:immune": "Vaccination supports the immune system.",
+  "adjective:implicit": "The statement contains an implicit warning.",
+  "adjective:important": "Sleep is important.",
+  "adjective:impossible": "That task seems impossible.",
+  "adjective:impressive": "The building is impressive.",
+  "adjective:inadequate": "The lighting is inadequate.",
+  "adjective:independent": "She became financially independent.",
+  "adjective:indigenous": "The island has indigenous plants.",
+  "adjective:individual": "Each student has individual needs.",
+  "adjective:industrial": "The city has an industrial district.",
+  "adjective:inevitable": "Some changes are inevitable.",
+  "adjective:infinite": "The universe seems infinite.",
+  "adjective:influential": "She is an influential writer.",
+  "adjective:initial": "Our initial plan changed.",
+  "adjective:innovative": "The team proposed an innovative solution.",
+  "adjective:intellectual": "Reading provides intellectual stimulation.",
+  "adjective:intense": "The heat was intense.",
+  "adjective:intentional": "The damage was intentional.",
+  "adjective:internal": "The building needs internal repairs.",
+  "adjective:international": "The city hosts international events.",
+  "adjective:invisible": "The gas is invisible.",
+  "adjective:irrelevant": "That detail is irrelevant.",
+  "adjective:isolated": "They live in an isolated village.",
+  "adjective:joint": "This was a joint effort.",
+  "adjective:keen": "She has a keen interest in science.",
+  "adjective:legal": "The agreement is legal.",
+  "adjective:likely": "Rain is likely tomorrow.",
+  "adjective:limited": "Our time is limited.",
+  "adjective:linguistic": "The region has linguistic diversity.",
+  "adjective:local": "We visited the local market.",
+  "adjective:logical": "That is a logical conclusion.",
+  "adjective:long-term": "We need a long-term plan.",
+  "adjective:loose": "The handle is loose.",
+  "adjective:major": "Pollution is a major problem.",
+  "adjective:marine": "The reef supports marine life.",
+  "adjective:massive": "The project requires massive investment.",
+  "adjective:mature": "The garden has mature trees.",
+  "adjective:maximum": "What is the maximum speed?",
+  "adjective:meaningful": "We had a meaningful conversation.",
+  "adjective:mental": "Exercise supports mental health.",
+  "adjective:mere": "It was a mere coincidence.",
+  "adjective:mild": "The region has mild winters.",
+  "adjective:minimal": "The damage was minimal.",
+  "adjective:minimum": "What is the minimum age?",
+  "adjective:minor": "She suffered a minor injury.",
+  "adjective:mobile": "The clinic has a mobile unit.",
+  "adjective:moderate": "The region has moderate rainfall.",
+  "adjective:modern": "The library has modern equipment.",
+  "adjective:multiple": "The problem has multiple causes.",
+  "adjective:narrow": "The street is narrow.",
+  "adjective:native": "We planted native trees.",
+  "adjective:natural": "The room has natural light.",
+  "adjective:necessary": "Regular maintenance is necessary.",
+  "adjective:negative": "The news had a negative effect.",
+  "adjective:neutral": "The judge must remain neutral.",
+  "adjective:normal": "The temperature is normal.",
+  "adjective:notable": "There was a notable improvement.",
+  "adjective:numerous": "We received numerous requests.",
+  "adjective:objective": "We need an objective assessment.",
+  "adjective:obvious": "The answer is obvious.",
+  "adjective:occasional": "The village gets occasional visitors.",
+  "adjective:official": "We received an official notice.",
+  "adjective:ongoing": "The research is ongoing.",
+  "adjective:open": "The library is open.",
+  "adjective:optimistic": "We remain optimistic about the future.",
+  "adjective:optional": "The extra activity is optional.",
+  "adjective:ordinary": "It was an ordinary day.",
+  "adjective:organic": "The farm grows organic vegetables.",
+  "adjective:original": "We kept the original document.",
+  "adjective:parallel": "The roads are parallel.",
+  "adjective:partial": "We received a partial refund.",
+  "adjective:particular": "Do you have a particular question?",
+  "adjective:passive": "The students were passive listeners.",
+  "adjective:patient": "The teacher is patient.",
+  "adjective:permanent": "The building needs a permanent repair.",
+  "adjective:persistent": "The area faces persistent drought.",
+  "adjective:personal": "Keep your personal information safe.",
+  "adjective:physical": "The work requires physical strength.",
+  "adjective:pleasant": "We had a pleasant evening.",
+  "adjective:plentiful": "Water is plentiful here.",
+  "adjective:political": "The book discusses political change.",
+  "adjective:poor": "The village has poor roads.",
+  "adjective:popular": "This song is popular.",
+  "adjective:positive": "She has a positive attitude.",
+  "adjective:possible": "A delay is possible.",
+  "adjective:potential": "We identified potential problems.",
+  "adjective:practical": "Thank you for the practical advice.",
+  "adjective:precise": "We need precise measurements.",
+  "adjective:predictable": "The weather is predictable here.",
+  "adjective:preliminary": "The preliminary results look promising.",
+  "adjective:previous": "Read the previous chapter.",
+  "adjective:primary": "Safety is our primary concern.",
+  "adjective:primitive": "The exhibition displays primitive tools.",
+  "adjective:principal": "Cost is the principal problem.",
+  "adjective:prior": "No prior experience is necessary.",
+  "adjective:private": "This is private property.",
+  "adjective:probable": "Rain is the probable cause.",
+  "adjective:productive": "We had a productive meeting.",
+  "adjective:professional": "You need professional advice.",
+  "adjective:profound": "The discovery had a profound impact.",
+  "adjective:prominent": "She is a prominent scientist.",
+  "adjective:promising": "The results are promising.",
+  "adjective:proper": "Use the proper tools.",
+  "adjective:prosperous": "The town became prosperous.",
+  "adjective:proud": "We are proud of you.",
+  "adjective:psychological": "Stress has psychological effects.",
+  "adjective:public": "The town needs public transport.",
+  "adjective:qualified": "She is a qualified teacher.",
+  "adjective:quantitative": "The study used quantitative methods.",
+  "adjective:radical": "The system needs radical changes.",
+  "adjective:random": "Choose a random number.",
+  "adjective:rare": "The forest has rare birds.",
+  "adjective:rational": "We need a rational explanation.",
+  "adjective:raw": "Do not eat raw chicken.",
+  "adjective:ready": "Dinner is ready.",
+  "adjective:realistic": "Set realistic goals.",
+  "adjective:reasonable": "The price is reasonable.",
+  "adjective:recent": "We discussed recent developments.",
+  "adjective:relevant": "Please include relevant information.",
+  "adjective:reliable": "The information is reliable.",
+  "adjective:remarkable": "She made remarkable progress.",
+  "adjective:remote": "The village is remote.",
+  "adjective:renewable": "Wind is a renewable energy source.",
+  "adjective:representative": "We selected a representative sample.",
+  "adjective:responsible": "She is responsible for safety.",
+  "adjective:restricted": "This is a restricted area.",
+  "adjective:ridiculous": "The suggestion sounds ridiculous.",
+  "adjective:rigid": "The school has rigid rules.",
+  "adjective:risky": "The climb is risky.",
+  "adjective:rough": "The surface is rough.",
+  "adjective:rural": "They live in a rural area.",
+  "adjective:safe": "The bridge is safe.",
+  "adjective:satisfied": "We are satisfied with the result.",
+  "adjective:scarce": "Food became scarce.",
+  "adjective:scientific": "The claim needs scientific evidence.",
+  "adjective:secure": "The gate is secure.",
+  "adjective:selective": "The course has selective admission.",
+  "adjective:sensitive": "My skin is sensitive.",
+  "adjective:separate": "Each group has a separate room.",
+  "adjective:sequential": "Follow the sequential steps.",
+  "adjective:serious": "This is a serious problem.",
+  "adjective:severe": "The region faces severe flooding.",
+  "adjective:shallow": "The water is shallow.",
+  "adjective:short": "We took a short break.",
+  "adjective:significant": "There was a significant change.",
+  "adjective:similar": "The two houses look similar.",
+  "adjective:simple": "The instructions are simple.",
+  "adjective:simultaneous": "The system handles simultaneous requests.",
+  "adjective:single": "I need a single ticket.",
+  "adjective:skilled": "The factory needs skilled workers.",
+  "adjective:slight": "There was a slight delay.",
+  "adjective:smooth": "The stone feels smooth.",
+  "adjective:social": "The study examines social behavior.",
+  "adjective:solar": "The house uses solar energy.",
+  "adjective:solid": "The table is solid.",
+  "adjective:sophisticated": "The lab uses sophisticated equipment.",
+  "adjective:specific": "Please give specific examples.",
+  "adjective:spectacular": "The view is spectacular.",
+  "adjective:spiritual": "The place has spiritual significance.",
+  "adjective:spontaneous": "The crowd gave spontaneous applause.",
+  "adjective:stable": "Prices remained stable.",
+  "adjective:standard": "We followed the standard procedure.",
+  "adjective:steady": "The company showed steady growth.",
+  "adjective:steep": "The hill is steep.",
+  "adjective:strict": "The teacher is strict.",
+  "adjective:structural": "The building has structural damage.",
+  "adjective:subsequent": "Subsequent tests confirmed the result.",
+  "adjective:substantial": "The project needs substantial funding.",
+  "adjective:subtle": "There is a subtle difference.",
+  "adjective:sufficient": "We have sufficient evidence.",
+  "adjective:suitable": "The shoes are suitable for walking.",
+  "adjective:superior": "This fabric has superior quality.",
+  "adjective:supplementary": "The course provides supplementary materials.",
+  "adjective:sustainable": "The town promotes sustainable tourism.",
+  "adjective:symbolic": "The gift has symbolic meaning.",
+  "adjective:systematic": "We need a systematic approach.",
+  "adjective:technical": "The manual gives technical details.",
+  "adjective:temporary": "We found temporary accommodation.",
+  "adjective:terrestrial": "The study examines terrestrial ecosystems.",
+  "adjective:theoretical": "The course provides theoretical knowledge.",
+  "adjective:thorough": "We conducted a thorough investigation.",
+  "adjective:tiny": "A tiny insect landed nearby.",
+  "adjective:tough": "It was a tough decision.",
+  "adjective:toxic": "The factory produces toxic waste.",
+  "adjective:traditional": "They wore traditional clothing.",
+  "adjective:transparent": "The box is transparent.",
+  "adjective:tremendous": "The plan requires tremendous effort.",
+  "adjective:tropical": "The island has a tropical climate.",
+  "adjective:typical": "This is a typical example.",
+  "adjective:ultimate": "Our ultimate goal is better health.",
+  "adjective:uncertain": "The outcome remains uncertain.",
+  "adjective:underlying": "We examined the underlying causes.",
+  "adjective:unexpected": "We received an unexpected visit.",
+  "adjective:unfair": "The decision seems unfair.",
+  "adjective:unique": "Each person has a unique voice.",
+  "adjective:universal": "The program follows universal standards.",
+  "adjective:unknown": "The cause is unknown.",
+  "adjective:unlikely": "Rain is unlikely today.",
+  "adjective:unprecedented": "The city experienced unprecedented growth.",
+  "adjective:unusual": "The bird has unusual markings.",
+  "adjective:urban": "The study examines urban transport.",
+  "adjective:urgent": "This is an urgent request.",
+  "adjective:useful": "The map is useful.",
+  "adjective:valid": "Your ticket is still valid.",
+  "adjective:valuable": "Your advice was valuable.",
+  "adjective:variable": "The region has variable weather.",
+  "adjective:vast": "The desert covers a vast area.",
+  "adjective:vertical": "Draw a vertical line.",
+  "adjective:visible": "The mountain is visible today.",
+  "adjective:vital": "Clean water is vital.",
+  "adjective:voluntary": "Participation is voluntary.",
+  "adjective:vulnerable": "Young plants are vulnerable to frost.",
+  "adjective:warm": "The water is warm.",
+  "adjective:weak": "The signal is weak.",
+  "adjective:wealthy": "The city has wealthy neighborhoods.",
+  "adjective:wet": "The road is wet.",
+  "adjective:widespread": "The storm caused widespread damage.",
+  "adjective:willing": "She is willing to help.",
+  "adjective:wise": "That was a wise choice.",
+  "adjective:worthy": "This project is worthy of support.",
+  "adverb:accordingly": "The weather changed, so we dressed accordingly.",
+  "adverb:admittedly": "Admittedly, the task is difficult.",
+  "adverb:afterward": "We had lunch afterward.",
+  "adverb:again": "Please try again.",
+  "adverb:almost": "The work is almost finished.",
+  "adverb:alone": "She traveled alone.",
+  "adverb:already": "We have already eaten.",
+  "adverb:also": "She also speaks French.",
+  "adverb:altogether": "There were ten people altogether.",
+  "adverb:always": "He always arrives early.",
+  "adverb:arguably": "This is arguably her best book.",
+  "adverb:barely": "We barely caught the train.",
+  "adverb:chiefly": "The region produces chiefly rice.",
+  "adverb:closely": "The two issues are closely related.",
+  "adverb:consequently": "It rained; consequently, the match was postponed.",
+  "adverb:elsewhere": "We had to look elsewhere.",
+  "adverb:especially": "I like fruit, especially oranges.",
+  "adverb:essentially": "The two methods are essentially similar.",
+  "adverb:extensively": "She has traveled extensively.",
+  "adverb:fairly": "The exam was fairly easy.",
+  "adverb:first": "First, wash your hands.",
+  "adverb:hardly": "I could hardly hear you.",
+  "adverb:here": "Please wait here.",
+  "adverb:highly": "The book is highly recommended.",
+  "adverb:however": "The plan is useful; however, it is expensive.",
+  "adverb:increasingly": "The city is increasingly crowded.",
+  "adverb:indeed": "The journey was indeed difficult.",
+  "adverb:indirectly": "The policy indirectly affects farmers.",
+  "adverb:instead": "We walked instead.",
+  "adverb:invariably": "He invariably arrives on time.",
+  "adverb:lately": "I have been busy lately.",
+  "adverb:later": "We can discuss it later.",
+  "adverb:likely": "The change will likely affect prices.",
+  "adverb:literally": "Do not interpret the phrase literally.",
+  "adverb:mainly": "The course focuses mainly on writing.",
+  "adverb:moreover": "The hotel is clean; moreover, it is affordable.",
+  "adverb:mostly": "The audience was mostly students.",
+  "adverb:nearly": "The work is nearly finished.",
+  "adverb:nevertheless": "It rained; nevertheless, we continued.",
+  "adverb:now": "We can start now.",
+  "adverb:nowadays": "Many people work online nowadays.",
+  "adverb:often": "She often visits the library.",
+  "adverb:only": "We have only one ticket.",
+  "adverb:otherwise": "Hurry; otherwise, we will be late.",
+  "adverb:overall": "Overall, the results are encouraging.",
+  "adverb:partly": "The delay was partly my fault.",
+  "adverb:practically": "The room is practically empty.",
+  "adverb:presently": "The doctor will see you presently.",
+  "adverb:presumably": "Presumably, they have already left.",
+  "adverb:purely": "The decision was purely practical.",
+  "adverb:quite": "The test was quite difficult.",
+  "adverb:really": "I really enjoyed the concert.",
+  "adverb:relatively": "The village is relatively quiet.",
+  "adverb:respectively": "Anna and Ben are ten and twelve respectively.",
+  "adverb:scarcely": "There was scarcely any food left.",
+  "adverb:seldom": "We seldom watch television.",
+  "adverb:somehow": "Somehow, we found our way home.",
+  "adverb:sometimes": "We sometimes walk to school.",
+  "adverb:somewhat": "The result was somewhat surprising.",
+  "adverb:soon": "The train will arrive soon.",
+  "adverb:specifically": "The course is designed specifically for teachers.",
+  "adverb:still": "The shop is still open.",
+  "adverb:suddenly": "The lights suddenly went out.",
+  "adverb:supposedly": "The building is supposedly haunted.",
+  "adverb:surely": "Surely, there is another solution.",
+  "adverb:surprisingly": "The task was surprisingly easy.",
+  "adverb:systematically": "We examined the evidence systematically.",
+  "adverb:there": "Please put the box there.",
+  "adverb:thereby": "Trees provide shade, thereby reducing heat.",
+  "adverb:therefore": "It rained; therefore, we stayed home.",
+  "adverb:thus": "The road was closed; thus, we took another route.",
+  "adverb:together": "We worked together.",
+  "adverb:too": "The soup is too hot.",
+  "adverb:totally": "I totally agree.",
+  "adverb:usually": "I usually walk to school.",
+  "adverb:yet": "The train has not arrived yet.",
+  "preposition:about": "We talked about the exam.",
+  "preposition:above": "A lamp hangs above the table.",
+  "preposition:across": "We walked across the bridge.",
+  "preposition:after": "We met after lunch.",
+  "preposition:against": "The ladder rests against the wall.",
+  "preposition:along": "We walked along the river.",
+  "preposition:amid": "The town grew amid the hills.",
+  "preposition:among": "She sat among her friends.",
+  "preposition:around": "We walked around the lake.",
+  "preposition:at": "Meet me at the station.",
+  "preposition:before": "Please arrive before noon.",
+  "preposition:behind": "The garden is behind the house.",
+  "preposition:below": "The village lies below the hill.",
+  "preposition:beneath": "The cat slept beneath the table.",
+  "preposition:beside": "She sat beside me.",
+  "preposition:besides": "Besides English, she speaks French.",
+  "preposition:between": "The bank is between two shops.",
+  "preposition:beyond": "The village is beyond the river.",
+  "preposition:by": "The book was written by a teacher.",
+  "preposition:concerning": "We received a letter concerning the trip.",
+  "preposition:considering": "Considering the rain, the trip went well.",
+  "preposition:despite": "We went out despite the rain.",
+  "preposition:down": "We walked down the hill.",
+  "preposition:during": "Please remain quiet during the exam.",
+  "preposition:except": "Everyone came except Tom.",
+  "preposition:for": "This gift is for you.",
+  "preposition:from": "She comes from Canada.",
+  "preposition:in": "The keys are in my bag.",
+  "preposition:inside": "The cat is inside the box.",
+  "preposition:into": "She walked into the room.",
+  "preposition:like": "The cloud looks like a bird.",
+  "preposition:near": "We live near the station.",
+  "preposition:of": "The roof of the house is red.",
+  "preposition:off": "The cup fell off the table.",
+  "preposition:on": "The book is on the desk.",
+  "preposition:onto": "The cat jumped onto the chair.",
+  "preposition:opposite": "The bank is opposite the school.",
+  "preposition:outside": "We waited outside the building.",
+  "preposition:over": "A bird flew over the lake.",
+  "preposition:past": "We walked past the library.",
+  "preposition:per": "The tickets cost ten dollars per person.",
+  "preposition:regarding": "I have a question regarding the schedule.",
+  "preposition:through": "The train passed through the tunnel.",
+  "preposition:throughout": "It rained throughout the night.",
+  "preposition:to": "We walked to the park.",
+  "preposition:toward": "She ran toward the gate.",
+  "preposition:under": "The shoes are under the bed.",
+  "preposition:underneath": "The keys were underneath the newspaper.",
+  "preposition:unlike": "Unlike his brother, he enjoys swimming.",
+  "preposition:until": "The shop is open until six.",
+  "preposition:upon": "The book rests upon the shelf.",
+  "preposition:via": "We traveled via London.",
+  "preposition:with": "I live with my sister.",
+  "preposition:within": "Please reply within a week.",
+  "preposition:without": "I drink tea without sugar.",
+  "conjunction:although": "Although it rained, we went out.",
+  "conjunction:and": "She bought bread and milk.",
+  "conjunction:as": "As we walked, we talked.",
+  "conjunction:because": "We stayed home because it rained.",
+  "conjunction:before": "Wash your hands before you eat.",
+  "conjunction:but": "The room is small but comfortable.",
+  "conjunction:even though": "We continued even though we were tired.",
+  "conjunction:if": "We will leave if it stops raining.",
+  "conjunction:in case": "Take an umbrella in case it rains.",
+  "conjunction:in order that": "Speak clearly in order that everyone can hear.",
+  "conjunction:inasmuch as": "The plan is useful inasmuch as it saves time.",
+  "conjunction:lest": "She spoke softly lest she wake the baby.",
+  "conjunction:now that": "Now that you are here, we can begin.",
+  "conjunction:once": "We will leave once everyone arrives.",
+  "conjunction:or": "Would you like tea or coffee?",
+  "conjunction:provided that": "You may go provided that you return early.",
+  "conjunction:rather than": "I chose tea rather than coffee.",
+  "conjunction:since": "Since you are tired, we should rest.",
+  "conjunction:so": "It rained, so we stayed home.",
+  "conjunction:so that": "Speak slowly so that everyone can understand.",
+  "conjunction:than": "She is taller than I am.",
+  "conjunction:though": "Though it was cold, we went out.",
+  "conjunction:till": "Wait here till I return.",
+  "conjunction:unless": "We will go unless it rains.",
+  "conjunction:until": "Wait until the light turns green.",
+  "conjunction:when": "Call me when you arrive.",
+  "conjunction:whenever": "Visit us whenever you like.",
+  "conjunction:where": "Stay where you are.",
+  "conjunction:whereas": "Anna likes tea, whereas Ben prefers coffee.",
+  "conjunction:wherever": "Sit wherever you feel comfortable.",
+  "conjunction:whether": "I do not know whether he will come.",
+  "conjunction:while": "I read while she cooked.",
+  "conjunction:yet": "The task was difficult, yet we succeeded.",
+  "adjective:abnormal": "The test revealed abnormal results.",
+  "adjective:abrupt": "The road ends at an abrupt bend.",
+  "adjective:abundant": "The region has abundant rainfall.",
+  "adjective:accidental": "The damage was accidental.",
+  "adjective:accountable": "Managers are accountable for safety.",
+  "adjective:acute": "The patient reported acute pain.",
+  "adjective:adaptive": "The species has adaptive traits.",
+  "adjective:aesthetic": "The building has aesthetic value.",
+  "adjective:alert": "The guard remained alert.",
+  "adjective:alien": "These customs seemed alien to him.",
+  "adjective:analogous": "The two systems have analogous functions.",
+  "adjective:ancestral": "They returned to their ancestral village.",
+  "adjective:anonymous": "The museum received an anonymous donation.",
+  "adjective:anticipated": "The anticipated results did not appear.",
+  "adjective:approachable": "Our teacher is approachable.",
+  "adjective:aquatic": "The lake supports aquatic plants.",
+  "adjective:arbitrary": "The rules seemed arbitrary.",
+  "adjective:archaeological": "The team found archaeological evidence.",
+  "adjective:arid": "Few plants survive in this arid region.",
+  "adjective:arrogant": "His arrogant attitude annoyed people.",
+  "adjective:attentive": "The students were attentive.",
+  "adjective:authentic": "The museum displays authentic artifacts.",
+  "adjective:autonomous": "The region has autonomous institutions.",
+  "adjective:beneficent": "The story describes a beneficent ruler.",
+  "adjective:bleak": "The winter landscape looked bleak.",
+  "adjective:brittle": "The old paper is brittle.",
+  "adjective:bureaucratic": "The process involves bureaucratic delays.",
+  "adjective:calm": "The sea was calm.",
+  "adjective:carbon-neutral": "The company aims for carbon-neutral production.",
+  "adjective:cautious": "The researchers remained cautious.",
+  "adjective:chaotic": "The station was chaotic.",
+  "adjective:circular": "We sat around a circular table.",
+  "adjective:climatic": "The study examines climatic conditions.",
+  "adjective:coincidental": "The similarity was coincidental.",
+  "adjective:colonial": "The city has colonial architecture.",
+  "adjective:compact": "The apartment has a compact kitchen.",
+  "adjective:compassionate": "The nurse was compassionate.",
+  "adjective:compelling": "The team presented compelling evidence.",
+  "adjective:competent": "She is a competent researcher.",
+  "adjective:complementary": "The courses teach complementary skills.",
+  "adjective:complicated": "The instructions are complicated.",
+  "adjective:conceivable": "We considered every conceivable solution.",
+  "adjective:confidential": "Keep these documents confidential.",
+  "adjective:conscientious": "He is a conscientious worker.",
+  "adjective:conservative": "They made a conservative estimate.",
+  "adjective:contaminated": "The river contains contaminated water.",
+  "adjective:credible": "The explanation seems credible.",
+  "adjective:cumulative": "The study measured cumulative effects.",
+  "adjective:customary": "This is the customary greeting.",
+  "adjective:damp": "The towel is still damp.",
+  "adjective:deaf": "The school supports deaf students.",
+  "adjective:deceptive": "The advertisement was deceptive.",
+  "adjective:deficient": "The soil is deficient in nutrients.",
+  "adjective:democratic": "The country holds democratic elections.",
+  "adjective:destructive": "The storm brought destructive winds.",
+  "adjective:detrimental": "Pollution has detrimental effects.",
+  "adjective:diplomatic": "The countries resumed diplomatic relations.",
+  "adjective:discrete": "The process has three discrete stages.",
+  "adjective:disposable": "Avoid disposable plastic cups.",
+  "adjective:dissatisfied": "Customers were dissatisfied with the service.",
+  "adjective:dormant": "The volcano is dormant.",
+  "adjective:dubious": "The claim rests on dubious evidence.",
+  "adjective:ecological": "The project examines ecological change.",
+  "adjective:effective": "The new method is effective.",
+  "adjective:elegant": "The bridge has an elegant design.",
+  "adjective:embryonic": "The project is still embryonic.",
+  "adjective:eminent": "An eminent scientist gave the lecture.",
+  "adjective:endemic": "The bird is endemic to this island.",
+  "adjective:enduring": "The book has enduring appeal.",
+  "adjective:energetic": "The children are energetic.",
+  "adjective:equitable": "We need an equitable distribution.",
+  "adjective:evolutionary": "The fossil provides evolutionary evidence.",
+  "adjective:exhaustive": "The team conducted an exhaustive review.",
+  "adjective:exotic": "The garden contains exotic plants.",
+  "adjective:expansive": "The room offers an expansive view.",
+  "adjective:extinct": "The species is now extinct.",
+  "adjective:feasible": "The proposal seems feasible.",
+  "adjective:fertile": "The valley has fertile soil.",
+  "adjective:fierce": "The teams faced fierce competition.",
+  "adjective:fluent": "She speaks fluent English.",
+  "adjective:foreseeable": "The changes will continue for the foreseeable future.",
+  "adjective:frank": "We had a frank discussion.",
+  "adjective:frugal": "They lead a frugal life.",
+  "adjective:functional": "The design is simple and functional.",
+  "adjective:geological": "The area has interesting geological features.",
+  "adjective:glacial": "The valley shows signs of glacial erosion.",
+  "adjective:good": "That is a good suggestion.",
+  "adjective:grim": "The report paints a grim picture.",
+  "adjective:hard": "The rock is hard.",
+  "adjective:hazardous": "Workers handle hazardous materials.",
+  "adjective:hereditary": "The disease is hereditary.",
+  "adjective:heterogeneous": "The study included a heterogeneous population.",
+  "adjective:homogeneous": "The mixture is homogeneous.",
+  "adjective:horizontal": "Draw a horizontal line.",
+  "adjective:humble": "Despite her success, she remains humble.",
+  "adjective:hypothetical": "Consider a hypothetical situation.",
+  "adjective:ignorant": "We were ignorant of the risks.",
+  "adjective:immense": "The project requires immense effort.",
+  "adjective:imminent": "The village faces imminent flooding.",
+  "adjective:impartial": "The judge must remain impartial.",
+  "adjective:imperative": "Immediate action is imperative.",
+  "adjective:incentive": "The company offers incentive payments.",
+  "adjective:inclusive": "The school promotes inclusive education.",
+  "adjective:incompatible": "The two devices are incompatible.",
+  "adjective:incomplete": "The report is incomplete.",
+  "adjective:incremental": "The project made incremental progress.",
+  "adjective:indispensable": "Clean water is indispensable.",
+  "adjective:inert": "The gas is chemically inert.",
+  "adjective:inferior": "The fabric is of inferior quality.",
+  "adjective:inherent": "Every method has inherent limitations.",
+  "adjective:innate": "The study examines innate abilities.",
+  "adjective:insightful": "She made an insightful comment.",
+  "adjective:intact": "The vase remained intact.",
+  "adjective:integral": "Reading is an integral part of the course.",
+  "adjective:intermediate": "This course is for intermediate learners.",
+  "adjective:intermittent": "We experienced intermittent rain.",
+  "adjective:intricate": "The carpet has an intricate pattern.",
+  "adjective:intrinsic": "The work has intrinsic value.",
+  "adjective:invasive": "The lake contains invasive species.",
+  "adjective:ironic": "The ending is ironic.",
+  "adjective:irreversible": "The damage may be irreversible.",
+  "adjective:legitimate": "They raised legitimate concerns.",
+  "adjective:lengthy": "The process involved lengthy discussions.",
+  "adjective:lethal": "The chemical is lethal in large doses.",
+  "adjective:literary": "She studies literary history.",
+  "adjective:luminous": "The watch has luminous hands.",
+  "adjective:magnificent": "The palace is magnificent.",
+  "adjective:mandatory": "Safety training is mandatory.",
+  "adjective:marginal": "There was only a marginal improvement.",
+  "adjective:mechanical": "The vehicle has a mechanical fault.",
+  "adjective:medieval": "We visited a medieval castle.",
+  "adjective:meticulous": "The research requires meticulous observation.",
+  "adjective:metropolitan": "The metropolitan area is growing.",
+  "adjective:misleading": "The headline is misleading.",
+  "adjective:molecular": "The team studies molecular structure.",
+  "adjective:monotonous": "The work became monotonous.",
+  "adjective:mutual": "The agreement is based on mutual trust.",
+  "adjective:negligible": "The difference is negligible.",
+  "adjective:nominal": "The museum charges a nominal fee.",
+  "adjective:notorious": "The road is notorious for accidents.",
+  "adjective:novel": "They proposed a novel solution.",
+  "adjective:obscure": "The book uses obscure terms.",
+  "adjective:obsolete": "The equipment is obsolete.",
+  "adjective:oral": "The course includes an oral exam.",
+  "adjective:orderly": "The crowd formed an orderly line.",
+  "adjective:outstanding": "She made an outstanding contribution.",
+  "adjective:passionate": "She is passionate about science.",
+  "adjective:pathetic": "The abandoned animal looked pathetic.",
+  "adjective:peculiar": "The flower has a peculiar smell.",
+  "adjective:periodic": "The equipment needs periodic checks.",
+  "adjective:peripheral": "The study focused on peripheral regions.",
+  "adjective:pessimistic": "He sounded pessimistic about the outcome.",
+  "adjective:plausible": "That is a plausible explanation.",
+  "adjective:polar": "The study examines polar ecosystems.",
+  "adjective:portable": "We bought a portable radio.",
+  "adjective:predominant": "Farming is the predominant activity.",
+  "adjective:prestigious": "She won a prestigious award.",
+  "adjective:prevalent": "The disease is prevalent in this region.",
+  "adjective:profitable": "The business became profitable.",
+  "adjective:proportional": "Payment is proportional to working hours.",
+  "adjective:prospective": "The school welcomed prospective students.",
+  "adjective:punctual": "Our teacher is punctual.",
+  "adjective:qualitative": "The study used qualitative interviews.",
+  "adjective:receptive": "The team was receptive to new ideas.",
+  "adjective:redundant": "Remove the redundant sentence.",
+  "adjective:regulatory": "The company met regulatory requirements.",
+  "adjective:reluctant": "He was reluctant to leave.",
+  "adjective:residential": "This is a residential area.",
+  "adjective:resilient": "The ecosystem is resilient.",
+  "adjective:retrospective": "The study used retrospective analysis.",
+  "adjective:reversible": "The process is reversible.",
+  "adjective:robust": "The study provides robust evidence.",
+  "adjective:sacred": "The mountain is sacred to local people.",
+  "adjective:saline": "Few crops tolerate saline soil.",
+  "adjective:skeptical": "The researchers remained skeptical.",
+  "adjective:slender": "The plant has slender leaves.",
+  "adjective:sluggish": "The economy showed sluggish growth.",
+  "adjective:sole": "She was the sole witness.",
+  "adjective:sparse": "The region has sparse vegetation.",
+  "adjective:spatial": "The task tests spatial awareness.",
+  "adjective:splendid": "The hotel offers a splendid view.",
+  "adjective:stagnant": "Mosquitoes breed in stagnant water.",
+  "adjective:statistical": "The report includes statistical analysis.",
+  "adjective:stern": "The teacher gave a stern warning.",
+  "adjective:striking": "The two paintings show a striking contrast.",
+  "adjective:sturdy": "The chair is sturdy.",
+  "adjective:subjective": "The judgment was subjective.",
+  "adjective:subordinate": "The local office has a subordinate role.",
+  "adjective:superficial": "The scratch caused superficial damage.",
+  "adjective:surplus": "The farm donated surplus food.",
+  "adjective:susceptible": "Young plants are susceptible to frost.",
+  "adjective:tangible": "The project produced tangible benefits.",
+  "adjective:tedious": "Sorting the files was tedious.",
+  "adjective:tentative": "We made a tentative plan.",
+  "adjective:terminal": "The doctor treated patients with terminal illness.",
+  "adjective:thermal": "The building has thermal insulation.",
+  "adjective:thirsty": "The children are thirsty.",
+  "adjective:tranquil": "The garden is tranquil.",
+  "adjective:transient": "The effect is transient.",
+  "adjective:unanimous": "The decision was unanimous.",
+  "adjective:uniform": "The samples have a uniform size.",
+  "adjective:unstable": "The structure is unstable.",
+  "adjective:utmost": "Handle the glass with utmost care.",
+  "adjective:vague": "The instructions are vague.",
+  "adjective:versatile": "This is a versatile tool.",
+  "adjective:viable": "We need a viable alternative.",
+  "adjective:vigorous": "The proposal sparked vigorous debate.",
+  "adjective:virtual": "The museum offers a virtual tour.",
+  "adjective:visual": "The teacher used visual aids.",
+  "adjective:vivid": "She gave a vivid description.",
+  "adjective:volatile": "The market is volatile.",
+  "adjective:complete": "The list is complete.",
+  "adjective:correct": "Your answer is correct.",
+  "adjective:full": "The bottle is full.",
+  "adjective:large": "The park has a large lake.",
+  "adjective:late": "We took a late train.",
+  "adjective:quick": "We need a quick response.",
+  "adjective:quiet": "The room is quiet.",
+  "adjective:regular": "The machine needs regular checks.",
+  "adjective:repeated": "They made repeated attempts.",
+  "adjective:slow": "We made slow progress.",
+  "adjective:seeming": "The seeming contradiction needs explanation.",
+  "adjective:true": "The story is true.",
+  "adjective:whole": "We spent the whole day reading.",
+  "adjective:wide": "The river is wide here.",
+  "adverb:abroad": "She studies abroad.",
+  "adverb:afar": "We saw the mountains from afar.",
+  "adverb:afresh": "We decided to start afresh.",
+  "adverb:ahead": "Please plan ahead.",
+  "adverb:alike": "The two sisters dress alike.",
+  "adverb:alongside": "The smaller boat sailed alongside.",
+  "adverb:aloud": "Please read the passage aloud.",
+  "adverb:anew": "They began the search anew.",
+  "adverb:apart": "Keep the two groups apart.",
+  "adverb:aside": "Please step aside.",
+  "adverb:astray": "The traveler went astray.",
+  "adverb:away": "The bird flew away.",
+  "adverb:back": "Please come back soon.",
+  "adverb:backward": "She took a step backward.",
+  "adverb:beforehand": "Read the instructions beforehand.",
+  "adverb:clockwise": "Turn the handle clockwise.",
+  "adverb:counterclockwise": "Turn the dial counterclockwise.",
+  "adverb:downhill": "We walked downhill.",
+  "adverb:downstairs": "The children are playing downstairs.",
+  "adverb:downtown": "We drove downtown.",
+  "adverb:eastward": "The river flows eastward.",
+  "adverb:enough": "The room is warm enough.",
+  "adverb:even": "Even the teacher was surprised.",
+  "adverb:ever": "Have you ever visited Paris?",
+  "adverb:everywhere": "Flowers grew everywhere.",
+  "adverb:far": "We did not travel far.",
+  "adverb:forever": "The memory will last forever.",
+  "adverb:forth": "The explorers set forth at dawn.",
+  "adverb:forward": "Please move forward.",
+  "adverb:furthermore": "The plan is useful; furthermore, it is affordable.",
+  "adverb:hence": "The road was flooded, hence the delay.",
+  "adverb:henceforth": "Henceforth, all visitors must sign in.",
+  "adverb:hereafter": "The document will hereafter be called the agreement.",
+  "adverb:hereby": "I hereby confirm my attendance.",
+  "adverb:indoors": "We stayed indoors during the storm.",
+  "adverb:inland": "The travelers moved inland.",
+  "adverb:inward": "The door opens inward.",
+  "adverb:likewise": "The second group responded likewise.",
+  "adverb:meanwhile": "I cooked; meanwhile, she set the table.",
+  "adverb:nonetheless": "The climb was difficult; nonetheless, we continued.",
+  "adverb:nowhere": "The missing keys were nowhere to be found.",
+  "adverb:outdoors": "The children played outdoors.",
+  "adverb:outright": "The committee rejected the proposal outright.",
+  "adverb:outward": "The branches spread outward.",
+  "adverb:overhead": "A plane flew overhead.",
+  "adverb:overnight": "We stayed overnight.",
+  "adverb:overseas": "The company sells products overseas.",
+  "adverb:rather": "The test was rather difficult.",
+  "adverb:regardless": "It was raining, but we continued regardless.",
+  "adverb:sideways": "The crab moved sideways.",
+  "adverb:sometime": "We should meet sometime next week.",
+  "adverb:somewhere": "I left my keys somewhere.",
+  "adverb:straight": "Go straight to the station.",
+  "adverb:then": "Wash the fruit, then cut it.",
+  "adverb:thereafter": "She moved abroad and lived there thereafter.",
+  "adverb:therein": "Read the report and the evidence therein.",
+  "adverb:thrice": "The bell rang thrice.",
+  "adverb:twice": "I checked the answer twice.",
+  "adverb:underway": "The investigation is underway.",
+  "adverb:undoubtedly": "The discovery is undoubtedly important.",
+  "adverb:uphill": "We walked uphill.",
+  "adverb:upstairs": "My sister is studying upstairs.",
+  "adverb:upward": "The balloon floated upward.",
+  "adverb:utterly": "The room was utterly silent.",
+  "adverb:well": "She speaks English well.",
+  "adverb:whereby": "They devised a method whereby costs could be reduced.",
+  "adverb:whereupon": "The bell rang, whereupon everyone left.",
+  "adverb:wholesale": "The proposal was rejected wholesale.",
+  "adverb:hard": "They work hard.",
+  "adverb:largely": "The project was largely successful.",
+  "adverb:notably": "Several birds, notably eagles, live here.",
+  "adverb:particularly": "This chapter is particularly useful.",
+  "adverb:readily": "The information is readily available.",
+  "adverb:roughly": "The trip takes roughly an hour.",
+  "adverb:virtually": "The room was virtually empty.",
+  "adjective:bad": "The storm caused bad weather.",
+  "adjective:comparative": "The study uses comparative analysis.",
+  "adjective:continual": "The building needs continual maintenance.",
+  "adjective:converse": "The converse situation is also possible.",
+  "adjective:successful": "The project was successful.",
+  "adjective:unfortunate": "The delay was unfortunate."
+});
+        const PREVIOUS_WORD_ORDERS = {"adjective": ["able", "absent", "absolute", "abstract", "academic", "acceptable", "accessible", "accurate", "active", "actual", "additional", "adequate", "adjacent", "administrative", "advanced", "adverse", "affordable", "aggressive", "agricultural", "alive", "alternative", "ambiguous", "ambitious", "ancient", "annual", "anxious", "apparent", "applicable", "appropriate", "approximate", "artificial", "artistic", "ashamed", "asleep", "associated", "attractive", "automatic", "available", "average", "aware", "awkward", "basic", "beneficial", "biological", "bitter", "blank", "blind", "bold", "boring", "brief", "bright", "broad", "busy", "capable", "careful", "casual", "central", "certain", "challenging", "characteristic", "chemical", "chronic", "civil", "classical", "clear", "clinical", "coastal", "cognitive", "coherent", "collective", "comfortable", "commercial", "common", "comparable", "compatible", "competitive", "complex", "comprehensive", "compulsory", "concrete", "confident", "conscious", "consecutive", "considerable", "consistent", "constant", "constructive", "contemporary", "continuous", "contrary", "controversial", "convenient", "conventional", "convincing", "cooperative", "crucial", "cultural", "curious", "current", "daily", "dangerous", "dark", "dead", "decent", "decisive", "deep", "definite", "deliberate", "delicate", "dense", "dependent", "desirable", "detailed", "determined", "developing", "different", "difficult", "digital", "direct", "disappointed", "distinct", "distinctive", "diverse", "domestic", "dominant", "dramatic", "dry", "due", "durable", "dynamic", "eager", "early", "eastern", "easy", "economic", "efficient", "elaborate", "elderly", "electric", "electronic", "embarrassed", "emotional", "empirical", "empty", "endangered", "enormous", "entire", "environmental", "equal", "equivalent", "essential", "established", "ethical", "eventual", "evident", "exact", "excellent", "exceptional", "excessive", "excited", "exclusive", "existing", "expensive", "experimental", "explicit", "external", "extraordinary", "extreme", "fair", "familiar", "famous", "fascinating", "favorable", "federal", "final", "financial", "finite", "firm", "flexible", "foreign", "formal", "former", "fortunate", "fragile", "frequent", "fresh", "friendly", "fundamental", "general", "generous", "genetic", "genuine", "geographical", "global", "gradual", "grateful", "great", "guilty", "harmful", "healthy", "heavy", "helpful", "historical", "honest", "hostile", "huge", "human", "humid", "ideal", "identical", "illegal", "immediate", "immune", "implicit", "important", "impossible", "impressive", "inadequate", "independent", "indigenous", "individual", "industrial", "inevitable", "infinite", "influential", "initial", "innovative", "intellectual", "intense", "intentional", "internal", "international", "invisible", "irrelevant", "isolated", "joint", "keen", "legal", "likely", "limited", "linguistic", "local", "logical", "long-term", "loose", "major", "marine", "massive", "mature", "maximum", "meaningful", "mental", "mere", "mild", "minimal", "minimum", "minor", "mobile", "moderate", "modern", "multiple", "narrow", "native", "natural", "necessary", "negative", "neutral", "normal", "notable", "numerous", "objective", "obvious", "occasional", "official", "ongoing", "open", "optimistic", "optional", "ordinary", "organic", "original", "parallel", "partial", "particular", "passive", "patient", "permanent", "persistent", "personal", "physical", "pleasant", "plentiful", "political", "poor", "popular", "positive", "possible", "potential", "practical", "precise", "predictable", "preliminary", "previous", "primary", "primitive", "principal", "prior", "private", "probable", "productive", "professional", "profound", "prominent", "promising", "proper", "prosperous", "proud", "psychological", "public", "qualified", "quantitative", "radical", "random", "rare", "rational", "raw", "ready", "realistic", "reasonable", "recent", "relevant", "reliable", "remarkable", "remote", "renewable", "representative", "responsible", "restricted", "ridiculous", "rigid", "risky", "rough", "rural", "safe", "satisfied", "scarce", "scientific", "secure", "selective", "sensitive", "separate", "sequential", "serious", "severe", "shallow", "short", "significant", "similar", "simple", "simultaneous", "single", "skilled", "slight", "smooth", "social", "solar", "solid", "sophisticated", "specific", "spectacular", "spiritual", "spontaneous", "stable", "standard", "steady", "steep", "strict", "structural", "subsequent", "substantial", "subtle", "sufficient", "suitable", "superior", "supplementary", "sustainable", "symbolic", "systematic", "technical", "temporary", "terrestrial", "theoretical", "thorough", "tiny", "tough", "toxic", "traditional", "transparent", "tremendous", "tropical", "typical", "ultimate", "uncertain", "underlying", "unexpected", "unfair", "unique", "universal", "unknown", "unlikely", "unprecedented", "unusual", "urban", "urgent", "useful", "valid", "valuable", "variable", "vast", "vertical", "visible", "vital", "voluntary", "vulnerable", "warm", "weak", "wealthy", "wet", "widespread", "willing", "wise", "worthy"], "adverb": ["absolutely", "accordingly", "accurately", "actively", "actually", "additionally", "adequately", "admittedly", "afterward", "again", "almost", "alone", "already", "also", "alternatively", "altogether", "always", "annually", "apparently", "approximately", "arguably", "artificially", "automatically", "badly", "barely", "basically", "broadly", "carefully", "certainly", "chiefly", "clearly", "closely", "commonly", "comparatively", "completely", "consequently", "considerably", "consistently", "constantly", "continually", "continuously", "conversely", "correctly", "currently", "daily", "deeply", "definitely", "deliberately", "directly", "dramatically", "eagerly", "early", "easily", "effectively", "efficiently", "elsewhere", "entirely", "equally", "especially", "essentially", "eventually", "evidently", "exactly", "exclusively", "explicitly", "extensively", "extremely", "fairly", "finally", "firmly", "first", "formerly", "fortunately", "frequently", "fully", "fundamentally", "generally", "genuinely", "globally", "gradually", "greatly", "hard", "hardly", "here", "highly", "historically", "honestly", "however", "immediately", "increasingly", "indeed", "independently", "indirectly", "inevitably", "initially", "instead", "intentionally", "invariably", "largely", "lately", "later", "legally", "likely", "literally", "locally", "mainly", "merely", "moreover", "mostly", "naturally", "nearly", "necessarily", "nevertheless", "normally", "notably", "now", "nowadays", "occasionally", "often", "only", "originally", "otherwise", "overall", "partially", "particularly", "partly", "permanently", "personally", "physically", "potentially", "practically", "precisely", "predominantly", "presently", "presumably", "previously", "primarily", "probably", "properly", "purely", "quickly", "quietly", "quite", "rarely", "readily", "really", "recently", "regularly", "relatively", "remarkably", "repeatedly", "respectively", "roughly", "safely", "scarcely", "seemingly", "seldom", "separately", "seriously", "significantly", "similarly", "simply", "simultaneously", "slightly", "slowly", "solely", "somehow", "sometimes", "somewhat", "soon", "specifically", "steadily", "still", "subsequently", "substantially", "successfully", "suddenly", "sufficiently", "supposedly", "surely", "surprisingly", "systematically", "temporarily", "there", "thereby", "therefore", "thoroughly", "thus", "together", "too", "totally", "traditionally", "truly", "typically", "ultimately", "unexpectedly", "unfortunately", "universally", "usually", "virtually", "widely", "willingly", "yet"]};
+        const WORD_TYPE_LABELS = { verb: '动词', noun: '名词', adjective: '形容词', adverb: '副词', preposition: '介词', conjunction: '连词' };
 
         // ================================================================
         //  核心状态
@@ -24643,9 +30073,8 @@ const EXAMPLE_DATA = {
             try {
                 const saved = JSON.parse(localStorage.getItem(permanentErrorKey()) || '{}');
                 if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
-                    state.words.forEach(word => {
-                        const count = saved[word.en];
-                        if (Number.isSafeInteger(count) && count > 0) records[word.en] = count;
+                    Object.entries(saved).forEach(([word, count]) => {
+                        if (Number.isSafeInteger(count) && count > 0) records[word] = count;
                     });
                 }
             } catch (_) {}
@@ -24780,6 +30209,25 @@ const EXAMPLE_DATA = {
                 if (legacyRaw) {
                     try { p = JSON.parse(legacyRaw); } catch (_) { p = null; }
                 }
+            }
+
+            // 本次形容词扩充、副词去重后，按英文词头保留仍在词库中的答题进度。
+            const previous = PREVIOUS_WORD_ORDERS[state.activeType];
+            if (p && (p.v === 3 || p.v === 2) && previous && p.n === previous.length &&
+                p.first === previous[0] && p.last === previous[previous.length - 1] &&
+                (p.n !== state.words.length || p.last !== state.words[state.words.length - 1].en)) {
+                const previousIndex = new Map(previous.map((word, i) => [word, i]));
+                const rawErrors = cookieGet(errorCookieKey());
+                if (rawErrors) p.e = rawErrors;
+                for (const key of ['c', 'w', 'e']) {
+                    const bits = decodeBits(p[key], previous.length);
+                    p[key] = encodeBits(state.words.map(word => bits[previousIndex.get(word.en)] || false));
+                }
+                p.n = state.words.length;
+                p.first = state.words[0].en;
+                p.last = state.words[state.words.length - 1].en;
+                cookieSet(errorCookieKey(), p.e);
+                cookieSet(storageKey(), JSON.stringify(p));
             }
 
             if (!p || (p.v !== 3 && p.v !== 2) || p.n !== state.words.length ||
