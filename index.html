@@ -792,6 +792,8 @@
         .urgent .countdown-progress { color: #ce7b6b; accent-color: #ce7b6b; }
         .urgent .countdown-progress::-webkit-progress-value { background: #ce7b6b; }
         .urgent .countdown-progress::-moz-progress-bar { background: #ce7b6b; }
+        .data-backup-actions { display: flex; justify-content: flex-end; gap: 10px; margin: 4px 0 10px; }
+        .data-backup-actions .btn-reset { font-size: 12px; padding: 3px 8px; color: #718096; }
     </style>
 </head>
 <body>
@@ -840,6 +842,11 @@
             <span id="permanentReviewInfo"></span>
             <button class="btn-reset" id="repeatPermanentBtn" type="button">↻ 再练一轮</button>
         </div>
+        <div class="data-backup-actions">
+            <button class="btn-reset" id="exportBackupBtn" type="button">导出备份</button>
+            <button class="btn-reset" id="importBackupBtn" type="button">恢复备份</button>
+            <input type="file" id="backupFileInput" accept=".json,application/json" hidden>
+        </div>
         <!-- 进度标签 -->
         <div class="progress-tabs" id="progressTabs"></div>
 
@@ -865,8 +872,8 @@
             </div>
             <div class="example-sentence" id="exampleSentence"></div>
             <div class="question-countdown" id="questionCountdown" hidden>
-                <progress class="countdown-progress" id="questionTimeProgress" max="5" value="5" aria-label="本题剩余秒数"></progress>
-                <span class="countdown-label" id="countdownLabel">5 秒</span>
+                <progress class="countdown-progress" id="questionTimeProgress" max="8" value="8" aria-label="本题剩余秒数"></progress>
+                <span class="countdown-label" id="countdownLabel">8 秒</span>
             </div>
             <div class="options" id="optionsContainer"></div>
         </div>
@@ -30056,6 +30063,24 @@ const EXAMPLE_DATA = {
         function errorCookieKey() { return `vocab_mcq_errors_v4_${state.activeType}`; }
         const COOKIE_DAYS = 30;
 
+        function persistProgress(payload) {
+            try {
+                localStorage.setItem(storageKey(), JSON.stringify(payload));
+                cookieDelete(storageKey());
+                cookieDelete(errorCookieKey());
+                return true;
+            } catch (_) {
+                const notice = document.getElementById('storageNotice');
+                notice.textContent = '浏览器无法长期保存学习数据，请允许本地存储，并使用“导出备份”保留记录。';
+                notice.hidden = false;
+                // 存储被禁用时仍保留旧版的短期兜底，页面会明确提示。
+                cookieSet(storageKey(), JSON.stringify(payload));
+                cookieSet(errorCookieKey(), payload.e);
+                return false;
+            }
+        }
+
+
         // 永久错题按词性独立存储，无过期时间，不参与重置学习进度。
         function permanentErrorKey() { return `vocab_mcq_permanent_errors_v1_${state.activeType}`; }
         function savePermanentErrors() {
@@ -30097,7 +30122,7 @@ const EXAMPLE_DATA = {
         }
 
 
-        // 所有学习进度都保存到 Cookie，默认保留 30 天。
+        // Cookie 仅用于迁移旧版记录，以及本地存储不可用时的短期兜底。
         // 使用 expires + max-age 双保险，并统一 path=/。
         function cookieSet(name, value, days = COOKIE_DAYS) {
             const encoded = encodeURIComponent(value);
@@ -30188,12 +30213,14 @@ const EXAMPLE_DATA = {
                 savedAt: Date.now()
             };
 
-            cookieSet(storageKey(), JSON.stringify(payload), COOKIE_DAYS);
-            // 再单独保存一次错题集合，避免任何模式切换影响错题本。
-            cookieSet(errorCookieKey(), encodeBits(errorBits), COOKIE_DAYS);
+            // 普通进度和普通错题也无到期时间保存，永久错题另存、重置时保留。
+            persistProgress(payload);
         }
         function loadLocalState() {
-            const raw = cookieGet(storageKey());
+            let raw = null;
+            try { raw = localStorage.getItem(storageKey()); } catch (_) {}
+            let fromCookie = !raw;
+            if (!raw) raw = cookieGet(storageKey());
             let p = null;
             if (raw) {
                 try {
@@ -30211,14 +30238,18 @@ const EXAMPLE_DATA = {
                 }
             }
 
+            if (p && fromCookie) {
+                const oldErrors = cookieGet(errorCookieKey()) ||
+                    (state.activeType === 'verb' ? cookieGet('vocab_mcq_errors_v3') : null);
+                if (oldErrors) p.e = oldErrors;
+            }
+            let migrated = false;
             // 本次形容词扩充、副词去重后，按英文词头保留仍在词库中的答题进度。
             const previous = PREVIOUS_WORD_ORDERS[state.activeType];
             if (p && (p.v === 3 || p.v === 2) && previous && p.n === previous.length &&
                 p.first === previous[0] && p.last === previous[previous.length - 1] &&
                 (p.n !== state.words.length || p.last !== state.words[state.words.length - 1].en)) {
                 const previousIndex = new Map(previous.map((word, i) => [word, i]));
-                const rawErrors = cookieGet(errorCookieKey());
-                if (rawErrors) p.e = rawErrors;
                 for (const key of ['c', 'w', 'e']) {
                     const bits = decodeBits(p[key], previous.length);
                     p[key] = encodeBits(state.words.map(word => bits[previousIndex.get(word.en)] || false));
@@ -30226,8 +30257,7 @@ const EXAMPLE_DATA = {
                 p.n = state.words.length;
                 p.first = state.words[0].en;
                 p.last = state.words[state.words.length - 1].en;
-                cookieSet(errorCookieKey(), p.e);
-                cookieSet(storageKey(), JSON.stringify(p));
+                migrated = true;
             }
 
             if (!p || (p.v !== 3 && p.v !== 2) || p.n !== state.words.length ||
@@ -30235,11 +30265,119 @@ const EXAMPLE_DATA = {
                 return null;
             }
 
-            // 独立错题 Cookie 优先；这样刷新/切换模式都不会把错题清空。
-            const errorRaw = cookieGet(errorCookieKey()) ||
-                (state.activeType === 'verb' ? cookieGet('vocab_mcq_errors_v3') : null);
-            if (errorRaw) p.e = errorRaw;
+            if (fromCookie || migrated) persistProgress(p);
             return p;
+        }
+
+        const BACKUP_FORMAT = 'vocab-practice-backup';
+        function collectBackup() {
+            saveLocalState();
+            const types = {};
+            for (const type of Object.keys(WORD_SETS)) {
+                const progressKey = `vocab_mcq_state_v4_${type}`;
+                const errorsKey = `vocab_mcq_errors_v4_${type}`;
+                let raw = localStorage.getItem(progressKey);
+                let progress = raw ? JSON.parse(raw) : null;
+                // 尚未切换到的旧词类也纳入备份，避免只备份当前词类。
+                if (!progress) {
+                    raw = cookieGet(progressKey) || (type === 'verb' ?
+                        cookieGet('vocab_mcq_state_v3') || cookieGet('vocab_mcq_state_v2') : null);
+                    if (raw) {
+                        progress = JSON.parse(raw);
+                        const errors = cookieGet(errorsKey) ||
+                            (type === 'verb' ? cookieGet('vocab_mcq_errors_v3') : null);
+                        if (errors) progress.e = errors;
+                    }
+                }
+                const permanent = type === state.activeType ? { ...state.permanentErrors } :
+                    JSON.parse(localStorage.getItem(`vocab_mcq_permanent_errors_v1_${type}`) || '{}');
+                types[type] = { progress, permanent };
+            }
+            return { format: BACKUP_FORMAT, version: 1, exportedAt: new Date().toISOString(), types };
+        }
+
+        function exportBackup() {
+            try {
+                const backup = collectBackup();
+                const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `单词学习备份-${new Date().toISOString().slice(0, 10)}.json`;
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            } catch (_) {
+                alert('备份导出失败，请确认浏览器允许读取本地存储后重试。');
+            }
+        }
+
+        function restoreBackupData(backup) {
+            if (!backup || backup.format !== BACKUP_FORMAT || backup.version !== 1 ||
+                !backup.types || typeof backup.types !== 'object' || Array.isArray(backup.types)) {
+                throw new Error('不是有效的单词学习备份文件。');
+            }
+            const updates = [];
+            for (const [type, data] of Object.entries(backup.types)) {
+                if (!Object.prototype.hasOwnProperty.call(WORD_SETS, type)) throw new Error('备份包含未知词类。');
+                if (!data || typeof data !== 'object' || !data.permanent ||
+                    typeof data.permanent !== 'object' || Array.isArray(data.permanent)) throw new Error('错题数据格式错误。');
+                const key = `vocab_mcq_permanent_errors_v1_${type}`;
+                const merged = Object.assign(Object.create(null), JSON.parse(localStorage.getItem(key) || '{}'));
+                for (const [word, count] of Object.entries(data.permanent)) {
+                    if (!/^[a-z]+(?:[ -][a-z]+)*$/i.test(word) || !Number.isSafeInteger(count) || count <= 0) {
+                        throw new Error('错题次数格式错误。');
+                    }
+                    merged[word] = Math.max(merged[word] || 0, count);
+                }
+                updates.push([key, JSON.stringify(merged)]);
+                if (data.progress !== null && data.progress !== undefined) {
+                    const p = data.progress;
+                    const words = WORD_SETS[type];
+                    const previous = PREVIOUS_WORD_ORDERS[type];
+                    const validOrder = p && ((p.n === words.length && p.first === words[0].en && p.last === words[words.length - 1].en) ||
+                        (previous && p.n === previous.length && p.first === previous[0] && p.last === previous[previous.length - 1]));
+                    if (!p || (p.v !== 2 && p.v !== 3) || !validOrder ||
+                        !['c', 'w', 'e'].every(field => typeof p[field] === 'string')) throw new Error('学习进度与当前词库不匹配。');
+                    for (const field of ['c', 'w', 'e']) {
+                        if (atob(p[field]).length !== Math.ceil(p.n / 8)) throw new Error('学习进度数据不完整。');
+                    }
+                    updates.push([`vocab_mcq_state_v4_${type}`, JSON.stringify(p)]);
+                }
+            }
+            if (!updates.length) throw new Error('备份文件没有学习数据。');
+            const originals = updates.map(([key]) => [key, localStorage.getItem(key)]);
+            try {
+                for (const [key, value] of updates) localStorage.setItem(key, value);
+            } catch (error) {
+                for (const [key, value] of originals) {
+                    if (value === null) localStorage.removeItem(key);
+                    else localStorage.setItem(key, value);
+                }
+                throw error;
+            }
+            clearTimeout(autoNextTimer);
+            stopQuestionCountdown();
+            loadWordsData(WORD_SETS[state.activeType]);
+        }
+
+        async function importBackupFile(event) {
+            const input = event.target;
+            const file = input.files && input.files[0];
+            if (!file) return;
+            stopQuestionCountdown();
+            clearTimeout(autoNextTimer);
+            try {
+                const backup = JSON.parse(await file.text());
+                if (confirm('恢复备份中的学习进度？永久错题会合并，同一单词次数取较大值，不会减少。')) {
+                    restoreBackupData(backup);
+                    alert('备份已恢复。');
+                }
+            } catch (error) {
+                alert('无法恢复备份：' + (error.message || '文件格式或存储异常'));
+            } finally {
+                input.value = '';
+                renderAll();
+            }
         }
 
         function buildQuestions(wordList, allWords) {
@@ -30291,6 +30429,7 @@ const EXAMPLE_DATA = {
         }
 
         function initPractice() {
+            skipNextCountdown = true;
             if (!state.dataLoaded || state.words.length === 0) {
                 renderEmptyState();
                 return;
@@ -30370,6 +30509,7 @@ const EXAMPLE_DATA = {
 		//  加载数据
 		// ================================================================
 		function loadWordsData(data) {
+            skipNextCountdown = true;
 			if (!Array.isArray(data) || data.length === 0) {
 				alert('数据格式错误，请确保是 JSON 数组格式！');
 				return;
@@ -30459,6 +30599,7 @@ const EXAMPLE_DATA = {
 					const idx = page * 100;
 					if (idx < state.questions.length) {
 						clearTimeout(autoNextTimer);
+                        skipNextCountdown = true;
 						state.currentIndex = idx;
 						renderAll();
 					}
@@ -30617,7 +30758,9 @@ const EXAMPLE_DATA = {
         // ================================================================
         //  答题逻辑
         // ================================================================
-        const QUESTION_TIME_LIMIT = 5000;
+        const QUESTION_TIME_LIMIT = 8000;
+        let skipNextCountdown = true;
+        let untimedQuestion = null;
         let questionTimer = null;
         let timedQuestion = null;
         let questionDeadline = 0;
@@ -30633,6 +30776,19 @@ const EXAMPLE_DATA = {
             const display = document.getElementById('questionCountdown');
             const progress = document.getElementById('questionTimeProgress');
             const label = document.getElementById('countdownLabel');
+            if (skipNextCountdown) {
+                skipNextCountdown = false;
+                untimedQuestion = q;
+            } else if (untimedQuestion !== q) {
+                untimedQuestion = null;
+            }
+            if (untimedQuestion === q && q.result === null) {
+                stopQuestionCountdown();
+                display.hidden = true;
+                label.textContent = '';
+                progress.value = QUESTION_TIME_LIMIT / 1000;
+                return;
+            }
             if (q.result !== null) {
                 stopQuestionCountdown();
                 display.hidden = !q.timedOut;
@@ -30721,7 +30877,7 @@ const EXAMPLE_DATA = {
                 savePermanentErrors();
                 const wordObj = state.words.find(w => w.en === q.en);
                 if (wordObj && !state.errorWords.some(w => w.en === q.en)) state.errorWords.push(wordObj);
-                showAnswerToast(timedOut ? '⏱ 5 秒已到，自动判错，正确答案已标出' : '❌ 回答错误，正确答案已标出', true);
+                showAnswerToast(timedOut ? '⏱ 8 秒已到，自动判错，正确答案已标出' : '❌ 回答错误，正确答案已标出', true);
             }
             saveLocalState();
             renderAll();
@@ -30769,6 +30925,10 @@ const EXAMPLE_DATA = {
                 return;
             }
             if (confirm('确定要重置学习进度和普通错题本吗？永久错题和累计答错次数会保留。')) {
+                try { localStorage.removeItem(storageKey()); } catch (_) {
+                    alert('浏览器阻止清除本地进度，本次未重置。');
+                    return;
+                }
                 clearTimeout(autoNextTimer);
                 state.errorWords = [];
                 state.isReviewMode = false;
@@ -30843,6 +31003,16 @@ const EXAMPLE_DATA = {
             if (e.key === 'ArrowRight') goToNext();
         });
 
+        // 离开浏览器标签页时停止计时，返回时当前第一题免倒计时。
+        document.addEventListener('visibilitychange', () => {
+            clearTimeout(autoNextTimer);
+            stopQuestionCountdown();
+            if (!document.hidden) {
+                skipNextCountdown = true;
+                renderAll();
+            }
+        });
+
         window.addEventListener('beforeunload', saveLocalState);
 
         // ================================================================
@@ -30852,6 +31022,9 @@ const EXAMPLE_DATA = {
             document.getElementById('prevBtn').addEventListener('click', goToPrev);
             document.getElementById('nextBtn').addEventListener('click', goToNext);
             document.getElementById('resetBtn').addEventListener('click', resetAll);
+            document.getElementById('exportBackupBtn').addEventListener('click', exportBackup);
+            document.getElementById('importBackupBtn').addEventListener('click', () => document.getElementById('backupFileInput').click());
+            document.getElementById('backupFileInput').addEventListener('change', importBackupFile);
             document.getElementById('errorBookBtn').addEventListener('click', toggleErrorBook);
             document.getElementById('permanentBookBtn').addEventListener('click', togglePermanentBook);
             document.getElementById('repeatPermanentBtn').addEventListener('click', repeatPermanentReview);
