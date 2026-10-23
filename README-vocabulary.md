@@ -1,0 +1,69 @@
+# 词库维护说明
+
+首页已经拆分为：
+
+- `index.html`：页面结构。
+- `style.css`：页面样式。
+- `app.js`：答题、错题、计时和备份逻辑。
+- `data/catalog.json`：词库清单与默认词库。
+- `data/toefl-common.json`：现有全部单词、中文释义、例句和历史词序。
+
+## 更换词库
+
+1. 复制 `data/toefl-common.json` 为新的 JSON 文件。
+2. 修改 `id`、`name` 和 `wordSets`。完全不同的一批词应使用新的 `id`，例如 `academic-2027`；只校对原词库则保留原 ID。
+3. 在 `data/catalog.json` 的 `datasets` 中添加文件，`file` 相对于清单文件。例如 `./academic-2027.json`。
+4. 将 `defaultDataset` 改为新词库 ID 即可更换默认词库。多个条目时，页面会显示词库选择菜单。
+
+不要改 `app.js` 或 `index.html` 中的数据；它们不再包含词条。
+
+## 词库 JSON 格式
+
+```json
+{
+  "format": "vocabulary-dataset",
+  "version": 1,
+  "id": "example-nouns",
+  "name": "示例名词词库",
+  "wordSets": {
+    "noun": [
+      { "en": "apple", "cn": "苹果", "example": "I ate an apple." },
+      { "en": "river", "cn": "河流", "example": "We crossed the river." },
+      { "en": "method", "cn": "方法", "example": "This method saves time." },
+      { "en": "courage", "cn": "勇气", "example": "She showed great courage." }
+    ]
+  }
+}
+```
+
+支持 `verb`、`noun`、`adjective`、`adverb`、`preposition`、`conjunction`。
+每类至少四个不重复的英文词条，至少四种不同释义，以供生成四个选项。
+词类内的数组顺序就是题目顺序。保留词条已有的其他字段也可以。
+`previousWordOrders` 为旧记录迁移使用，维护默认词库时请保留。
+
+## GitHub Pages 和本地使用
+
+- GitHub Pages：通过同站点相对路径加载清单和词库，不请求 GitHub API，也不需要 token。
+- 本地双击 `index.html`：点击“选择词库 JSON”，选择 `data/toefl-common.json`。如果浏览器允许本地存储，下次会直接使用已选词库的缓存。
+- 本地 HTTP 预览：在本目录运行 `python -m http.server 8000`，打开 `http://localhost:8000`，即可自动读取清单。
+- 上传或复制网页时，必须一起包含 `app.js`、`style.css` 和 `data/` 文件夹。
+
+## 学习备份保持兼容
+
+“选择词库 JSON”只选择题目数据；“恢复备份”继续恢复学习记录，两种文件不能混用。
+默认 `toefl-common` 沿用旧版存储键，之前的进度、普通错题与永久错题无需重新开始。
+旧版 `vocab-practice-backup` v1 JSON 仍可恢复；新版导出维持原格式并附带可选 `datasetId` 和按英文保存的词序。
+同一词库重新排列或增删词条时，新版进度按英文匹配，不按新的题号错配。
+旧版没有保存完整词序的备份需要配套原词库或其历史词序才能准确恢复。
+不同词库的记录独立保存；恢复备份前，请先选择备份对应的词库。
+主题、短语页和句子页的数据文件不在此次拆分范围内。
+
+## 检查
+
+```text
+node verify-json-loading.cjs
+node verify-options.cjs
+node verify-page.cjs
+node verify-permanent.cjs
+node verify-phrasal.cjs
+```

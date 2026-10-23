@@ -1,0 +1,12 @@
+{
+  "format": "vocabulary-catalog",
+  "version": 1,
+  "defaultDataset": "toefl-common",
+  "datasets": [
+    {
+      "id": "toefl-common",
+      "name": "托福常用词汇",
+      "file": "./toefl-common.json"
+    }
+  ]
+}
