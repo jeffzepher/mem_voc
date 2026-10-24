@@ -1,6 +1,7 @@
 // 词库由 data/catalog.json 指定；默认词库沿用既有学习记录。
 const DEFAULT_DATASET_ID = 'toefl-common';
 let activeDatasetId = DEFAULT_DATASET_ID;
+let activeDatasetName = '';
 let WORDS_DATA = [];
 let NOUNS_DATA = [];
 let WORD_SETS = {};
@@ -88,6 +89,7 @@ function installDataset(input) {
     clearTimeout(autoNextTimer);
     stopQuestionCountdown();
     activeDatasetId=input.id;
+    activeDatasetName=input.name;
     WORD_SETS=checked.sets;
     WORDS_DATA=WORD_SETS.verb || [];
     NOUNS_DATA=WORD_SETS.noun || [];
@@ -143,12 +145,19 @@ function openVocabularyPicker() {
     } catch (_) {}
     const selector=document.getElementById('datasetSelect');
     selector.replaceChildren();
+    const prompt=document.createElement('option');
+    prompt.value='';prompt.textContent=entries.size ? '请选择要加载的词库…' : '请先从本地文件添加词库';prompt.disabled=true;
+    selector.appendChild(prompt);
     if (!entries.size) {
-        const option=document.createElement('option');option.value='';option.textContent='请先从本地文件添加词库';selector.appendChild(option);
+        selector.disabled=true;
     } else for (const [id,name] of entries) {
-        const option=document.createElement('option');option.value=id;option.textContent=name;selector.appendChild(option);
+        const option=document.createElement('option');option.value=id;option.textContent=name+(state.dataLoaded && id===activeDatasetId ? '（当前词库）' : '');selector.appendChild(option);
     }
-    selector.value=state.dataLoaded ? activeDatasetId : (datasetCatalog[0]?.id || '');
+    selector.value='';
+    selector.disabled=!entries.size;
+    const total=Object.values(WORD_SETS).reduce((sum,words)=>sum+words.length,0);
+    document.getElementById('vocabularyCurrentStatus').textContent=state.dataLoaded ?
+        `当前已加载：${activeDatasetName}，共 ${total} 个词条。可在上方词性菜单选择动词、名词等。` : '当前尚未加载词库。';
     selector.hidden=false;
     panel.hidden=false;
     document.getElementById('chooseVocabularyBtn').setAttribute('aria-expanded','true');
@@ -177,6 +186,7 @@ async function loadCatalogDataset(id) {
             const data=JSON.parse(cached);
             if (data.id!==id) throw new Error('缓存词库 ID 不匹配。');
             installDataset(data);
+            showAnswerToast(`已加载“${data.name}”，对应学习记录已恢复`);
         } catch (error) {
             document.getElementById('datasetSelect').value=activeDatasetId;
             showVocabularyMessage(error.message,true);
@@ -193,6 +203,7 @@ async function loadCatalogDataset(id) {
         if (request!==datasetLoadSequence) return;
         if (input.id!==entry.id) throw new Error('词库 ID 与清单不一致。');
         installDataset(input);
+        showAnswerToast(`已加载“${input.name}”，对应学习记录已恢复`);
     } catch (error) {
         if (request!==datasetLoadSequence) return;
         showVocabularyMessage(`加载失败：${error.message}。可重试，或选择本地词库 JSON。`,true);
