@@ -110,11 +110,51 @@ function installDataset(input) {
         const option=document.createElement('option');option.value=input.id;option.textContent=input.name;librarySelector.appendChild(option);
     }
     librarySelector.value=input.id;
-    librarySelector.hidden=librarySelector.options.length<2;
+    librarySelector.hidden=false;
     loadWordsData(WORD_SETS[state.activeType]);
     document.title=`${input.name} · ${WORD_TYPE_LABELS[state.activeType]}练习`;
     document.getElementById('vocabularyLoader').hidden=true;
-    try { localStorage.setItem('vocab_last_dataset_v1',JSON.stringify(input)); } catch (_) {}
+    try {
+        localStorage.setItem('vocab_selected_dataset_v1',input.id);
+        localStorage.setItem(`vocab_dataset_cache_v1_${input.id}`,JSON.stringify(input));
+        localStorage.setItem('vocab_last_dataset_v1',JSON.stringify(input));
+        const cached=JSON.parse(localStorage.getItem('vocab_dataset_choices_v1') || '[]');
+        const choices=Array.isArray(cached) ? cached.filter(entry=>entry && entry.id!==input.id) : [];
+        choices.push({id:input.id,name:input.name});
+        localStorage.setItem('vocab_dataset_choices_v1',JSON.stringify(choices));
+    } catch (_) {}
+    closeVocabularyPicker();
+}
+
+function closeVocabularyPicker() {
+    document.getElementById('vocabularyPicker').hidden=true;
+    document.getElementById('chooseVocabularyBtn').setAttribute('aria-expanded','false');
+}
+
+function openVocabularyPicker() {
+    const panel=document.getElementById('vocabularyPicker');
+    if (!panel.hidden) { closeVocabularyPicker(); return; }
+    const entries=new Map(datasetCatalog.map(entry=>[entry.id,entry.name]));
+    try {
+        const cached=JSON.parse(localStorage.getItem('vocab_dataset_choices_v1') || '[]');
+        if (Array.isArray(cached)) for (const entry of cached) {
+            if (entry && typeof entry.id==='string' && typeof entry.name==='string' && !entries.has(entry.id)) entries.set(entry.id,entry.name);
+        }
+    } catch (_) {}
+    const selector=document.getElementById('datasetSelect');
+    selector.replaceChildren();
+    if (!entries.size) {
+        const option=document.createElement('option');option.value='';option.textContent='请先从本地文件添加词库';selector.appendChild(option);
+    } else for (const [id,name] of entries) {
+        const option=document.createElement('option');option.value=id;option.textContent=name;selector.appendChild(option);
+    }
+    selector.value=state.dataLoaded ? activeDatasetId : (datasetCatalog[0]?.id || '');
+    selector.hidden=false;
+    panel.hidden=false;
+    document.getElementById('chooseVocabularyBtn').setAttribute('aria-expanded','true');
+    document.getElementById('vocabularyPickerHint').textContent=window.location.protocol==='file:' ?
+        '本地双击模式可自动切换已添加的词库；新词库需选择文件一次。使用本地 HTTP 或 GitHub Pages 可直接读取清单。' :
+        '选择后自动加载，普通错题、永久错题和累计次数均按词库独立保存。';
 }
 
 async function fetchJson(url) {
@@ -129,8 +169,20 @@ async function fetchJson(url) {
 
 async function loadCatalogDataset(id) {
     const entry=datasetCatalog.find(item=>item.id===id);
-    if (!entry) return;
     const request=++datasetLoadSequence;
+    if (!entry || window.location.protocol==='file:') {
+        try {
+            const cached=localStorage.getItem(`vocab_dataset_cache_v1_${id}`);
+            if (!cached) throw new Error('该词库尚未在本地加载，请点击“从本地文件添加”选择一次。');
+            const data=JSON.parse(cached);
+            if (data.id!==id) throw new Error('缓存词库 ID 不匹配。');
+            installDataset(data);
+        } catch (error) {
+            document.getElementById('datasetSelect').value=activeDatasetId;
+            showVocabularyMessage(error.message,true);
+        }
+        return;
+    }
     const selector=document.getElementById('datasetSelect');
     selector.disabled=true;
     clearTimeout(autoNextTimer);
@@ -155,7 +207,7 @@ async function initializeVocabulary() {
             const cached=localStorage.getItem('vocab_last_dataset_v1');
             if (cached) { installDataset(JSON.parse(cached)); return; }
         } catch (_) {}
-        showVocabularyMessage('本地打开时，请点击“选择词库 JSON”，选择 data 文件夹中的词库文件；学习备份仍使用“恢复备份”。');
+        showVocabularyMessage('本地首次使用：点击“选择词库”→“从本地文件添加”，选择 data 文件夹中的 JSON。之后可从菜单直接切换；学习备份仍使用“恢复备份”。');
         return;
     }
     const request=++datasetLoadSequence;
@@ -178,9 +230,11 @@ async function initializeVocabulary() {
         for (const entry of datasetCatalog) {
             const option=document.createElement('option');option.value=entry.id;option.textContent=entry.name;selector.appendChild(option);
         }
-        selector.hidden=datasetCatalog.length<2;
+        selector.hidden=false;
         if (!ids.has(catalog.defaultDataset)) throw new Error('清单中找不到默认词库。');
-        await loadCatalogDataset(catalog.defaultDataset);
+        let selected=catalog.defaultDataset;
+        try { const saved=localStorage.getItem('vocab_selected_dataset_v1'); if (ids.has(saved)) selected=saved; } catch (_) {}
+        await loadCatalogDataset(selected);
     } catch (error) {
         if (request===datasetLoadSequence) showVocabularyMessage(`加载失败：${error.message}。请重试或选择本地词库 JSON。`,true);
     }
@@ -1323,7 +1377,8 @@ async function importVocabularyFile(event) {
         //  启动
         // ================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('chooseVocabularyBtn').addEventListener('click', () => document.getElementById('vocabularyFileInput').click());
+            document.getElementById('chooseVocabularyBtn').addEventListener('click', openVocabularyPicker);
+            document.getElementById('chooseLocalVocabularyBtn').addEventListener('click', () => document.getElementById('vocabularyFileInput').click());
             document.getElementById('vocabularyFileInput').addEventListener('change', importVocabularyFile);
             document.getElementById('retryVocabularyBtn').addEventListener('click', initializeVocabulary);
             document.getElementById('datasetSelect').addEventListener('change', event => loadCatalogDataset(event.target.value));

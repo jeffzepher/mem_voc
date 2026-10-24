@@ -792,3 +792,10 @@
 .vocabulary-loader[hidden] { display: none; }
 .vocabulary-loader a { color: inherit; margin-left: 10px; }
 .data-backup-actions { flex-wrap: wrap; }
+
+.vocabulary-picker { margin: 8px 0 12px; padding: 14px 16px; background: #f1f5fa; border: 1px solid #dfe7ef; border-radius: 12px; color: #526680; }
+.vocabulary-picker[hidden] { display: none; }
+.vocabulary-picker label { display: block; font-size: 14px; margin-bottom: 10px; }
+.vocabulary-picker-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.vocabulary-picker-row select { flex: 1; min-width: 180px; }
+.vocabulary-picker small { display: block; margin-top: 10px; line-height: 1.6; }

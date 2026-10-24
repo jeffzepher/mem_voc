@@ -13,7 +13,7 @@
 1. 复制 `data/toefl-common.json` 为新的 JSON 文件。
 2. 修改 `id`、`name` 和 `wordSets`。完全不同的一批词应使用新的 `id`，例如 `academic-2027`；只校对原词库则保留原 ID。
 3. 在 `data/catalog.json` 的 `datasets` 中添加文件，`file` 相对于清单文件。例如 `./academic-2027.json`。
-4. 将 `defaultDataset` 改为新词库 ID 即可更换默认词库。多个条目时，页面会显示词库选择菜单。
+4. 将 `defaultDataset` 改为新词库 ID 即可更换默认词库。多个条目时，点击“选择词库 ▾”会显示下拉菜单，选择后自动加载该词库及对应记录。
 
 不要改 `app.js` 或 `index.html` 中的数据；它们不再包含词条。
 
@@ -44,7 +44,7 @@
 ## GitHub Pages 和本地使用
 
 - GitHub Pages：通过同站点相对路径加载清单和词库，不请求 GitHub API，也不需要 token。
-- 本地双击 `index.html`：点击“选择词库 JSON”，选择 `data/toefl-common.json`。如果浏览器允许本地存储，下次会直接使用已选词库的缓存。
+- 本地双击 `index.html`：首次点击“选择词库 ▾”→“从本地文件添加”，选择 `data/toefl-common.json`。已添加过的词库会出现在下拉菜单中，以后可以自动切换，不必重复选文件。
 - 本地 HTTP 预览：在本目录运行 `python -m http.server 8000`，打开 `http://localhost:8000`，即可自动读取清单。
 - 上传或复制网页时，必须一起包含 `app.js`、`style.css` 和 `data/` 文件夹。
 
@@ -62,6 +62,7 @@
 
 ```text
 node verify-json-loading.cjs
+node verify-vocabulary-picker.cjs
 node verify-options.cjs
 node verify-page.cjs
 node verify-permanent.cjs

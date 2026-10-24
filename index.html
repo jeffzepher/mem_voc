@@ -24,8 +24,7 @@
                 </div>
             </div>
 			<div class="header-actions">
-				<select class="word-type-select" id="datasetSelect" aria-label="选择词库" hidden></select>
-                <select class="word-type-select" id="wordTypeSelect" aria-label="选择词性">
+				<select class="word-type-select" id="wordTypeSelect" aria-label="选择词性">
 					<option value="verb">动词</option>
 					<option value="noun">名词</option>
                     <option value="adjective">形容词</option>
@@ -54,10 +53,18 @@
             <button class="btn-reset" id="repeatPermanentBtn" type="button">↻ 再练一轮</button>
         </div>
         <div class="data-backup-actions">
-            <button class="btn-reset" id="chooseVocabularyBtn" type="button">选择词库 JSON</button>
+            <button class="btn-reset" id="chooseVocabularyBtn" type="button" aria-expanded="false" aria-controls="vocabularyPicker">选择词库 ▾</button>
             <button class="btn-reset" id="exportBackupBtn" type="button">导出备份</button>
             <button class="btn-reset" id="importBackupBtn" type="button">恢复备份</button>
             <input type="file" id="backupFileInput" accept=".json,application/json" hidden>
+        </div>
+        <div class="vocabulary-picker" id="vocabularyPicker" hidden>
+            <label for="datasetSelect">选择词库，自动加载对应的进度和错题</label>
+            <div class="vocabulary-picker-row">
+                <select class="word-type-select" id="datasetSelect" aria-label="选择词库"></select>
+                <button class="btn-reset" id="chooseLocalVocabularyBtn" type="button">从本地文件添加</button>
+            </div>
+            <small id="vocabularyPickerHint">每次练习一套词库，记录按词库独立保存。</small>
         </div>
         <div class="vocabulary-loader" id="vocabularyLoader" role="status" hidden>
             <span id="vocabularyLoadMessage"></span>
