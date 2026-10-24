@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>单词选择题练习</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20261024-compact">
 </head>
 <body>
 
@@ -71,6 +71,7 @@
             <span id="vocabularyLoadMessage"></span>
             <button class="btn-reset" id="retryVocabularyBtn" type="button">重试加载</button>
             <a href="data/toefl-common.json" download>下载默认词库</a>
+            <button class="vocabulary-dismiss" id="dismissVocabularyBtn" type="button" aria-label="关闭词库加载提示" title="关闭">×</button>
         </div>
         <input type="file" id="vocabularyFileInput" accept=".json,application/json" hidden>
         <!-- 进度标签 -->
@@ -116,7 +117,7 @@
 
     </div>
 
-    <script src="app.js?v=20261024-load-status" defer></script>
+    <script src="app.js?v=20261024-compact" defer></script>
 
 </body>
 </html>

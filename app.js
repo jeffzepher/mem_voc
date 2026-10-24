@@ -1400,6 +1400,9 @@ async function importVocabularyFile(event) {
             document.getElementById('chooseLocalVocabularyBtn').addEventListener('click', () => document.getElementById('vocabularyFileInput').click());
             document.getElementById('vocabularyFileInput').addEventListener('change', importVocabularyFile);
             document.getElementById('retryVocabularyBtn').addEventListener('click', initializeVocabulary);
+            document.getElementById('dismissVocabularyBtn').addEventListener('click', () => {
+                document.getElementById('vocabularyLoader').hidden=true;
+            });
             document.getElementById('datasetSelect').addEventListener('change', event => loadCatalogDataset(event.target.value));
             document.getElementById('prevBtn').addEventListener('click', goToPrev);
             document.getElementById('nextBtn').addEventListener('click', goToNext);
