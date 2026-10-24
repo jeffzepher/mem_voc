@@ -5,8 +5,28 @@
   "datasets": [
     {
       "id": "toefl-common",
-      "name": "托福常用词汇",
+      "name": "默认词库",
       "file": "./toefl-common.json"
+    },
+    {
+      "id": "cet4-extra",
+      "name": "四级新增词库",
+      "file": "./cet4-extra.json"
+    },
+    {
+      "id": "cet6-extra",
+      "name": "六级新增词库",
+      "file": "./cet6-extra.json"
+    },
+    {
+      "id": "ielts-extra",
+      "name": "雅思新增词库",
+      "file": "./ielts-extra.json"
+    },
+    {
+      "id": "toefl-extra",
+      "name": "托福新增词库",
+      "file": "./toefl-extra.json"
     }
   ]
 }

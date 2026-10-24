@@ -10,6 +10,17 @@
 
 ## 更换词库
 
+现有词库显示名称为“默认词库”，ID 仍为 `toefl-common`，原学习记录继续沿用。
+清单还包含“四级新增词库”“六级新增词库”“雅思新增词库”“托福新增词库”。
+各新增词库均按英文拼写（忽略大小写、跨词性）排除默认词库中的全部词条；新增词库之间允许重合，可独立备考。
+词条在同一词库内仅归入来源提供的首个受支持词性。常规可由已收录形容词推导的 `-ly` 副词会过滤，特殊词义副词保留。
+每类不足四种释义时不纳入四选一练习；短语不纳入单词词库。例句取自来源中包含该词的完整例句，无合适例句时留空。
+
+新增词表来源：[KyleBing/english-vocabulary](https://github.com/KyleBing/english-vocabulary)，
+版本及原文件路径记录在每个 JSON 的 `source` 中，许可证见 `data/EXAM-SOURCE-LICENSE.txt`。
+这是公开备考词表的补充集合，不代表考试官方唯一词汇范围。
+生成方式：`python tools/build_exam_libraries.py ../exam-source`，输入目录需包含四份原始 JSONL、commit.txt 和 LICENSE。
+
 1. 复制 `data/toefl-common.json` 为新的 JSON 文件。
 2. 修改 `id`、`name` 和 `wordSets`。完全不同的一批词应使用新的 `id`，例如 `academic-2027`；只校对原词库则保留原 ID。
 3. 在 `data/catalog.json` 的 `datasets` 中添加文件，`file` 相对于清单文件。例如 `./academic-2027.json`。

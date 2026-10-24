@@ -2,7 +2,7 @@
   "format": "vocabulary-dataset",
   "version": 1,
   "id": "toefl-common",
-  "name": "托福常用词汇",
+  "name": "默认词库",
   "wordSets": {
     "verb": [
       {
