@@ -83,6 +83,11 @@ function showVocabularyMessage(message, failed=false) {
     document.getElementById('retryVocabularyBtn').hidden=!failed || window.location.protocol==='file:';
 }
 
+function showVocabularyLoaded() {
+    const total=Object.values(WORD_SETS).reduce((sum,words)=>sum+words.length,0);
+    showVocabularyMessage(`已加载“${activeDatasetName}”：共 ${total} 个词条，当前${WORD_TYPE_LABELS[state.activeType]} ${state.words.length} 词。对应学习记录已恢复。`);
+}
+
 function installDataset(input) {
     const checked=validateDataset(input);
     if (state.dataLoaded) saveLocalState();
@@ -156,7 +161,8 @@ function openVocabularyPicker() {
     selector.value='';
     selector.disabled=!entries.size;
     const total=Object.values(WORD_SETS).reduce((sum,words)=>sum+words.length,0);
-    document.getElementById('vocabularyCurrentStatus').textContent=state.dataLoaded ?
+    const currentStatus=document.getElementById('vocabularyCurrentStatus');
+    if (currentStatus) currentStatus.textContent=state.dataLoaded ?
         `当前已加载：${activeDatasetName}，共 ${total} 个词条。可在上方词性菜单选择动词、名词等。` : '当前尚未加载词库。';
     selector.hidden=false;
     panel.hidden=false;
@@ -186,6 +192,7 @@ async function loadCatalogDataset(id) {
             const data=JSON.parse(cached);
             if (data.id!==id) throw new Error('缓存词库 ID 不匹配。');
             installDataset(data);
+            showVocabularyLoaded();
             showAnswerToast(`已加载“${data.name}”，对应学习记录已恢复`);
         } catch (error) {
             document.getElementById('datasetSelect').value=activeDatasetId;
@@ -203,6 +210,7 @@ async function loadCatalogDataset(id) {
         if (request!==datasetLoadSequence) return;
         if (input.id!==entry.id) throw new Error('词库 ID 与清单不一致。');
         installDataset(input);
+        showVocabularyLoaded();
         showAnswerToast(`已加载“${input.name}”，对应学习记录已恢复`);
     } catch (error) {
         if (request!==datasetLoadSequence) return;
