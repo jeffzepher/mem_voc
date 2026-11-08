@@ -287,6 +287,7 @@ async function importVocabularyFile(event) {
             errorWords: [],
             isReviewMode: false,
             isPermanentReviewMode: false,
+            isStubbornReviewMode: false,
             permanentErrors: Object.create(null),
             dataLoaded: false,
         };
@@ -515,8 +516,8 @@ async function importVocabularyFile(event) {
             });
             if (migrated) savePermanentErrors();
         }
-        function permanentReviewWords() {
-            return state.words.filter(word => state.permanentErrors[word.en] > 0)
+        function permanentReviewWords(stubbornOnly = state.isStubbornReviewMode) {
+            return state.words.filter(word => state.permanentErrors[word.en] > (stubbornOnly ? 5 : 0))
                 .sort((a, b) => state.permanentErrors[b.en] - state.permanentErrors[a.en]);
         }
 
@@ -608,6 +609,7 @@ async function importVocabularyFile(event) {
                 // 当前模式只用于恢复页面位置；错题数据本身独立保存。
                 mode: state.isReviewMode,
                 permanentMode: state.isPermanentReviewMode,
+                stubbornMode: state.isStubbornReviewMode,
                 idx: state.currentIndex,
                 wordOrder: state.words.map(word => word.en),
                 savedAt: Date.now()
@@ -778,6 +780,7 @@ async function importVocabularyFile(event) {
             const wrong = decodeBits(saved.w, state.words.length);
             const errors = decodeBits(saved.e, state.words.length);
             state.errorWords = state.words.filter((_, i) => errors[i]);
+            state.isStubbornReviewMode = !!saved.permanentMode && !!saved.stubbornMode && permanentReviewWords(true).length > 0;
             state.isPermanentReviewMode = !!saved.permanentMode && permanentReviewWords().length > 0;
             state.isReviewMode = !state.isPermanentReviewMode && !!saved.mode && state.errorWords.length > 0;
             let pool = state.isPermanentReviewMode ? permanentReviewWords() :
@@ -901,7 +904,7 @@ async function importVocabularyFile(event) {
 			state.dataLoaded = true;
 			state.errorWords = [];
 			state.isReviewMode = false;
-            state.isPermanentReviewMode = false;
+            state.isPermanentReviewMode = false; state.isStubbornReviewMode = false;
             loadPermanentErrors();
 
 			document.getElementById('wordCountNum').textContent = data.length;
@@ -1116,14 +1119,17 @@ async function importVocabularyFile(event) {
 
         function updateErrorBookUI() {
             const permanentBtn = document.getElementById('permanentBookBtn');
-            const permanentCount = permanentReviewWords().length;
-            permanentBtn.textContent = state.isPermanentReviewMode ? '📚 返回全部题目' : `📚 永久错题 ${permanentCount}`;
-            permanentBtn.setAttribute('aria-pressed', String(state.isPermanentReviewMode));
+            const permanentCount = permanentReviewWords(false).length;
+            permanentBtn.textContent = state.isPermanentReviewMode && !state.isStubbornReviewMode ? '📚 返回全部题目' : `📚 永久错题 ${permanentCount}`;
+            permanentBtn.setAttribute('aria-pressed', String(state.isPermanentReviewMode && !state.isStubbornReviewMode));
+            const stubbornBtn = document.getElementById('stubbornBookBtn');
+            stubbornBtn.textContent = state.isStubbornReviewMode ? '🔥 返回全部题目' : `🔥 顽固错题 ${permanentReviewWords(true).length}`;
+            stubbornBtn.setAttribute('aria-pressed', String(state.isStubbornReviewMode));
             document.getElementById('permanentReviewBar').hidden = !state.isPermanentReviewMode;
             const done = state.questions.filter(q => q.result !== null).length;
             const correct = state.questions.filter(q => q.result === 'correct').length;
             document.getElementById('permanentReviewInfo').textContent =
-                `永久错题检测 · 本轮 ${done}/${state.questions.length} · 答对 ${correct} · 答对或重置均保留`;
+                `${state.isStubbornReviewMode ? '顽固错题检测（累计答错超过5次）' : '永久错题检测'} · 本轮 ${done}/${state.questions.length} · 答对 ${correct} · 答对或重置均保留`;
             const btn = document.getElementById('errorBookBtn');
             if (state.isReviewMode) {
                 btn.innerHTML = '📕 全部题目 <span class="count" id="errorCount">✕</span>';
@@ -1309,7 +1315,7 @@ async function importVocabularyFile(event) {
                 clearTimeout(autoNextTimer);
                 state.errorWords = [];
                 state.isReviewMode = false;
-                state.isPermanentReviewMode = false;
+                state.isPermanentReviewMode = false; state.isStubbornReviewMode = false;
                 state.questions = [];
                 cookieDelete(storageKey());
                 cookieDelete(errorCookieKey());
@@ -1335,20 +1341,22 @@ async function importVocabularyFile(event) {
             }
             saveLocalState();
             state.isReviewMode = !state.isReviewMode;
-            state.isPermanentReviewMode = false;
+            state.isPermanentReviewMode = false; state.isStubbornReviewMode = false;
             initPractice();
             saveLocalState();
         }
 
-        function togglePermanentBook() {
+        function togglePermanentBook(stubbornOnly = false) {
             clearTimeout(autoNextTimer);
             if (!state.dataLoaded || !state.words.length) return;
-            if (!state.isPermanentReviewMode && permanentReviewWords().length === 0) {
-                alert('永久错题本为空，答错的单词会自动收录，并累计答错次数。');
+            const leaving = state.isPermanentReviewMode && state.isStubbornReviewMode === stubbornOnly;
+            if (!leaving && permanentReviewWords(stubbornOnly).length === 0) {
+                alert(stubbornOnly ? '暂无顽固错题，累计答错超过5次的单词会自动显示在这里。' : '永久错题本为空，答错的单词会自动收录，并累计答错次数。');
                 return;
             }
             saveLocalState();
-            state.isPermanentReviewMode = !state.isPermanentReviewMode;
+            state.isPermanentReviewMode = !leaving;
+            state.isStubbornReviewMode = !leaving && stubbornOnly;
             state.isReviewMode = false;
             initPractice();
             saveLocalState();
@@ -1411,7 +1419,8 @@ async function importVocabularyFile(event) {
             document.getElementById('importBackupBtn').addEventListener('click', () => document.getElementById('backupFileInput').click());
             document.getElementById('backupFileInput').addEventListener('change', importBackupFile);
             document.getElementById('errorBookBtn').addEventListener('click', toggleErrorBook);
-            document.getElementById('permanentBookBtn').addEventListener('click', togglePermanentBook);
+            document.getElementById('permanentBookBtn').addEventListener('click', () => togglePermanentBook());
+            document.getElementById('stubbornBookBtn').addEventListener('click', () => togglePermanentBook(true));
             document.getElementById('repeatPermanentBtn').addEventListener('click', repeatPermanentReview);
             document.getElementById('gridToggle').addEventListener('click', toggleGrid);
             document.getElementById('wordTypeSelect').addEventListener('change', (event) => switchWordType(event.target.value));
