@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>单词选择题练习</title>
+    <meta name="theme-color" content="#3978a9" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="单词练习" />
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <link rel="stylesheet" href="style.css?v=20261024-compact">
 </head>
 <body>
@@ -54,6 +59,7 @@
             <button class="btn-reset" id="repeatPermanentBtn" type="button">↻ 再练一轮</button>
         </div>
         <div class="data-backup-actions">
+            <button class="btn-reset" id="installAppBtn" type="button">添加到桌面</button>
             <button class="btn-reset" id="chooseVocabularyBtn" type="button" aria-expanded="false" aria-controls="vocabularyPicker">选择词库 ▾</button>
             <button class="btn-reset" id="exportBackupBtn" type="button">导出备份</button>
             <button class="btn-reset" id="importBackupBtn" type="button">恢复备份</button>
@@ -73,6 +79,11 @@
             <button class="btn-reset" id="retryVocabularyBtn" type="button">重试加载</button>
             <a href="data/toefl-common.json" download>下载默认词库</a>
             <button class="vocabulary-dismiss" id="dismissVocabularyBtn" type="button" aria-label="关闭词库加载提示" title="关闭">×</button>
+        </div>
+        <div class="vocabulary-loader" id="installHelp" role="status" hidden>
+            <span id="installHelpText"></span>
+            <a id="installOnlineLink" href="https://jeffzepher.github.io/mem_voc/" hidden>打开在线版安装</a>
+            <button class="vocabulary-dismiss" id="dismissInstallHelpBtn" type="button" aria-label="关闭安装提示">×</button>
         </div>
         <input type="file" id="vocabularyFileInput" accept=".json,application/json" hidden>
         <!-- 进度标签 -->
@@ -119,6 +130,7 @@
     </div>
 
     <script src="app.js?v=20261108-stubborn" defer></script>
+    <script src="pwa.js?v=20261108" defer></script>
 
 </body>
 </html>

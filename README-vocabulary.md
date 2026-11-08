@@ -54,6 +54,19 @@
 
 ## GitHub Pages 和本地使用
 
+### 添加到桌面（PWA）
+
+打开在线版后点击“添加到桌面”。Chrome/Edge 在满足安装条件时显示原生安装窗口；
+iPhone/iPad 可用 Safari 的“分享 → 添加到主屏幕”。已从桌面打开时不显示安装按钮。
+双击本地 HTML 无法安装；请先导出本地学习备份，再到在线版恢复，之后安装。
+PWA 使用当前在线站点的本地学习记录，不向服务器上传错题；原导入导出格式不变。
+
+首次联网时 Service Worker 会缓存主页面和全部五个词库；缓存成功后支持离线练习。
+语音能否离线取决于设备已安装的语音。缓存不会取代学习备份。
+新版本优先联网获取，更新的 Service Worker 在旧页面全部关闭后接管，避免练习中强制刷新。
+发布后修改应用或词库时，请更新 `sw.js` 中的 `VERSION` 和相关资源地址。
+上传时也需包含 `manifest.webmanifest`、`pwa.js`、`sw.js` 和 `icons/`。
+
 - GitHub Pages：通过同站点相对路径加载清单和词库，不请求 GitHub API，也不需要 token。
 - 本地双击 `index.html`：首次点击“选择词库 ▾”→“从本地文件添加”，选择 `data/toefl-common.json`。已添加过的词库会出现在下拉菜单中，以后可以自动切换，不必重复选文件。
 - 本地 HTTP 预览：在本目录运行 `python -m http.server 8000`，打开 `http://localhost:8000`，即可自动读取清单。
