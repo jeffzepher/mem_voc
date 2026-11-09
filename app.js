@@ -517,7 +517,7 @@ async function importVocabularyFile(event) {
             if (migrated) savePermanentErrors();
         }
         function permanentReviewWords(stubbornOnly = state.isStubbornReviewMode) {
-            return state.words.filter(word => state.permanentErrors[word.en] > (stubbornOnly ? 5 : 0))
+            return state.words.filter(word => (state.permanentErrors[word.en] || 0) >= (stubbornOnly ? 4 : 1))
                 .sort((a, b) => state.permanentErrors[b.en] - state.permanentErrors[a.en]);
         }
 
@@ -1129,7 +1129,7 @@ async function importVocabularyFile(event) {
             const done = state.questions.filter(q => q.result !== null).length;
             const correct = state.questions.filter(q => q.result === 'correct').length;
             document.getElementById('permanentReviewInfo').textContent =
-                `${state.isStubbornReviewMode ? '顽固错题检测（累计答错超过5次）' : '永久错题检测'} · 本轮 ${done}/${state.questions.length} · 答对 ${correct} · 答对或重置均保留`;
+                `${state.isStubbornReviewMode ? '顽固错题检测（累计答错4次及以上）' : '永久错题检测'} · 本轮 ${done}/${state.questions.length} · 答对 ${correct} · 答对或重置均保留`;
             const btn = document.getElementById('errorBookBtn');
             if (state.isReviewMode) {
                 btn.innerHTML = '📕 全部题目 <span class="count" id="errorCount">✕</span>';
@@ -1351,7 +1351,7 @@ async function importVocabularyFile(event) {
             if (!state.dataLoaded || !state.words.length) return;
             const leaving = state.isPermanentReviewMode && state.isStubbornReviewMode === stubbornOnly;
             if (!leaving && permanentReviewWords(stubbornOnly).length === 0) {
-                alert(stubbornOnly ? '暂无顽固错题，累计答错超过5次的单词会自动显示在这里。' : '永久错题本为空，答错的单词会自动收录，并累计答错次数。');
+                alert(stubbornOnly ? '暂无顽固错题，累计答错4次及以上的单词会自动显示在这里。' : '永久错题本为空，答错的单词会自动收录，并累计答错次数。');
                 return;
             }
             saveLocalState();

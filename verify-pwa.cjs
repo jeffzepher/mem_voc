@@ -21,7 +21,7 @@ assert.match(html,/rel="manifest"/);assert.match(html,/id="installAppBtn"/);
  handlers.activate({waitUntil:p=>work=p});await work;
  assert(stores.has('other-app-cache'));assert(!stores.has('mem-voc-/mem_voc/-old'));
  online=false;
- for(const path of ['index.html','', 'data/catalog.json','data/cet4-extra.json','data/cet6-extra.json','data/ielts-extra.json','data/toefl-extra.json','app.js?v=20261108-stubborn']){
+ for(const path of ['index.html','', 'data/catalog.json','data/cet4-extra.json','data/cet6-extra.json','data/ielts-extra.json','data/toefl-extra.json','app.js?v=20261109-stubborn']){
   let result;handlers.fetch({request:{method:'GET',url:scope+path},respondWith:p=>result=p});assert((await result).ok,path);
  }
  let intercepted=false;handlers.fetch({request:{method:'GET',url:'https://example.github.io/another-app/index.html'},respondWith:()=>intercepted=true});assert.equal(intercepted,false);

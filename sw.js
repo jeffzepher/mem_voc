@@ -1,9 +1,9 @@
 // Bump VERSION whenever the app shell or bundled vocabulary changes.
-const VERSION='20261108-pwa-v1';
+const VERSION='20261109-pwa-v2';
 const PREFIX='mem-voc-'+new URL(self.registration.scope).pathname+'-';
 const CACHE=PREFIX+VERSION;
 const FILES=[
-    './index.html','./style.css?v=20261024-compact','./app.js?v=20261108-stubborn',
+    './index.html','./style.css?v=20261024-compact','./app.js?v=20261109-stubborn',
     './pwa.js?v=20261108','./manifest.webmanifest',
     './icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png',
     './data/catalog.json','./data/toefl-common.json','./data/cet4-extra.json',
